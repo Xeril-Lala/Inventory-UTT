@@ -1,4 +1,4 @@
 FROM mysql
 ENV MYSQL_ROOT_PASSWORD=admin
-COPY 1-main.sql /docker-entrypoint-initdb.d/
+COPY *.sql /docker-entrypoint-initdb.d/
 CMD ["mysqld"]
