@@ -123,3 +123,16 @@ CALL SET_LOAN_LOCATION(
 SELECT @msg;
 
 SELECT * FROM USER_CONTACT;
+
+SELECT 
+	CONCAT('public const string ', routine_name, ' = "', routine_name, '";') as NAMES
+FROM
+    information_schema.routines
+WHERE
+    routine_type = 'PROCEDURE'
+AND routine_schema = 'INVENTORY_UTT';
+        
+        
+        
+DESCRIBE ASSET;
+DESCRIBE INVENTORY;
