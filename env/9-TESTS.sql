@@ -6,7 +6,7 @@ CALL SET_USER(
 	'DBA',
 	'Tonatiuh',
     'Lopez',
-    'admin',
+    '8udw153r_',
 	'DBA',
     TRUE,
     @MSG
@@ -131,8 +131,10 @@ FROM
 WHERE
     routine_type = 'PROCEDURE'
 AND routine_schema = 'INVENTORY_UTT';
-        
-        
+
+SELECT * FROM USER;
+SELECT * FROM ASSET;
+SELECT * FROM LOAN;
         
 DESCRIBE ASSET;
 DESCRIBE INVENTORY;

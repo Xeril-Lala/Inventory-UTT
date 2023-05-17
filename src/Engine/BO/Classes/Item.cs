@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Engine.BO
 {
-    public class Item
+    public class Item : BaseBO
     {
         public int? Id { get; set; }
         public string? CustomId { get; set; }

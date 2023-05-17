@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Engine.BO
 {
-    public class Asset
+    public class Asset : BaseBO
     {
         public string? Code { get; set; }
         public string? Value { get; set; }

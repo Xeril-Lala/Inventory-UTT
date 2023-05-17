@@ -30,7 +30,7 @@ namespace BaseAPI
             SetErrorsCallback();
             SetUrl(props);
 
-            props.SubscriptionAPI.SendAPI();
+            //props.SubscriptionAPI.SendAPI();
 
             BinderBL.Start();
 

@@ -5,9 +5,8 @@ using MySql.Data.MySqlClient;
 
 namespace DataService.MySQL
 {
-    public class MySqlDataBase
+    public class MySqlDataBase : IDisposable
     {
-        
         // Delegates
         public delegate void TransactionCallback();
         public delegate void DataException(Exception e, string customMsg = "");
@@ -15,7 +14,7 @@ namespace DataService.MySQL
 
         // Properties
         public static DataException? OnException { get; set; }
-        public MySqlConnection Connection { get; set; } = new MySqlConnection();        
+        public MySqlConnection Connection { get; }
         private string? ConnectionString { get; set; }
 
         // Constructor
@@ -24,10 +23,12 @@ namespace DataService.MySQL
             try
             {
                 ConnectionString = connString;
-                CreateConnection();                    
+                Connection = new(ConnectionString);
+                Connection.StateChange += OnStateChange;
             }
             catch (Exception ex)
             {
+                Connection = new MySqlConnection();
                 if (OnException != null)
                 {
                     if (ex.GetType() == typeof(MySqlException))
@@ -51,42 +52,40 @@ namespace DataService.MySQL
             }
         }
 
-        public void OpenConnection() => OpenConnection(this);
-
-        public void CreateConnection() {
-            if (string.IsNullOrEmpty(ConnectionString))
+        public void OpenConnection()
+        {
+            if (Connection != null && Connection.State != ConnectionState.Open)
             {
-                throw new Exception("MySQL Connection string is empty");
+                Connection.Open();
             }
-
-            Connection = new (ConnectionString);
-            Connection.StateChange += OnStateChange;
         }
 
         public void CloseConnection()
-        {          
+        {
             if (Connection != null && Connection.State == ConnectionState.Open)
             {
                 Connection.Close();
-                Connection.Dispose();
-            }            
+            }
         }
 
-        public MySqlCommand CreateCommand(string cmdText, CommandType type)
-        => CreateCommand(cmdText, Connection, type);
+        public void Dispose()
+        {
+            Connection.Dispose();
+        }
+
+        public MySqlCommand CreateCommand(string cmdText, CommandType type) 
+            => CreateCommand(cmdText, Connection, type);
 
         private void OnStateChange(object obj, StateChangeEventArgs args)
         {
             if (args.CurrentState == ConnectionState.Closed)
             {
-                //OpenConnection();
-                //Handling Event
+                // Connection Closed Event handling
             }
         }
 
-        // Static Methods
-        public static MySqlCommand CreateCommand(string cmdText, MySqlConnection conn, CommandType type) 
-        => new (cmdText, conn)
+        #region Static Methods
+        public static MySqlCommand CreateCommand(string cmdText, MySqlConnection conn, CommandType type) => new (cmdText, conn)
         {
             CommandType = type
         };
@@ -105,11 +104,6 @@ namespace DataService.MySQL
             MySqlDbType = type
         };
 
-        private static void OpenConnection(MySqlDataBase db)
-        {
-            db.Connection.Open();
-        }
-
         public static void ReaderBlock(MySqlCommand cmd, ReaderAction action)
         {
             using var reader = cmd.ExecuteReader();
@@ -120,7 +114,7 @@ namespace DataService.MySQL
         public static void NonQueryBlock(MySqlCommand cmd, Action action)
         {
             cmd.ExecuteNonQuery();
-            action();           
+            action();
         }
 
         public static void TransactionBlock(
@@ -132,19 +126,15 @@ namespace DataService.MySQL
         {
             MySqlConnection conn = db.Connection;
             bool isTxnSuccess;
-            
-            if(db.Connection.State == ConnectionState.Closed)
-            {
-                db.OpenConnection();
-            }
 
             try
-            {                
-                action();                
+            {
+                db.OpenConnection();
+                action();
                 isTxnSuccess = true;
             }
             catch (Exception e)
-            {                                
+            {
                 onException(e);
                 isTxnSuccess = false;
             }
@@ -152,9 +142,9 @@ namespace DataService.MySQL
             if (isTxnSuccess)
                 onProcess?.Invoke();
 
-            db.Connection.Dispose();
-            db.Connection.Close();
+            db.Dispose();
+            db.CloseConnection();
         }
-
+        #endregion
     }
 }
