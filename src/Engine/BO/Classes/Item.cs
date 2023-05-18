@@ -10,6 +10,7 @@ namespace Engine.BO
     public class Item : BaseBO
     {
         public int? Id { get; set; }
+        public string? Name { get; set; }
         public string? CustomId { get; set; }
         public string? Description { get; set; }
         public DateTime Acquisition { get; set; }

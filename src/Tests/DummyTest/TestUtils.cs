@@ -11,12 +11,26 @@ using Engine.DAL;
 
 namespace Test
 {
-    public static class DummyTest
+    public static class TestUtils
     {
+        private static JsonNode? _settings;
+        public static JsonNode? Settings 
+        {
+            get { 
+                if (_settings == null)
+                {
+                    _settings = GetSettings();
+                }
+
+                return _settings;
+            }
+        }
+
         public static void Main(string[] arg) 
         {
             ConnectionString.SetConnectionString(GetConn, "test");
-            BaseDAL.OnDALError = OnError;
+            ExceptionManager exceptionManager = new(OnError);
+            BaseDAL.OnError = ExceptionManager.CallbackException;
 
             var dal = InventoryDAL.Instance;
 
@@ -30,11 +44,17 @@ namespace Test
             });
         }
 
+        private static JsonNode? GetSettings()
+        {
+            string file = File.ReadAllText("settings.json");
+            return JsonNode.Parse(file);
+        }
+
         public static string GetConn()
         {
+            var config = Settings;
             string? conn = string.Empty;
-            string file = File.ReadAllText("settings.json");
-            var config = JsonNode.Parse(file);
+
             if (config != null)
             {
                 conn = config["conn"]?.ToString();

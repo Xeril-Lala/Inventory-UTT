@@ -8,48 +8,19 @@ namespace DataService.MySQL
     public class MySqlDataBase : IDisposable
     {
         // Delegates
-        public delegate void TransactionCallback();
-        public delegate void DataException(Exception e, string customMsg = "");
+        public delegate void DataException(Exception e, string msg = "");
         public delegate void ReaderAction(IDataReader reader);
 
         // Properties
-        public static DataException? OnException { get; set; }
         public MySqlConnection Connection { get; }
         private string? ConnectionString { get; set; }
 
         // Constructor
         public MySqlDataBase(string? connString)
         {
-            try
-            {
-                ConnectionString = connString;
-                Connection = new(ConnectionString);
-                Connection.StateChange += OnStateChange;
-            }
-            catch (Exception ex)
-            {
-                Connection = new MySqlConnection();
-                if (OnException != null)
-                {
-                    if (ex.GetType() == typeof(MySqlException))
-                    {
-                        MySqlException e = (MySqlException)ex;
-                        switch (e.Number)
-                        {
-                            case 0:
-                                OnException(ex, "Cannot connect to server.  Contact administrator");
-                                break;
-                            case 1045:
-                                OnException(ex, "Invalid username/password, please try again");
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        OnException(ex, "Exception creating connection...");
-                    }
-                }
-            }
+            ConnectionString = connString;
+            Connection = new(ConnectionString);
+            Connection.StateChange += OnStateChange;
         }
 
         public void OpenConnection()
@@ -119,7 +90,7 @@ namespace DataService.MySQL
 
         public static void TransactionBlock(
             MySqlDataBase db,
-            TransactionCallback action,
+            Action run,
             DataException onException,
             Action? onProcess = null
         )
@@ -130,7 +101,7 @@ namespace DataService.MySQL
             try
             {
                 db.OpenConnection();
-                action();
+                run();
                 isTxnSuccess = true;
             }
             catch (Exception e)

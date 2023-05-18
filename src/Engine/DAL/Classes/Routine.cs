@@ -12,38 +12,38 @@ using D = Engine.BL.Delegates;
 
 namespace Engine.DAL
 {
-    public class Routine<TResult> // where TResult : class, new()
+    public class Routine<TResult>
     {
         public delegate TResult OnResult(MySqlCommand cmd);
 
         private MySqlDataBase Db { get; set; }
-        private string StoreProcedure { get; set; }
+        private string CommandName { get; set; }
         private D.CallbackExceptionMsg? OnException { get; set; }
         private Action? OnProcess { get; set; }
         public List<IDataParameter> Parameters { get; set; } = new List<IDataParameter>();
 
-        public Routine(MySqlDataBase db, string sp)
+        public Routine(MySqlDataBase db, string cmdName)
         {
             Db = db;
-            StoreProcedure = sp;
+            CommandName = cmdName;
         }
 
         public Routine(
             MySqlDataBase db,
-            string sp,
+            string cmdName,
             D.CallbackExceptionMsg onException,
             Action? onProcess = null
         )
         {
             Db = db;
-            StoreProcedure = sp;
+            CommandName = cmdName;
             OnException = onException;
             OnProcess = onProcess;
         }
 
         private MySqlCommand CreateCommand()
         {
-            MySqlCommand cmd = Db.CreateCommand(StoreProcedure, CommandType.StoredProcedure);
+            MySqlCommand cmd = Db.CreateCommand(CommandName, CommandType.StoredProcedure);
             cmd.Parameters.AddRange(Parameters.ToArray());
             return cmd;
         }

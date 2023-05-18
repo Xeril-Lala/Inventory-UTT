@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using DataService.MySQL;
 using Engine.BO;
 using Engine.Constants;
+using Engine.DAL.Routines;
 using Engine.Interfaces;
+using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Utilities.IO;
 using D = Engine.BL.Delegates;
 
 namespace Engine.DAL
@@ -15,7 +19,7 @@ namespace Engine.DAL
     public abstract class BaseDAL : MySqlDataBase
     {
         protected static readonly Validate Validate = Validate.Instance;
-        public static D.CallbackExceptionMsg? OnDALError { get; set; }
+        public static D.CallbackExceptionMsg? OnError { get; set; }
 
         protected List<IEntrySP> Routines { get; } = new List<IEntrySP>();
 
@@ -29,7 +33,7 @@ namespace Engine.DAL
             sp.Subscription(this);
         }
 
-        protected T? GetSP<T, TResult>() where T : StoredProcedure<TResult> 
+        protected T? GetSP<T>()
         {
             T? sp = default;
 
@@ -70,6 +74,20 @@ namespace Engine.DAL
             return id;
         }
 
+        public static TOutput? RunSP<TInput, TOutput>(StoredProcedure<TInput, TOutput>? sp, TInput input)
+        {
+            TOutput? result = default;
+
+            if (sp != null)
+            {
+                sp.EntryData = input;
+                sp.Run();
+                result = sp.GetOutput();
+            }
+
+            return result;
+        }
+
         public static void GetResult(IDataParameter pResult, string routineName, out Result result)
         {
             result = new Result();
@@ -100,7 +118,23 @@ namespace Engine.DAL
             }
         }
 
+        public static Result FetchResult(MySqlCommand cmd, IDataParameter outParam, string sp, Action<Result>? onAction = null)
+        {
+            Result result = new();
+
+            NonQueryBlock(
+                cmd,
+                () => {
+                    GetResult(outParam, sp, out result);
+                    onAction?.Invoke(result);
+                }
+            );
+            cmd.Dispose();
+
+            return result;
+        }
+
         protected static void SetExceptionResult(string actionName, string msg, Exception ex, Result? result = null)
-            => OnDALError?.Invoke(ex, $"Exception ({actionName}) - {msg}{(result != null ? " " + result.ToString() : string.Empty)}");
+            => OnError?.Invoke(ex, $"Exception ({actionName}) - {msg}{(result != null ? " " + result.ToString() : string.Empty)}");
     }
 }

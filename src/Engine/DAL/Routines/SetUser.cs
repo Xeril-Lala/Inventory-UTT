@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using Engine.BO;
 using Engine.Constants;
-using Engine.Interfaces;
 using MySql.Data.MySqlClient;
 using BDAL = Engine.DAL.BaseDAL;
 using D = Engine.BL.Delegates;
@@ -12,16 +9,17 @@ using MType = MySql.Data.MySqlClient.MySqlDbType;
 
 namespace Engine.DAL.Routines
 {
-    public class SetUser : StoredProcedure<Result>, IServiceSP<User, Result>
+    public class SetUser : StoredProcedure<User, Result>
     {
-        public User EntryData { get; set; }
-
         private IDataParameter OutParameter = MDB.CreateParameterOut("OUT_MSG", MType.String);
 
-        public SetUser(BDAL dal, D.CallbackExceptionMsg? onException, Action? onProcess ) : base(dal, onException, onProcess) 
-            => EntryData = new User();
-
-        public Result? GetOutput() => _Result;
+        public SetUser(
+            BDAL dal, 
+            D.CallbackExceptionMsg? onException,
+            Action? onProcess 
+        ) : base(dal, onException, onProcess)
+        {
+        }
 
         protected override string GetSPName() => SQL.SET_USER;
 
@@ -39,19 +37,6 @@ namespace Engine.DAL.Routines
         }
 
         protected override Result OnResult(MySqlCommand cmd)
-        {
-            Result result = new ();
-
-            MDB.NonQueryBlock(
-                cmd,
-                () => BDAL.GetResult(OutParameter, GetSPName(), out result)
-            );
-            cmd.Dispose();
-
-            return result;
-        }
+            => BDAL.FetchResult(cmd, OutParameter, GetSPName());
     }
 }
-
-//public SetUser(D.CallbackExceptionMsg? onException, User input, Action? onProcess) : base(onException, onProcess) 
-//    => EntryData = input;

@@ -9,7 +9,7 @@ namespace Engine.Interfaces
 {
     public interface IServiceSP <Input, Output>
     {        
-        Input EntryData { get; set; }
+        Input? EntryData { get; set; }
         Output? GetOutput();
     }
 

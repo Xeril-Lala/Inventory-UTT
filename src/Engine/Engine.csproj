@@ -2,19 +2,9 @@
 
   <ItemGroup>
     <Compile Remove="BL\Actuators\StudentsBL.cs" />
+    <Compile Remove="BL\BaseBL.cs" />
     <Compile Remove="DAL\AccessControlDAL.cs" />
     <Compile Remove="DAL\Routines\SP_SetUser - Copy.cs" />
-    <Compile Remove="Interfaces\DataCollector\IContactFamilyCollector.cs" />
-    <Compile Remove="Interfaces\DataCollector\IGroupStatsCollector.cs" />
-    <Compile Remove="Interfaces\DataCollector\IGroupStudentCollector.cs" />
-    <Compile Remove="Interfaces\DataCollector\IHistorialCollector.cs" />
-    <Compile Remove="Interfaces\DataCollector\IStudentCollector.cs" />
-    <Compile Remove="Services\DataCollector\ContactFamilyCollector.cs" />
-    <Compile Remove="Services\DataCollector\FlowCollector.cs" />
-    <Compile Remove="Services\DataCollector\GroupStatsCollector.cs" />
-    <Compile Remove="Services\DataCollector\GroupStudentsCollector.cs" />
-    <Compile Remove="Services\DataCollector\HistorialCollector.cs" />
-    <Compile Remove="Services\DataCollector\StudentCollector.cs" />
   </ItemGroup>
 
   <ItemGroup>

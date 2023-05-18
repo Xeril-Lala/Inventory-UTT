@@ -27,7 +27,6 @@ namespace BaseAPI
             appCallback?.Invoke(app);
 
             SetConnections(props);
-            SetErrorsCallback();
             SetUrl(props);
 
             //props.SubscriptionAPI.SendAPI();
@@ -119,13 +118,7 @@ namespace BaseAPI
             } catch
             {
 
-            }        
+            }
         }
-
-        private static void SetErrorsCallback()
-        {
-            BinderBL.SetDalError((ex, msg) => Console.WriteLine($"Error Opening connection {msg} - {ex.Message}"));
-        }        
-
     }
 }

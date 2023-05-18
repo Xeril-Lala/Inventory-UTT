@@ -1,6 +1,6 @@
 ﻿using Engine.BO;
+using Engine.BO.Classes;
 using Engine.DAL.Routines;
-using Engine.Interfaces;
 using Engine.Services;
 using System;
 using System.Collections.Generic;
@@ -12,34 +12,48 @@ namespace Engine.DAL
 {
     public class InventoryDAL : BaseDAL
     {
-        private static InventoryDAL _instance = new ();
-        private static ConnectionString? _ConnectionString => ConnectionString.FindConnection("test");
+        private static InventoryDAL? _instance;
+        private static ConnectionString? _ConnectionString => ConnectionString.Instance;
 
-        public static InventoryDAL Instance = _instance;
+        public static InventoryDAL Instance { get {
+                if (_instance == null)
+                {
+                    _instance = new InventoryDAL();
+                }
+                return _instance;
+            }
+        }
 
         private InventoryDAL() : base(_ConnectionString)
         {
-            if (_instance == null)
-            {
-                AddSP(new SetUser(this, OnDALError, null));
-                _instance = this;
-            }
+            AddSP(new SetUser(this, OnError, null));
+            AddSP(new SetUserContact(this, OnError, null));
+            AddSP(new SetAsset(this, OnError, null));
+            AddSP(new SetLoan(this, OnError, null));
+            AddSP(new SetLoanDtl(this, OnError, null));
+            AddSP(new SetLoanMode(this, OnError, null));
+            AddSP(new SetInventory(this, OnError, null));
         }
 
-        public Result? SetUser(User user)
-        {
-            Result? result = null;
-            SetUser? sp = GetSP<SetUser, Result>();
+        public Result? SetUser(User user) 
+            => RunSP(GetSP<SetUser>(), user);
 
-            if (sp != null)
-            {
-                sp.EntryData = user;
-                sp.Run();
-                result = sp.GetOutput();
-            }
+        public Result? SetUserContact(UserContact contact) 
+            => RunSP(GetSP<SetUserContact>(), contact);
 
-            return result;
-        }
+        public Result? SetAsset(Asset asset) 
+            => RunSP(GetSP<SetAsset>(), asset);
 
+        public Result? SetLoan(Loan loan) 
+            => RunSP(GetSP<SetLoan>(), loan);
+
+        public Result? SetLoanDtl(LoanDtl detail)
+            => RunSP(GetSP<SetLoanDtl>(), detail);
+
+        public Result? SetLoanMode(LoanMode mode)
+            => RunSP(GetSP<SetLoanMode>(), mode);
+
+        public Result? SetItem(Item item) 
+            => RunSP(GetSP<SetInventory>(), item);
     }
 }

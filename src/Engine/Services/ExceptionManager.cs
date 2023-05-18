@@ -11,13 +11,23 @@ namespace Engine.Services
 {
     public class ExceptionManager : IDisposable
     {
-        public static D.CallbackExceptionMsg? CallbackException { get; } = Emit;
+        public readonly static D.CallbackExceptionMsg CallbackException = Emit;
         private static List<ExceptionManager?> Subscribers { get; set; } = new ();
 
         private static void Emit(Exception ex, string msg)
         {
             foreach (var d in Subscribers)
                 d?.Subscription?.Invoke(ex, msg);
+        }
+
+        private decimal KeyTime { get; }
+        public D.CallbackExceptionMsg? Subscription { get; }
+
+        public ExceptionManager(D.CallbackExceptionMsg? subCallback)
+        {
+            Subscription = subCallback;
+            KeyTime = decimal.Parse(DateTime.Now.ToString("MMddyyyyHHmmss"));
+            Subscribers.Add(this);
         }
 
         public void Dispose()
@@ -30,14 +40,5 @@ namespace Engine.Services
                     Subscribers.RemoveAt(index);
             }
         }
-        
-        public D.CallbackExceptionMsg? Subscription { get; }
-        private decimal KeyTime { get; }
-        public ExceptionManager(D.CallbackExceptionMsg? subCallback) { 
-            Subscription = subCallback;
-            KeyTime = decimal.Parse(DateTime.Now.ToString("MddyyyymmHHmmss"));
-            Subscribers.Add(this);
-        }
-        
     }
 }

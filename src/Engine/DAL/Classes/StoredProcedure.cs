@@ -5,43 +5,47 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataService.MySQL;
+using Engine.BO.Classes;
 using Engine.Constants;
 using Engine.Interfaces;
 using MySql.Data.MySqlClient;
 using D = Engine.BL.Delegates;
-using MDB = DataService.MySQL.MySqlDataBase;
-using MType = MySql.Data.MySqlClient.MySqlDbType;
 
 namespace Engine.DAL
 {
-    public abstract class StoredProcedure<TResult> : IEntrySP
+    public abstract class StoredProcedure<TInput, TOutput> : IServiceSP<TInput, TOutput>, IEntrySP
     {
         public BaseDAL? DAL { get; private set; }
-        public Routine<TResult>? Routine { get; private set; }
+        public TInput? EntryData { get; set; }
 
         private D.CallbackExceptionMsg? OnException { get; set; }
         private Action? OnProcess { get; set; }
-        protected TResult? _Result { get; private set; }
+        protected Routine<TOutput>? Routine { get; set; }
+        protected TOutput? _Result { get; private set; }
 
         public StoredProcedure(BaseDAL dal)
         {
+            EntryData = default;
             DAL = dal;
             Routine = InitRoutine();
         }
 
         public StoredProcedure(BaseDAL? dal, D.CallbackExceptionMsg? onException, Action? onProcess = null)
         {
+            EntryData = default;
             DAL = dal;
-            Routine = InitRoutine();
             OnException = onException;
             OnProcess = onProcess;
+            Routine = InitRoutine();
         }
+
+        public TOutput? GetOutput() => _Result;
 
         public void Subscription(BaseDAL dal) => DAL = dal;
 
         public void Run() => _Result = Execute();
 
-        private TResult? Execute() 
+        private TOutput? Execute() 
         {
             if (Routine != null)
             {
@@ -53,17 +57,17 @@ namespace Engine.DAL
             }
         }
 
-        private Routine<TResult>? InitRoutine()
+        private Routine<TOutput>? InitRoutine()
         {
-            Routine<TResult>? routine = null;
+            Routine<TOutput>? routine = null;
 
             try
             {
                 if (DAL != null)
                 {
                     routine = OnException != null
-                        ? new Routine<TResult>(DAL, GetSPName(), OnException, OnProcess)
-                        : new Routine<TResult>(DAL, GetSPName());
+                        ? new Routine<TOutput>(DAL, GetSPName(), OnException, OnProcess)
+                        : new Routine<TOutput>(DAL, GetSPName());
                 }
             }
             catch (Exception ex)
@@ -74,7 +78,7 @@ namespace Engine.DAL
             return routine;
         }
 
-        protected abstract TResult OnResult(MySqlCommand cmd);
+        protected abstract TOutput OnResult(MySqlCommand cmd);
         protected abstract List<IDataParameter> GetParameters();
         protected abstract string GetSPName();
     }
