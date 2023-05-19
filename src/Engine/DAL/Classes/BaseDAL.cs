@@ -19,6 +19,9 @@ namespace Engine.DAL
     public abstract class BaseDAL : MySqlDataBase
     {
         protected static readonly Validate Validate = Validate.Instance;
+
+        protected static D.CallbackExceptionMsg? _tempOnException { get; set; } = null;
+
         public static D.CallbackExceptionMsg? OnError { get; set; }
 
         protected List<IEntrySP> Routines { get; } = new List<IEntrySP>();

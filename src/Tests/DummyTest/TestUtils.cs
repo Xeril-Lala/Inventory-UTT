@@ -8,6 +8,8 @@ using System.Configuration;
 using System.Text.Json.Nodes;
 using Engine.Services;
 using Engine.DAL;
+using Engine.Constants;
+using Org.BouncyCastle.Crypto.Generators;
 
 namespace Test
 {
@@ -61,6 +63,16 @@ namespace Test
             }
 
             return conn ?? string.Empty;
+        }
+
+        public static bool IsSuccess(Result? result)
+        {
+            bool isSuccess = false;
+
+            if(result != null && result.Status == C.OK)
+                isSuccess = true;
+
+            return isSuccess;
         }
 
         public static void OnError(Exception ex, string msg)

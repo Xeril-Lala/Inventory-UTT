@@ -4,9 +4,7 @@ using Engine.DAL;
 using Engine.Services;
 using System.Text.Json.Nodes;
 using System.Data;
-using Test;
 using D = Engine.BL.Delegates;
-using System.Reflection.Metadata.Ecma335;
 using Engine.BO;
 
 namespace Test.Engine
@@ -23,31 +21,63 @@ namespace Test.Engine
         public InventoryDAL_Test()
         {
             Settings = TestUtils.Settings;
-
             if (Settings != null)
             {
                 FailConnection = Settings["failConn"]?.ToString();
             }
+            ConnectionString.SetConnectionString(() => Connection, "Connection");
         }
 
         [TestMethod]
         public void Test_DBConnection()
         {
-            bool isSuccess = DBConnectionTest(Connection, out string result);
+            bool isSuccess = DBConnectionTest(out string result);
             Assert.IsTrue(isSuccess, result);
         }
 
         [TestMethod]
         public void Test_SetUser()
         {
-            
+            bool isSuccess = SPTest(
+                () => dal.SetUser(DataSets.GetUser()), 
+                out string? msg
+            );
+            Assert.IsTrue(isSuccess, msg);
         }
 
-        private bool DBConnectionTest(string? connection, out string msg)
+        [TestMethod]
+        public void Test_SetUserContact()
+        {
+            bool isSuccess = SPTest(
+                () => dal.SetUserContact(DataSets.GetContact()), 
+                out string? msg
+            );
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        private bool SPTest(Func<Result?> cbRes, out string? msg)
+        {
+            bool isSuccess = false;
+            string result = C.OK;
+            msg = string.Empty;
+
+            D.CallbackExceptionMsg onException = (Exception ex, string msg) =>
+            {
+                isSuccess = false;
+                result = msg;
+            };
+            BaseDAL.OnError = onException;
+
+            isSuccess = TestUtils.IsSuccess(cbRes());
+            msg = result;
+
+            return isSuccess;
+        }
+
+        private bool DBConnectionTest(out string msg)
         {
             bool isSuccess = false;
             string? result = C.OK;
-            ConnectionString.SetConnectionString(() => connection, "Connection");
             D.CallbackExceptionMsg onException = (Exception ex, string msg) =>
             {
                 isSuccess = false;

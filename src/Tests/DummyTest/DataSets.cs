@@ -44,6 +44,17 @@ namespace Test
             TxnUser = "DBA"
         };
 
+        public static Asset GetModel() => new () 
+        {
+            Code = "MD1",
+            Desc1 = "Model - Description",
+            Key1 = "MODEL",
+            Key2 = GetBrand().Code,
+            Value = "Model - TEST1",
+            Status = Status.ENABLED,
+            TxnUser = "DBA"
+        };
+
         public static Item GetItem() => new ()
         {
             Id = null,
