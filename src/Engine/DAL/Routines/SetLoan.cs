@@ -17,7 +17,7 @@ namespace Engine.DAL.Routines
         public SetLoan(
             BDAL dal, 
             D.CallbackExceptionMsg? onException,
-            Action? onProcess
+            Action? onProcess = null
         ) : base(dal, onException, onProcess)
         {
         }

@@ -16,7 +16,7 @@ namespace Engine.DAL.Routines
         public SetAsset(
             BDAL dal, 
             D.CallbackExceptionMsg? onException, 
-            Action? onProcess
+            Action? onProcess = null
         ) : base(dal, onException, onProcess) 
         {
         }

@@ -106,7 +106,7 @@ namespace DataService.MySQL
             }
             catch (Exception e)
             {
-                onException(e);
+                onException(e, e.Message);
                 isTxnSuccess = false;
             }
 

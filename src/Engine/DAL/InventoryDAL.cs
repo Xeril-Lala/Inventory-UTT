@@ -15,24 +15,26 @@ namespace Engine.DAL
         private static InventoryDAL? _instance;
         private static ConnectionString? _ConnectionString => ConnectionString.Instance;
 
-        public static InventoryDAL Instance { get {
+        public static InventoryDAL Instance { get 
+            {
                 if (_instance == null)
                 {
                     _instance = new InventoryDAL();
                 }
+
                 return _instance;
             }
         }
-
+        
         private InventoryDAL() : base(_ConnectionString)
         {
-            AddSP(new SetUser(this, OnError, null));
-            AddSP(new SetUserContact(this, OnError, null));
-            AddSP(new SetAsset(this, OnError, null));
-            AddSP(new SetLoan(this, OnError, null));
-            AddSP(new SetLoanDtl(this, OnError, null));
-            AddSP(new SetLoanMode(this, OnError, null));
-            AddSP(new SetInventory(this, OnError, null));
+            AddSP(new SetUser(this, OnError));
+            AddSP(new SetUserContact(this, OnError));
+            AddSP(new SetAsset(this, OnError));
+            AddSP(new SetLoan(this, OnError));
+            AddSP(new SetLoanDtl(this, OnError));
+            AddSP(new SetLoanMode(this, OnError));
+            AddSP(new SetInventory(this, OnError));
         }
 
         public Result? SetUser(User user) 

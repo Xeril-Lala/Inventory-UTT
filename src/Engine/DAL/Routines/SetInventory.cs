@@ -22,7 +22,7 @@ namespace Engine.DAL.Routines
         public SetInventory(
             BDAL dal, 
             D.CallbackExceptionMsg? onException, 
-            Action? onAction
+            Action? onAction = null
         ) : base(dal, onException, onAction) 
         {
         }

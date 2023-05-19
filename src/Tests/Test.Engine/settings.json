@@ -1,4 +1,4 @@
 {
   "conn": "server=127.0.0.1;uid=root;pwd=admin;database=INVENTORY_UTT",
-  "failConn": "server=127.0.0.1;uid=root;pwd=admin1;database=INVENTORY_UTT"
+  "failConn": "server=127.0.0.1;uid=root;pwd=FAKEPASSWORD;database=INVENTORY_UTT"
 }

@@ -1,7 +1,13 @@
 using Engine;
+using Engine.Constants;
 using Engine.DAL;
+using Engine.Services;
 using System.Text.Json.Nodes;
+using System.Data;
 using Test;
+using D = Engine.BL.Delegates;
+using System.Reflection.Metadata.Ecma335;
+using Engine.BO;
 
 namespace Test.Engine
 {
@@ -10,13 +16,15 @@ namespace Test.Engine
     {
         private JsonNode? Settings;
         public string? FailConnection;
+
+        public InventoryDAL dal => InventoryDAL.Instance;
         public string? Connection => TestUtils.GetConn();
 
-        public InventoryDAL_Test() 
+        public InventoryDAL_Test()
         {
             Settings = TestUtils.Settings;
 
-            if(Settings != null)
+            if (Settings != null)
             {
                 FailConnection = Settings["failConn"]?.ToString();
             }
@@ -25,23 +33,39 @@ namespace Test.Engine
         [TestMethod]
         public void Test_DBConnection()
         {
+            bool isSuccess = DBConnectionTest(Connection, out string result);
+            Assert.IsTrue(isSuccess, result);
+        }
+
+        [TestMethod]
+        public void Test_SetUser()
+        {
+            
+        }
+
+        private bool DBConnectionTest(string? connection, out string msg)
+        {
             bool isSuccess = false;
+            string? result = C.OK;
+            ConnectionString.SetConnectionString(() => connection, "Connection");
+            D.CallbackExceptionMsg onException = (Exception ex, string msg) =>
+            {
+                isSuccess = false;
+                result = msg;
+            };
 
-            var del = (Exception ex, string msg) => isSuccess = false;
-            var dal = InventoryDAL.Instance;
-            var routine = new Routine<string>(
-                dal, 
-                "SELECT TRUE",
-                (ex, msg) => isSuccess = false,
-                null
-            );
+            var routine = new Routine<string>(dal, "SELECT 'OK'", onException);
 
-            var str = routine.Exec(cmd => {
+            routine.Exec(cmd => {
+                cmd.CommandType = CommandType.Text;
                 var res = cmd.ExecuteScalar();
+                isSuccess = true;
                 return res.ToString() ?? string.Empty;
             });
 
-            Assert.IsFalse(isSuccess, $"Connection fail");
+            msg = result ?? C.ERROR;
+
+            return isSuccess;
         }
     }
 }
