@@ -1,11 +1,12 @@
 
-import React from 'react'
-import Sidebar from './Components/sidebar/sidebar';
+import React from 'react';
+import Sideb from './components/sidebar/sidebar.jsx';
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 
 function App() {
   return (
     <div className="App">
-        <Sidebar />
+        <Sideb/>
     </div>
   );
 }
