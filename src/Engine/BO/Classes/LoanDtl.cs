@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Engine.BO;
 public class LoanDtl : BaseBO
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public Item? Item { get; set; }
     public string? Description { get; set; }
     public string? DetailStatus { get; set; }

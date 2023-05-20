@@ -30,7 +30,7 @@ namespace Engine.DAL.Routines
             {
                 MDB.CreateParameter("IN_ID", EntryData?.Id, MType.Int32),
                 MDB.CreateParameter("IN_LOAN_ID", EntryData?.Loan ?.Id, MType.Int32),
-                MDB.CreateParameter("IN_INVENTORY_ID", EntryData?.Item?.Id, MType.DateTime),
+                MDB.CreateParameter("IN_INVENTORY_ID", EntryData?.Item?.Id, MType.Int32),
                 MDB.CreateParameter("IN_DESC", EntryData?.Description, MType.Text),                
                 MDB.CreateParameter("IN_LN_STATUS", EntryData?.DetailStatus, MType.String),
                 MDB.CreateParameter("IN_USER", EntryData?.TxnUser, MType.String),

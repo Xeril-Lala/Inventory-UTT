@@ -66,6 +66,19 @@ namespace Engine.Constants
             }
             else throw new Exception("Something going on checking value!! Utils.IsNumeric()");
         }
+
+        public static string GetHex(byte[]? bytes)
+        {
+            try
+            {
+                var str = BitConverter.ToString(bytes);
+                return str.Replace("-", "");
+            } catch
+            {
+                return string.Empty;
+            }
+        }
+
         public static DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
         {
             int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;

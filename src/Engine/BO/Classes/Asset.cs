@@ -18,5 +18,10 @@ namespace Engine.BO
         public string? Desc2 { get; set; }
         public string? Desc3 { get; set; }
         public byte[] Data { get; set; }
+
+        public Asset()
+        {
+            Data = Array.Empty<byte>();
+        }
     }
 }

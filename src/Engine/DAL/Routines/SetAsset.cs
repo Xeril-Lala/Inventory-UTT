@@ -34,7 +34,7 @@ namespace Engine.DAL.Routines
                 MDB.CreateParameter("IN_DESC1", EntryData?.Desc1, MType.Text),
                 MDB.CreateParameter("IN_DESC2", EntryData?.Desc2, MType.Text),
                 MDB.CreateParameter("IN_DESC3", EntryData?.Desc3, MType.Text),
-                MDB.CreateParameter("IN_HEX_BIN", EntryData?.Desc1, MType.LongText),
+                MDB.CreateParameter("IN_HEX_BIN", Utils.GetHex(EntryData?.Data), MType.LongText),
                 MDB.CreateParameter("IN_USER", EntryData?.TxnUser, MType.String),
                 MDB.CreateParameter("IN_STATUS", EntryData?.IsEnabled, MType.Bit),
                 OutParameter

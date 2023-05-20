@@ -6,7 +6,8 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
-namespace Classes {
+namespace BaseAPI.Classes
+{
     public static class ParseProperty<T> {
         public static T? GetValue(string name, JsonObject jObj, D.CallbackExceptionMsg? onMissingProperty = null) {
             T? result = default;

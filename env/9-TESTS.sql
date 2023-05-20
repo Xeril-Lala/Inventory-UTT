@@ -122,8 +122,6 @@ CALL SET_LOAN_LOCATION(
 );
 SELECT @msg;
 
-SELECT * FROM USER_CONTACT;
-
 SELECT 
 	CONCAT('public const string ', routine_name, ' = "', routine_name, '";') as NAMES
 FROM
@@ -131,3 +129,5 @@ FROM
 WHERE
     routine_type = 'PROCEDURE'
 AND routine_schema = 'INVENTORY_UTT';
+
+SELECT * FROM INVENTORY;

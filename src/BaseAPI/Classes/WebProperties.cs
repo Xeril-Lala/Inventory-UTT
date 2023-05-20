@@ -14,14 +14,11 @@ namespace BaseAPI.Classes
         public List<string> ConnectionStrings { get; set; } = new List<string>();
         public string ConnectionString { get; set; } = string.Empty;
         public WebApplicationBuilder Builder { get; set; }
-        
-        public ISubscriptionAPI SubscriptionAPI { get; set; }
 
-        public WebProperties(string name, WebApplicationBuilder builder, ISubscriptionAPI subscriptionAPI)
+        public WebProperties(string name, WebApplicationBuilder builder)
         {
             Name = name;
             Builder = builder;
-            SubscriptionAPI = subscriptionAPI;
         }
     }
 }

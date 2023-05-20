@@ -28,10 +28,6 @@ namespace BaseAPI
 
             SetConnections(props);
             SetUrl(props);
-
-            //props.SubscriptionAPI.SendAPI();
-            //BinderBL.Start();
-
             app.Run();
         }        
 
@@ -51,15 +47,6 @@ namespace BaseAPI
                 .AllowAnyHeader()
                 .AllowAnyMethod();
             });
-
-            //options.AddPolicy("SignalR", policy =>
-            //{
-            //    policy
-            //    .WithOrigins("http://localhost", "http://localhost:4200", "http://192.168.0.114")
-            //    .AllowAnyHeader()
-            //    .WithMethods("GET", "POST")
-            //    .AllowCredentials();
-            //});
         }
 
         private static void SetApplication(string apiName, WebApplication app)

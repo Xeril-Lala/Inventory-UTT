@@ -1,17 +1,17 @@
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+using BaseAPI;
+using BaseAPI.Classes;
+using Engine.Constants;
 
-var app = builder.Build();
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+Builder.Build(new WebProperties("InventoryAPI", WebApplication.CreateBuilder(args))
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    ConnectionString = C.INVENTORY_UTT_DB
+},
+    builderCallback: web =>
+    {
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
+    },
+    appCallback: app =>
+    {
+
+    }
+);

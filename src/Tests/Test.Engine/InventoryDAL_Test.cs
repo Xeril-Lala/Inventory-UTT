@@ -29,14 +29,14 @@ namespace Test.Engine
         }
 
         [TestMethod]
-        public void Test_DBConnection()
+        public void Test_1DBConnection()
         {
             bool isSuccess = DBConnectionTest(out string result);
             Assert.IsTrue(isSuccess, result);
         }
 
         [TestMethod]
-        public void Test_SetUser()
+        public void Test_2SetUser()
         {
             bool isSuccess = SPTest(
                 () => dal.SetUser(DataSets.GetUser()), 
@@ -46,12 +46,72 @@ namespace Test.Engine
         }
 
         [TestMethod]
-        public void Test_SetUserContact()
+        public void Test_3SetUserContact()
         {
             bool isSuccess = SPTest(
                 () => dal.SetUserContact(DataSets.GetContact()), 
                 out string? msg
             );
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
+        public void Test_4SetAsset()
+        {
+            bool isSuccess = SPTest(
+                () => dal.SetAsset(DataSets.GetModel()),
+                out string? msg
+            );
+
+            isSuccess = SPTest(
+                () => dal.SetAsset(DataSets.GetBrand()),
+                out msg
+            );
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
+        public void Test_5SetInventory()
+        {
+            bool isSuccess = SPTest(
+                () => dal.SetItem(DataSets.GetItem()),
+                out string? msg
+            );
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
+        public void Test_6SetLoanMode()
+        {
+            bool isSuccess = SPTest(
+                () => dal.SetLoanMode(DataSets.GetLoanMode()),
+                out string? msg
+            );
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
+        public void Test_7SetLoan()
+        {
+            bool isSuccess = SPTest(
+                () => dal.SetLoan(DataSets.GetLoan()),
+                out string? msg
+            );
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
+        public void Test_8SetLoanDtl()
+        {
+            bool isSuccess = SPTest(
+                () => dal.SetLoanDtl(DataSets.GetLoanDtl()),
+                out string? msg
+            );
+
             Assert.IsTrue(isSuccess, msg);
         }
 
@@ -68,7 +128,13 @@ namespace Test.Engine
             };
             BaseDAL.OnError = onException;
 
-            isSuccess = TestUtils.IsSuccess(cbRes());
+            var oResult = cbRes();
+
+            isSuccess = TestUtils.IsSuccess(oResult);
+
+            if(oResult?.Status == C.ERROR)
+                result = oResult.Message;
+
             msg = result;
 
             return isSuccess;

@@ -8,10 +8,10 @@ namespace Engine.BO
 {
     public class Loan : BaseBO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string? Comments { get; set; }
         public DateTime LoanDt { get; set; }
-        public DateTime ReturnDt { get; set; }
+        public DateTime? ReturnDt { get; set; }
         public LoanMode? Mode { get; set; }
         public string? LoanStatus { get; set; }
         public List<LoanDtl> Items { get; set; }

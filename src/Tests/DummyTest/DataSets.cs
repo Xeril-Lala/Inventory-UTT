@@ -5,6 +5,7 @@ using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace Test
             Name = "User",
             Lastname = "Dóe",
             Password = "8udw153r_",
-            Status = Status.ENABLED,
+            Status = Status.DISABLED,
             TxnUser = "DBA"
         };
 
@@ -30,7 +31,7 @@ namespace Test
             AlternativeID = "0001",
             Email = "email@mail.com",
             Phone = "6631226015",
-            Status = Status.ENABLED,
+            Status = Status.DISABLED,
             TxnUser = "DBA"
         };
 
@@ -40,7 +41,7 @@ namespace Test
             Desc1 = "Brand - Description",
             Key1 = "BRAND",
             Value = "Brand TEST",
-            Status = Status.ENABLED,
+            Status = Status.DISABLED,
             TxnUser = "DBA"
         };
 
@@ -51,22 +52,54 @@ namespace Test
             Key1 = "MODEL",
             Key2 = GetBrand().Code,
             Value = "Model - TEST1",
-            Status = Status.ENABLED,
+            Status = Status.DISABLED,
             TxnUser = "DBA"
         };
 
         public static Item GetItem() => new ()
         {
-            Id = null,
+            Id = 100,
             CustomId = "0001-XXXX-AB",
             Serial = "0001-XMSL-ZZZ1",
-            Name = "Iventory",
+            Name = "Inventory",
             Condition = "Condition - USE1",
             Acquisition = DateTime.Now.AddDays(-1),
             Description = "Description 1",
-            Model = new Asset(),
+            Model = GetModel(),
             TxnUser = "DBA",
+            Status = Status.DISABLED,
+        };
+
+        public static LoanMode GetLoanMode() => new() 
+        { 
+            Code = "CODE-TEST",
+            Duration = 24,
+            Unit = "HH",
             Status = Status.ENABLED,
+            TxnUser = "DBA"
+        };
+
+        public static Loan GetLoan() => new ()
+        {
+            Id = 100,
+            Mode = GetLoanMode(),
+            Comments = "Comments - Test",
+            LoanDt = DateTime.Now,
+            ReturnDt = null,
+            LoanStatus = "STARTED",
+            Status = Status.DISABLED,
+            TxnUser = "DBA"
+        };
+
+        public static LoanDtl GetLoanDtl() => new() 
+        {
+            Id = 100,
+            Description = "Description - Detail 1",
+            DetailStatus = "LOANED",
+            Item = GetItem(),
+            Loan = GetLoan(),
+            Status = Status.DISABLED,
+            TxnUser = "DBA"
         };
     }
 }

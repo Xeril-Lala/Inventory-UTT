@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 
-namespace UttClassroom.Classes
+namespace BaseAPI.Classes
 {
     public class HttpResponseMessageResult : IActionResult
     {

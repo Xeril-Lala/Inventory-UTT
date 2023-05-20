@@ -3,10 +3,9 @@ using Engine.BO;
 using Engine.Constants;
 using D = Engine.BL.Delegates;
 using Engine.Services;
-using UttClassroom.Classes;
 using Engine.BL;
 
-namespace Classes;
+namespace BaseAPI.Classes;
 
 public abstract class CustomController : ControllerBase
 {
@@ -42,7 +41,7 @@ public abstract class CustomController : ControllerBase
 
         }
 
-        return result ?? throw new Exception("RequestResponse result is Empty! RequestResponse()");
+        return result ?? throw new Exception("RequestResponse result is Empty. RequestResponse()");
     });   
 
     private Result RequestBlock(D.CallbackResult action)
@@ -55,7 +54,7 @@ public abstract class CustomController : ControllerBase
 
             if (ErrorsRequest != null && ErrorsRequest.Count > 0)
             {
-                throw new Exception("Errores en request");
+                throw new Exception("Errors on request.");
             }
 
         }
@@ -86,7 +85,7 @@ public abstract class CustomController : ControllerBase
         }
         else
         {
-            result.Message = "Error doing something!";
+            result.Message = "Fatal Error.";
         }
     }    
 

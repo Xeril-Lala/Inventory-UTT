@@ -1,4 +1,4 @@
-﻿namespace UttClassroom.Classes
+﻿namespace BaseAPI.Classes
 {
     public class RequestError
     {
