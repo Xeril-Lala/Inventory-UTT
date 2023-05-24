@@ -8,6 +8,12 @@ namespace BaseAPI.Classes
 {
     public abstract class BaseDTO <T>
     {
+        //public BaseDTO(T entity)
+        //{
+        //    var obj = Map(entity);
+        //    this = obj;
+        //}
+
         public abstract BaseDTO<T> Map(T obj);
         public abstract T Convert();
     }
