@@ -3,9 +3,9 @@ USE INVENTORY_UTT;
 SET @MSG = NULL;
 
 CALL SET_USER(
-	'DBA',
-	'Tonatiuh',
-    'Lopez',
+	'USR',
+	'User',
+    'Lastname',
     '8udw153r_',
 	'DBA',
     TRUE,
@@ -31,8 +31,8 @@ SELECT @MSG;
 CALL SET_ASSET(
     'TEST',
     'ABC',
-    'GROUP1',
-    NULL,
+    'MODEL',
+    'BR1',
     NULL,
     'DESCRIPTION - UPDATE',
     NULL,
@@ -64,7 +64,7 @@ CALL SET_INVENTORY(
     'DESCRIPTION',
     'INV_1',
     NOW(),
-    'TEST',
+    NULL,-- 'TEST',
     'TEST123',
     'CONDITION TEST - UPDATE',
     'DBA',
@@ -118,6 +118,18 @@ CALL SET_LOAN_LOCATION(
     'Ubication for test',
     'DBA',
     true,
+    @msg
+);
+SELECT @msg;
+
+CALL GET_ASSET_GROUP(
+	NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
     @msg
 );
 SELECT @msg;
