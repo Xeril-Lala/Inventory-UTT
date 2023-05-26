@@ -59,13 +59,13 @@ CALL SET_ASSET(
 SELECT @MSG;
 
 CALL SET_INVENTORY(
-    1,
-    'ABCXXXX122',
+    null,
+    'ABCXXXX124',
     'DESCRIPTION',
-    'INV_1',
+    'INV_2',
     NOW(),
     NULL,-- 'MD1',-- 'TEST',
-    'TEST123',
+    'TEST123-xx',
     'CONDITION TEST - UPDATE',
     'DBA',
     TRUE,
@@ -138,6 +138,28 @@ CALL GET_USER(
 	NULL,
     'T',
     NULL,
+    @msg
+);
+
+CALL GET_INVENTORY(
+	NULL,
+    NULL,
+    NULL, -- 'TEST',
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    TRUE,
+    @msg
+);
+
+CALL GET_LOAN(
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    FALSE,
     @msg
 );
 
