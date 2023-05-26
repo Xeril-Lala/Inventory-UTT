@@ -14,7 +14,7 @@ CALL SET_USER(
 SELECT @MSG;
 
 CALL SET_USER_CONTACT(
-	'DBA',
+	'USR',
     '0319125293',
     NULL,
     'ltonatiuh.011@gmail.com',
@@ -64,7 +64,7 @@ CALL SET_INVENTORY(
     'DESCRIPTION',
     'INV_1',
     NOW(),
-    NULL,-- 'TEST',
+    NULL,-- 'MD1',-- 'TEST',
     'TEST123',
     'CONDITION TEST - UPDATE',
     'DBA',
@@ -134,6 +134,15 @@ CALL GET_ASSET_GROUP(
 );
 SELECT @msg;
 
+CALL GET_USER(
+	NULL,
+    'T',
+    NULL,
+    @msg
+);
+
+
+
 SELECT 
 	CONCAT('public const string ', routine_name, ' = "', routine_name, '";') as NAMES
 FROM
@@ -141,5 +150,3 @@ FROM
 WHERE
     routine_type = 'PROCEDURE'
 AND routine_schema = 'INVENTORY_UTT';
-
-SELECT * FROM INVENTORY;

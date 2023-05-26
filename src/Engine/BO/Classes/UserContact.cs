@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine.BO.Classes
 {
-    public class UserContact
+    public class UserContact : BaseBO
     {
         public User? User { get; set; }
         public string? ID { get; set; }
