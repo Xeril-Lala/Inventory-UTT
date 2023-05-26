@@ -1,14 +1,16 @@
 
 import React from 'react';
-import Sideb from './components/sidebar/sidebar.jsx';
+import Home from './components/sidebar/sidebar.jsx';
+import { Routes, Route } from "react-router-dom";
 import Historial from './components/historial/historial.jsx';
-import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+
 
 function App() {
   return (
     <div className="App">
-      
-        <Historial/>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>>
     </div>
   );
 }

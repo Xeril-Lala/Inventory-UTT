@@ -6,6 +6,7 @@ const Historial = () => {
 
 return (
 <>
+hueeeeeeee
 </>
 );
 };
