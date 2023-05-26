@@ -1,0 +1,27 @@
+.sidebarMain{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    
+}
+.test {
+    background-color: aliceblue;
+}
+.logo{
+    color: white;
+    background-color: transparent;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: xx-large;
+    font-style:italic;
+    font-weight:bolder;
+}
+.subLogo{
+    color: white;
+    background-color: transparent;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: large;
+    font-style:normal;
+    font-weight:400;
+}
