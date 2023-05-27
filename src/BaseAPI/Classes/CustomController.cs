@@ -14,8 +14,7 @@ public abstract class CustomController : ControllerBase
     private ExceptionManager ErrorManager { get; set; }
 
     public CustomController() { 
-        ErrorManager = new(SetErrorOnRequest); 
-
+        ErrorManager = new(SetErrorOnRequest);
     }
 
     protected Result RequestResponse(

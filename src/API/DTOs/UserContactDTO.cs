@@ -15,10 +15,15 @@ namespace InventoryAPI.DTOs
         public string? AlternativePhone { get; set; }
         public string? Address { get; set; }
 
+        public UserContactDTO()
+        {
+            User = new ();
+        }
+
         public override UserContact Convert()
         {
             return new UserContact() {
-                User = User.Convert(),
+                User = User?.Convert(),
                 ID = Id,
                 AlternativeID = Enrollment,
                 Email = Email,
@@ -31,8 +36,12 @@ namespace InventoryAPI.DTOs
 
         public override UserContactDTO Map(UserContact obj)
         {
+            var userDto = obj.User != null
+                ? new UserDTO().Map(obj.User)
+                : new UserDTO();
+
             return new UserContactDTO() {
-                User = new UserDTO().Map(obj.User),
+                User = userDto,
                 Id = obj.ID,
                 Enrollment = obj.AlternativeID,
                 Email = obj.Email,

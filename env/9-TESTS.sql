@@ -163,6 +163,25 @@ CALL GET_LOAN(
     @msg
 );
 
+CALL GET_LOAN_DTL(
+	NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+	NULL,
+	true,
+    @msg
+);
+
 
 
 SELECT 

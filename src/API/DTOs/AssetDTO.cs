@@ -17,6 +17,13 @@ namespace InventoryAPI.DTOs
         {
             string? desc1 = null, desc2 = null, desc3 = null;
 
+            if(Description != null && Description.Count() > 0)
+            {
+                desc1 = Description.ElementAtOrDefault(0);
+                desc2 = Description.ElementAtOrDefault(2);
+                desc3 = Description.ElementAtOrDefault(3);
+            }
+
             return new()
             {
                 Code = Code,
@@ -27,14 +34,16 @@ namespace InventoryAPI.DTOs
                 Desc1 = desc1,
                 Desc2 = desc2,
                 Desc3 = desc3,
-
             };
         }
 
         public override AssetDTO Map(Asset obj)
         {
-            // TODO: Add description asignation
             List<string> description = new ();
+
+            AddDescription(obj.Desc1, description);
+            AddDescription(obj.Desc2, description);
+            AddDescription(obj.Desc3, description);
 
             return new AssetDTO()
             {
@@ -44,9 +53,15 @@ namespace InventoryAPI.DTOs
                 Group = obj.Key1,
                 SubGroup = obj.Key2,
                 AlternativeGroup = obj.Key3,
-                // TODO: Add the proper link configuration
+                // TODO: Media Link
                 MediaLink = string.Empty,
             };
+        }
+
+        static private void AddDescription(string? rawDesc, List<string> description)
+        {
+            if (!string.IsNullOrEmpty(rawDesc) && description != null)
+                description.Add(rawDesc);
         }
     }
 }

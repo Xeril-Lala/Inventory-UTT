@@ -14,22 +14,36 @@ namespace InventoryAPI.DTOs
         public AssetDTO? Location { get; set; }
         public string? Description { get; set; }
 
+        public LoanLocationDTO()
+        {
+            Location = new ();
+            Loan = new ();
+        }
+
         public override LoanLocation Convert()
         {
             return new LoanLocation() {
-                Loan = Loan.Convert(),
-                Location = Location.Convert(),
+                Loan = Loan?.Convert(),
+                Location = Location?.Convert(),
                 Description = Description
             };
         }
 
         public override LoanLocationDTO Map(LoanLocation obj)
         {
+            var assetDto = obj.Location != null
+                ? new AssetDTO().Map(obj.Location)
+                : new AssetDTO();
+
+            var loanDto = obj.Loan != null
+                ? new LoanDTO().Map(obj.Loan)
+                : new LoanDTO();
+
             return new LoanLocationDTO()
             {
                 Description = obj.Description,
-                Location = new AssetDTO().Map(obj.Location),
-                Loan = new LoanDTO().Map(obj.Loan),
+                Location = assetDto,
+                Loan = loanDto,
             };
         }
     }

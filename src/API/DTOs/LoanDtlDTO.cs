@@ -11,25 +11,39 @@ namespace InventoryAPI.DTOs
         public string? DetailStatus { get; set; }
         public LoanDTO? Loan { get; set; }
 
+        public LoanDtlDTO()
+        {
+            Item = new ();
+            Loan = new ();
+        }
+
         public override LoanDtl Convert()
         {
             return new LoanDtl() {
                 Id = Id,
-                Item = Item.Convert(),
+                Item = Item?.Convert(),
                 Description = Description,
                 DetailStatus = DetailStatus,
-                Loan = Loan.Convert()
+                Loan = Loan?.Convert()
             };
         }
 
         public override LoanDtlDTO Map(LoanDtl obj)
         {
+            var itemDto = obj.Item != null
+                ? new ItemDTO().Map(obj.Item)
+                : new ItemDTO();
+
+            var loanDto = obj.Loan != null
+                ? new LoanDTO().Map(obj.Loan)
+                : new LoanDTO();
+
             return new LoanDtlDTO() {
                 Id = obj.Id,
-                Item = new ItemDTO().Map(obj.Item),
+                Item = itemDto,
                 Description = obj.Description,
                 DetailStatus = obj.DetailStatus,
-                Loan = new LoanDTO().Map(obj.Loan)
+                Loan = loanDto
             };
         }
     }

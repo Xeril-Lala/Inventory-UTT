@@ -1,5 +1,6 @@
 ﻿using BaseAPI.Classes;
 using Engine.BO;
+using System.Security.Cryptography.X509Certificates;
 
 namespace InventoryAPI.DTOs
 {
@@ -13,7 +14,13 @@ namespace InventoryAPI.DTOs
         public string? LoanStatus { get; set; }
         public List<LoanDtlDTO> Items { get; set; }
 
-        public List<LoanDtl> GetDtls()
+        public LoanDTO()
+        {
+            Mode = new();
+            Items = new ();
+        }
+
+        private List<LoanDtl> GetDtls()
         {
             List<LoanDtl> dtls = new ();
 
@@ -23,16 +30,6 @@ namespace InventoryAPI.DTOs
             return dtls;
         }
 
-        public List<LoanDtlDTO> GetDtos(List<LoanDtl> dtls)
-        {
-            List<LoanDtlDTO> dtos = new();
-
-            foreach (var dtl in dtls)
-                dtos.Add(new LoanDtlDTO().Map(dtl));
-
-            return dtos;
-        }
-
         public override Loan Convert()
         {
             return new Loan() {
@@ -40,7 +37,7 @@ namespace InventoryAPI.DTOs
                 Comments = Comments,
                 LoanDt = LoanedOn,
                 ReturnDt = ReturnedOn,
-                Mode = Mode.Convert(),
+                Mode = Mode?.Convert(),
                 LoanStatus = LoanStatus,
                 Items = GetDtls()
             };
@@ -48,16 +45,30 @@ namespace InventoryAPI.DTOs
 
         public override LoanDTO Map(Loan obj)
         {
+            var loanModeDto = obj.Mode != null
+                ? new LoanModeDTO().Map(obj.Mode)
+                : new LoanModeDTO();
+
             return new LoanDTO
             {
                 Id = obj.Id,
                 Comments = obj.Comments,
                 LoanedOn = obj.LoanDt,
                 ReturnedOn = obj.ReturnDt,
-                Mode = new LoanModeDTO().Map(obj.Mode),
+                Mode = loanModeDto,
                 LoanStatus = obj.LoanStatus,
                 Items = GetDtos(obj.Items)
             };
+        }
+
+        static private List<LoanDtlDTO> GetDtos(List<LoanDtl> dtls)
+        {
+            List<LoanDtlDTO> dtos = new();
+
+            foreach (var dtl in dtls)
+                dtos.Add(new LoanDtlDTO().Map(dtl));
+
+            return dtos;
         }
     }
 }

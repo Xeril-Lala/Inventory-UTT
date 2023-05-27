@@ -115,6 +115,26 @@ namespace Test.Engine
             Assert.IsTrue(isSuccess, msg);
         }
 
+        [TestMethod]
+        public void Test_9StressTest()
+        {
+            bool isSuccess = false;
+            string? msg = string.Empty;
+
+            for(int i = 0; i < 1000; i++)
+            {
+                isSuccess = SPTest(
+                    () => dal.SetLoanDtl(DataSets.GetLoanDtl()),
+                    out msg
+                );
+
+                if (isSuccess)
+                    break;
+            }
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
         private bool SPTest(Func<Result?> cbRes, out string? msg)
         {
             bool isSuccess = false;

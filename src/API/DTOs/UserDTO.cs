@@ -5,9 +5,9 @@ namespace InventoryAPI.DTOs
 {
     public class UserDTO : BaseDTO<User>
     {
-        public string Username { get; set; }
-        public string Name { get; set; }
-        public string Lastname { get; set; }
+        public string? Username { get; set; }
+        public string? Name { get; set; }
+        public string? Lastname { get; set; }
 
         public override User Convert()
         {

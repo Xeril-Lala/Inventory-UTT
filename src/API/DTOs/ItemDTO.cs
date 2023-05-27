@@ -9,19 +9,24 @@ namespace InventoryAPI.DTOs
         public string? Name { get; set; }
         public string? CustomKey { get; set; }
         public string? About { get; set; }
-        public DateTime Acquisition { get; set; }
+        public DateTime? Acquisition { get; set; }
         public AssetDTO? Model { get; set; }
         public string? Serial { get; set; }
         public string? ConditionUse { get; set; }
+
+        public ItemDTO()
+        {
+            Model = new ();
+        }
 
         public override Item Convert()
         {
             return new Item() {
                 Id = Id,
                 Name = Name,
-                Acquisition = Acquisition,
+                Acquisition = Acquisition ?? DateTime.Now,
                 Condition = ConditionUse,
-                Model = Model.Convert(),
+                Model = Model?.Convert(),
                 Serial = Serial,
                 CustomId = CustomKey,
                 Description = About
@@ -30,6 +35,10 @@ namespace InventoryAPI.DTOs
 
         public override ItemDTO Map(Item obj)
         {
+            var assetDto = obj.Model != null 
+                ? new AssetDTO().Map(obj.Model) 
+                : new AssetDTO();
+
             return new ItemDTO() {
                 Id = obj.Id,
                 Name = obj.Name,
@@ -37,7 +46,7 @@ namespace InventoryAPI.DTOs
                 Acquisition = obj.Acquisition,
                 ConditionUse = obj.Condition,
                 CustomKey = obj.CustomId,
-                Model = new AssetDTO().Map(obj.Model),
+                Model = assetDto,
                 Serial = obj.Serial
             };
         }
