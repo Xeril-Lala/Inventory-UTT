@@ -17,7 +17,7 @@ namespace BaseAPI
             Action<WebApplicationBuilder>? builderCallback = null, 
             Action<WebApplication>? appCallback = null
         )
-        {            
+        {
             var builder = props.Builder;
             SetServices(builder.Services);
             builderCallback?.Invoke(builder);
@@ -29,7 +29,7 @@ namespace BaseAPI
             SetConnections(props);
             SetUrl(props);
             app.Run();
-        }        
+        }
 
         private static void SetServices(IServiceCollection services)
         {

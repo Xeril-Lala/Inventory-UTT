@@ -4,17 +4,20 @@ using Engine.Constants;
 using D = Engine.BL.Delegates;
 using Engine.Services;
 using Engine.BL;
+using Engine.DAL;
 
 namespace BaseAPI.Classes;
 
 public abstract class CustomController : ControllerBase
 {
-    protected List<RequestError> ErrorsRequest { get; set; } = new List<RequestError>();
-    protected D.CallbackExceptionMsg? OnMissingProperty => ErrorManager.Subscription;
-    private ExceptionManager ErrorManager { get; set; }
+    protected List<RequestError> ErrorsRequest { get; set; }
+    protected InventoryDAL DAL { get; set; }
+    protected ExceptionManager ErrorManager { get; set; }
 
-    public CustomController() { 
+    public CustomController() {
+        ErrorsRequest = new List<RequestError>();
         ErrorManager = new(SetErrorOnRequest);
+        DAL = InventoryDAL.GetInstance(ErrorManager.Subscription);
     }
 
     protected Result RequestResponse(
@@ -37,14 +40,13 @@ public abstract class CustomController : ControllerBase
                 result.Data4 = action4();
 
             result.Message = C.COMPLETE;
-
         }
 
         return result ?? throw new Exception("RequestResponse result is Empty. RequestResponse()");
     });   
 
     private Result RequestBlock(D.CallbackResult action)
-    {        
+    {
         Result result = new() { Status = C.OK };
 
         try
@@ -55,14 +57,11 @@ public abstract class CustomController : ControllerBase
             {
                 throw new Exception("Errors on request.");
             }
-
         }
         catch (Exception ex)
         {
             ErrorResult(this, result, ex);
         }
-
-        ErrorManager.Dispose();
 
         return result;
     }
@@ -76,7 +75,7 @@ public abstract class CustomController : ControllerBase
     public static void ErrorResult(CustomController controller, Result result, Exception? ex = null)
     {
         result.Status = C.ERROR;
-        result.Data = RequestError.FormatErrors(controller.ErrorsRequest);        
+        result.Data = RequestError.FormatErrors(controller.ErrorsRequest);
 
         if (ex != null)
         {
@@ -86,7 +85,7 @@ public abstract class CustomController : ControllerBase
         {
             result.Message = "Fatal Error.";
         }
-    }    
+    }
 
     public static T? GetItem<T>(List<T> list, string? emptyMsg = null)
     {
@@ -97,5 +96,4 @@ public abstract class CustomController : ControllerBase
 
         return default;
     }
-    
 }

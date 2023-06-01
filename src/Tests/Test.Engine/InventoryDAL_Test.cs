@@ -13,9 +13,8 @@ namespace Test.Engine
     public class InventoryDAL_Test
     {
         private JsonNode? Settings;
-        public string? FailConnection;
 
-        public InventoryDAL dal => InventoryDAL.Instance;
+        public string? FailConnection;
         public string? Connection => TestUtils.GetConn();
 
         public InventoryDAL_Test()
@@ -25,7 +24,11 @@ namespace Test.Engine
             {
                 FailConnection = Settings["failConn"]?.ToString();
             }
-            ConnectionString.SetConnectionString(() => Connection, "Connection");
+
+            if(Connection != null)
+            {
+                ConnectionString.SetConnectionString(() => Connection, "Connection");
+            }
         }
 
         [TestMethod]
@@ -39,7 +42,7 @@ namespace Test.Engine
         public void Test_2SetUser()
         {
             bool isSuccess = SPTest(
-                () => dal.SetUser(DataSets.GetUser()), 
+                dal => dal.SetUser(DataSets.GetUser()), 
                 out string? msg
             );
             Assert.IsTrue(isSuccess, msg);
@@ -49,7 +52,7 @@ namespace Test.Engine
         public void Test_3SetUserContact()
         {
             bool isSuccess = SPTest(
-                () => dal.SetUserContact(DataSets.GetContact()), 
+                dal => dal.SetUserContact(DataSets.GetContact()), 
                 out string? msg
             );
             Assert.IsTrue(isSuccess, msg);
@@ -59,12 +62,12 @@ namespace Test.Engine
         public void Test_4SetAsset()
         {
             bool isSuccess = SPTest(
-                () => dal.SetAsset(DataSets.GetModel()),
+                dal => dal.SetAsset(DataSets.GetModel()),
                 out string? msg
             );
 
             isSuccess = SPTest(
-                () => dal.SetAsset(DataSets.GetBrand()),
+                dal => dal.SetAsset(DataSets.GetBrand()),
                 out msg
             );
 
@@ -75,7 +78,7 @@ namespace Test.Engine
         public void Test_5SetInventory()
         {
             bool isSuccess = SPTest(
-                () => dal.SetItem(DataSets.GetItem()),
+                dal => dal.SetItem(DataSets.GetItem()),
                 out string? msg
             );
 
@@ -86,7 +89,7 @@ namespace Test.Engine
         public void Test_6SetLoanMode()
         {
             bool isSuccess = SPTest(
-                () => dal.SetLoanMode(DataSets.GetLoanMode()),
+                dal => dal.SetLoanMode(DataSets.GetLoanMode()),
                 out string? msg
             );
 
@@ -97,7 +100,7 @@ namespace Test.Engine
         public void Test_7SetLoan()
         {
             bool isSuccess = SPTest(
-                () => dal.SetLoan(DataSets.GetLoan()),
+                dal => dal.SetLoan(DataSets.GetLoan()),
                 out string? msg
             );
 
@@ -108,7 +111,7 @@ namespace Test.Engine
         public void Test_8SetLoanDtl()
         {
             bool isSuccess = SPTest(
-                () => dal.SetLoanDtl(DataSets.GetLoanDtl()),
+                dal => dal.SetLoanDtl(DataSets.GetLoanDtl()),
                 out string? msg
             );
 
@@ -124,7 +127,7 @@ namespace Test.Engine
             for(int i = 0; i < 1000; i++)
             {
                 isSuccess = SPTest(
-                    () => dal.SetLoanDtl(DataSets.GetLoanDtl()),
+                    dal => dal.SetLoanDtl(DataSets.GetLoanDtl()),
                     out msg
                 );
 
@@ -135,7 +138,7 @@ namespace Test.Engine
             Assert.IsTrue(isSuccess, msg);
         }
 
-        private bool SPTest(Func<Result?> cbRes, out string? msg)
+        private static bool SPTest(Func<InventoryDAL, Result?> cbRes, out string? msg)
         {
             bool isSuccess = false;
             string result = C.OK;
@@ -146,9 +149,9 @@ namespace Test.Engine
                 isSuccess = false;
                 result = msg;
             };
-            BaseDAL.OnError = onException;
 
-            var oResult = cbRes();
+            var dal = InventoryDAL.GetInstance(onException);
+            var oResult = cbRes(dal);
 
             isSuccess = TestUtils.IsSuccess(oResult);
 
@@ -160,7 +163,7 @@ namespace Test.Engine
             return isSuccess;
         }
 
-        private bool DBConnectionTest(out string msg)
+        private static bool DBConnectionTest(out string msg)
         {
             bool isSuccess = false;
             string? result = C.OK;
@@ -170,6 +173,7 @@ namespace Test.Engine
                 result = msg;
             };
 
+            var dal = InventoryDAL.GetInstance(onException);
             var routine = new Routine<string>(dal, "SELECT 'OK'", onException);
 
             routine.Exec(cmd => {

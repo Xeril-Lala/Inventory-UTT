@@ -28,24 +28,6 @@ namespace Test
             }
         }
 
-        public static void Main(string[] arg) 
-        {
-            ConnectionString.SetConnectionString(GetConn, "test");
-            ExceptionManager exceptionManager = new(OnError);
-            BaseDAL.OnError = ExceptionManager.CallbackException;
-
-            var dal = InventoryDAL.Instance;
-
-            var result = dal.SetUser(new User() {
-                Username = "DBA",
-                Name = "Usr",
-                Lastname = "Lastname",
-                Password = "8udw153r_",
-                Status = Status.ENABLED,
-                TxnUser = "DBA"
-            });
-        }
-
         private static JsonNode? GetSettings()
         {
             string file = File.ReadAllText("settings.json");
@@ -73,11 +55,6 @@ namespace Test
                 isSuccess = true;
 
             return isSuccess;
-        }
-
-        public static void OnError(Exception ex, string msg)
-        {
-            Console.WriteLine($"{msg} - {ex}");
         }
     }
 }

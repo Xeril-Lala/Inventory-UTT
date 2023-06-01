@@ -7,29 +7,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using D = Engine.BL.Delegates;
 
 namespace Engine.DAL
 {
     public class InventoryDAL : BaseDAL
     {
-        private static InventoryDAL? _instance;
         protected static ConnectionString? _tempConnectionString { get; set; } = null;
         private static ConnectionString? _ConnectionString => ConnectionString.Instance;
-
-        public static InventoryDAL Instance { get 
-            {
-                if (_instance == null || _tempOnException != OnError || _tempConnectionString != _ConnectionString)
-                {
-                    _instance = new InventoryDAL();
-                    _tempOnException = OnError;
-                    _tempConnectionString = ConnectionString.Instance;
-                    _tempConnectionString = _ConnectionString;
-                }
-
-                return _instance;
-            }
-        }
         
+        public static InventoryDAL GetInstance(D.CallbackExceptionMsg? onError)
+        {
+            var instance = new InventoryDAL();
+
+            if ( _tempConnectionString != _ConnectionString)
+            {
+                _tempConnectionString = ConnectionString.Instance;
+                _tempConnectionString = _ConnectionString;
+            }
+
+            if(onError != null)
+                instance.OnError = onError;
+
+            return instance;
+        }
+
         private InventoryDAL() : base(_ConnectionString)
         {
             AddSP(new SetUser(this, OnError));

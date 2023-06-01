@@ -20,9 +20,7 @@ namespace Engine.DAL
     {
         protected static readonly Validate Validate = Validate.Instance;
 
-        protected static D.CallbackExceptionMsg? _tempOnException { get; set; } = null;
-
-        public static D.CallbackExceptionMsg? OnError { get; set; }
+        protected D.CallbackExceptionMsg? OnError { get; set; }
 
         protected List<IEntrySP> Routines { get; } = new List<IEntrySP>();
 
@@ -137,7 +135,7 @@ namespace Engine.DAL
             return result;
         }
 
-        protected static void SetExceptionResult(string actionName, string msg, Exception ex, Result? result = null)
+        protected void SetExceptionResult(string actionName, string msg, Exception ex, Result? result = null)
             => OnError?.Invoke(ex, $"Exception ({actionName}) - {msg}{(result != null ? " " + result.ToString() : string.Empty)}");
     }
 }
