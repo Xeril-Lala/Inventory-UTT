@@ -3,26 +3,27 @@ import { HiMenuAlt3 } from "react-icons/hi";
 import { MdOutlineDashboard } from "react-icons/md";
 import { RiSettings4Line } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
-import { AiOutlineUser, AiOutlineHeart, AiOutlineHistory } from "react-icons/ai";
-import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
+import { AiOutlineUser, AiOutlineHistory } from "react-icons/ai";
+import { FiFolder } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import './sidebar.css';
 
 /* page imports */
 import Historial from "../historial/historial.jsx";
-<historial />
+import Formulario from "../formulario/formulario.jsx";
 
 const Home = () => {
   const menus = [
     { name: "Resumen", link: "/", icon: MdOutlineDashboard },
     { name: "Prestamos", link: "/", icon: AiOutlineUser },
-    { name: "Historial", link: ".../components/historial/historial.jsx", icon: AiOutlineHistory },
+    { name: "Historial", link: "/historial/historial.jsx", icon: AiOutlineHistory },
     { name: "Inventario", link: "/", icon: TbReportAnalytics},
-    { name: "Resguardos", link: "/", icon: FiFolder},
+    { name: "Resguardos", link: "/formulario/formulario.jsx", icon: FiFolder},
     { name: "Opciones", link: "/", icon: RiSettings4Line, margin: true  },
   ];
   const [open, setOpen] = useState(true);
   return (
-    <section className="flex gap-6">
+    <section className="flex gap-6 huetest bg-slate-100 ">
       <div
         className={`bg-[#0e0e0e] min-h-screen ${
           open ? "w-72" : "w-16"
@@ -66,7 +67,7 @@ const Home = () => {
           ))}
         </div>
       </div>
-      <div className="m-3 text-xl text-gray-900 font-semibold">
+      <div className="m-3 text-xl text-gray-900 font-semibold w-full">
         <Historial/>
       </div>
     </section>
