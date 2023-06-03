@@ -26,7 +26,7 @@ return (
                     <div className="row-span-3 justify-self-left text-6xl ml-20 p-7">
                     <MdLaptop/>
                     </div>
-                    <div className="col-start-1 row-start-4 justify-self-left ml-14 flex "><RxCrossCircled class ="text-3xl mr-2"/><a>No Disponible</a></div>
+                    <div className="col-start-1 row-start-4 justify-self-left ml-14 flex "><RxCrossCircled class ="text-3xl mr-2 text-red-600"/><a>No Disponible</a></div>
                     <div className="col-start-2 row-start-1 text-xl font-mono antialiased font-light tracking-normal break-normal">ID</div>
                     <div className="col-start-2 row-start-2 text-xl font-mono antialiased font-light tracking-normal break-normal">RUBRO</div>
                     <div className="col-start-2 row-start-3 text-xl font-mono antialiased font-light tracking-normal break-normal">MARCA + MODELO</div>
