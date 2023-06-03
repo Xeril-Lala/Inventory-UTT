@@ -3,9 +3,9 @@ USE INVENTORY_UTT;
 SET @MSG = NULL;
 
 CALL SET_USER(
-	'USR',
-	'User',
-    'Lastname',
+	'Tonatiuh.Lopez',
+	'Tonatiuh',
+    'Lopez',
     '8udw153r_',
 	'DBA',
     TRUE,
@@ -14,7 +14,7 @@ CALL SET_USER(
 SELECT @MSG;
 
 CALL SET_USER_CONTACT(
-	'USR',
+	'Tonatiuh.Lopez',
     '0319125293',
     NULL,
     'ltonatiuh.011@gmail.com',

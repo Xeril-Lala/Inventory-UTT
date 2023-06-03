@@ -1,4 +1,5 @@
 {
   "conn": "server=127.0.0.1;uid=root;pwd=admin;database=INVENTORY_UTT",
-  "failConn": "server=127.0.0.1;uid=root;pwd=FAKEPASSWORD;database=INVENTORY_UTT"
+  "failConn": "server=127.0.0.1;uid=root;pwd=FAKEPASSWORD;database=INVENTORY_UTT",
+  "urlApi": "https://localhost:7089"
 }

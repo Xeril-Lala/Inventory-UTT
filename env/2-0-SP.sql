@@ -8,6 +8,7 @@ CREATE PROCEDURE SET_USER (
     IN IN_NAME VARCHAR(150),
     IN IN_LASTNAME VARCHAR(150),
     IN IN_PASSWORD VARCHAR(150),
+    IN IN_GROUP VARCHAR(10),
     IN IN_USER VARCHAR(50),
     IN IN_STATUS BOOL,
     OUT OUT_MSG VARCHAR(450)
@@ -24,6 +25,7 @@ CREATE PROCEDURE SET_USER (
         NAME = IFNULL(IN_NAME, NAME),
         LASTNAME = IFNULL(IN_LASTNAME, LASTNAME),
         PASSWORD = PASS,
+        GROUP_CODE = IFNULL(IN_GROUP, GROUP_CODE),
         STATUS = GET_STS_FN(IN_STATUS),
         UPDATED_BY = IN_USER,
         UPDATED_ON = NOW()
@@ -33,17 +35,16 @@ CREATE PROCEDURE SET_USER (
     IF ROW_COUNT() = 0 THEN
         INSERT INTO USER
         (
-            USERNAME,
-            NAME,
-            LASTNAME,
-            PASSWORD,
+            USERNAME, NAME,
+            LASTNAME, PASSWORD,
+            GROUP_CODE,
             STATUS, CREATED_BY
         ) VALUES
         (
             IN_USERNAME,
             IN_NAME,
             IN_LASTNAME,
-            PASS,
+            PASS, IN_GROUP,
             GET_STS_FN(IN_STATUS),
             IN_USER
         );

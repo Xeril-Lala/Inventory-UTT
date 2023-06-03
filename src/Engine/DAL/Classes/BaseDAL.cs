@@ -21,12 +21,14 @@ namespace Engine.DAL
         protected static readonly Validate Validate = Validate.Instance;
 
         protected D.CallbackExceptionMsg? OnError { get; set; }
-
-        protected List<IEntrySP> Routines { get; } = new List<IEntrySP>();
-
+        protected List<IEntrySP> Routines { get; }
         protected IConnectionString? ConnString { get; set; }
 
-        protected BaseDAL(IConnectionString? conn) : base(conn?.ConnectionString) => ConnString = conn;
+        protected BaseDAL(IConnectionString? conn) : base(conn?.ConnectionString) 
+        { 
+            ConnString = conn;
+            Routines = new List<IEntrySP>();
+        }
 
         protected void AddSP(IEntrySP sp)
         {

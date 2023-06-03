@@ -18,7 +18,7 @@ namespace Engine.DAL
         
         public static InventoryDAL GetInstance(D.CallbackExceptionMsg? onError)
         {
-            var instance = new InventoryDAL();
+            var instance = new InventoryDAL(onError);
 
             if ( _tempConnectionString != _ConnectionString)
             {
@@ -26,14 +26,14 @@ namespace Engine.DAL
                 _tempConnectionString = _ConnectionString;
             }
 
-            if(onError != null)
-                instance.OnError = onError;
-
             return instance;
         }
 
-        private InventoryDAL() : base(_ConnectionString)
+        private InventoryDAL(D.CallbackExceptionMsg? onError = null) : base(_ConnectionString)
         {
+            if (onError != null)
+                OnError = onError;
+
             AddSP(new SetUser(this, OnError));
             AddSP(new SetUserContact(this, OnError));
             AddSP(new SetAsset(this, OnError));

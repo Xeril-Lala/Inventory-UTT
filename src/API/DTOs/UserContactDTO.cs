@@ -1,12 +1,14 @@
 ﻿using BaseAPI.Classes;
 using Engine.BO;
 using Engine.BO.Classes;
+using System.Text.Json.Serialization;
 
 namespace InventoryAPI.DTOs
 {
     public class UserContactDTO : BaseDTO<UserContact>
     {
-        public UserDTO? User { get; set; }
+        [JsonPropertyName("userDetails")]
+        public UserDTO? UserDto { get; set; }
         public string? Id { get; set; }
         public string? Enrollment { get; set; }
         public string? Email { get; set; }
@@ -17,13 +19,13 @@ namespace InventoryAPI.DTOs
 
         public UserContactDTO()
         {
-            User = new ();
+            UserDto = new ();
         }
 
         public override UserContact Convert()
         {
             return new UserContact() {
-                User = User?.Convert(),
+                User = UserDto?.Convert(),
                 ID = Id,
                 AlternativeID = Enrollment,
                 Email = Email,
@@ -41,7 +43,7 @@ namespace InventoryAPI.DTOs
                 : new UserDTO();
 
             return new UserContactDTO() {
-                User = userDto,
+                UserDto = userDto,
                 Id = obj.ID,
                 Enrollment = obj.AlternativeID,
                 Email = obj.Email,
