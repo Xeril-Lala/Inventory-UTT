@@ -9,10 +9,11 @@ import { Link } from "react-router-dom";
 import './sidebar.css';
 
 /* page imports */
-import Historial from "../historial/historial.jsx";
-import Formulario from "../formulario/formulario.jsx";
+import Historical from "../historical/historical.jsx";
+import Form from "../form/form.jsx";
+import Login from "../login/login.jsx";
 
-const Home = () => {
+const Sidebar = () => {
   const menus = [
     { name: "Resumen", link: "/", icon: MdOutlineDashboard },
     { name: "Prestamos", link: "/", icon: AiOutlineUser },
@@ -22,20 +23,30 @@ const Home = () => {
     { name: "Opciones", link: "/", icon: RiSettings4Line, margin: true  },
   ];
   const [open, setOpen] = useState(true);
+  const [hidden, setHidden] = useState(true);
   return (
-    <section className="flex gap-6 huetest bg-slate-100 ">
+    <section className="flex gap-6 bg-slate-100 ">
       <div
         className={`bg-[#0e0e0e] min-h-screen ${
           open ? "w-72" : "w-16"
         } duration-500 text-gray-100 px-4`}
       >
+        <div className={`text-2xl font-bold italic ${
+          hidden ? "opacity-100" : "opacity-0"
+        }`} 
+          onClick={() => setHidden(!hidden)}>
+            UTT
+        </div>
+        
         <div className="py-3 flex justify-end">
           <HiMenuAlt3
             size={26}
             className="cursor-pointer"
             onClick={() => setOpen(!open)}
           />
+          
         </div>
+
         <div className="mt-4 flex flex-col gap-4 relative">
           {menus?.map((menu, i) => (
             <Link
@@ -68,10 +79,12 @@ const Home = () => {
         </div>
       </div>
       <div className="m-3 text-xl text-gray-900 font-semibold w-full mr-16">
-        <Formulario/>
+        
+        <Form/>
+        
       </div>
     </section>
   );
 };
 
-export default Home;
+export default Sidebar;
