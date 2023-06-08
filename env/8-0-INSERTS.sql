@@ -4,30 +4,99 @@ SET @MSG = NULL;
 SET @USER_G = 'USER_GROUP';
 SET @APP_G = 'APP_GROUP';
 
--- USER GROUP
--- * DEV
--- * ADM
--- * LAB_ADM
--- * PROF
--- * STU
--- * USER
-
--- APP GROUP
--- * WEB
--- * APP
--- * DBA
+-- * Inserting User Groups
 
 CALL SET_ASSET(
+    'DEV', 'DEVELOPMENT', 'USER_GROUP',
+    NULL, NULL,
+    'Developers, Development & Testing',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+CALL SET_ASSET(
+    'ADMIN', 'ADMINISTRATOR', 'USER_GROUP',
+    NULL, NULL,
+    'Master Administrators & Super Users',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+CALL SET_ASSET(
+    'LAB_ADMIN', 'LABORATORY', 'USER_GROUP',
+    NULL, NULL,
+    'Laboratory ',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+CALL SET_ASSET(
+    'LAB_ADMIN', 'LABORATORY', 'USER_GROUP',
+    NULL, NULL,
+    'Laboratory Users',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+CALL SET_ASSET(
+    'PROF', 'PROFESSOR', 'USER_GROUP',
+    NULL, NULL,
+    'Professors & Others',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+CALL SET_ASSET(
+    'STU', 'STUDENT', 'USER_GROUP',
+    NULL, NULL,
+    'Just Students',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+CALL SET_ASSET(
+    'USER', 'USER', 'USER_GROUP',
+    NULL, NULL,
+    'Common Users',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+-- * Inserting Application Groups
+
+CALL SET_ASSET(
+    'APP', 'APPLICATION', 'APP_GROUP',
+    NULL, NULL,
+    'Application & Service',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+CALL SET_ASSET(
+    'DBA', 'DATABASE', 'APP_GROUP',
+    NULL, NULL,
+    'DATABASE & DBAs',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+CALL SET_ASSET(
+    'WEB', 'WEB_APP', 'APP_GROUP',
+    NULL, NULL,
+    'Web Application & Web Utilities',
+    NULL, NULL, NULL,
+    'DBA', TRUE, @MSG
+);
+
+-- * Inserting Users
+
+CALL SET_USER(
+	'DEV',
+	'Development',
+    'User',
+    'DEV_PASSWORD',
     'DEV',
-    'DEVELOPER',
-    'USER_GROUP',
-    NULL,
-    NULL,
-    'Developers, ',
-    NULL,
-    NULL,
-    NULL,
-    NULL,
+	'DBA',
     TRUE,
     @MSG
 );
@@ -36,7 +105,41 @@ CALL SET_USER(
 	'API',
 	'C#/API',
     'Credentials for API',
+    'API_PASSWORD',
+    'WEB',
+	'DBA',
+    TRUE,
+    @MSG
+);
+
+CALL SET_USER(
+	'DBA',
+	'Data Base',
+    'Administrator',
     '8udw153r_',
+    'DBA',
+	'DBA',
+    TRUE,
+    @MSG
+);
+
+CALL SET_USER(
+	'REACT_APP',
+	'UTT',
+    'INVENTORY',
+    'REACT_PASSWORD',
+    'WEB',
+	'DBA',
+    TRUE,
+    @MSG
+);
+
+CALL SET_USER(
+	'MASTER.USER',
+	'MASTER',
+    'USER',
+    '8udw153r_@123',
+    'ADMIN',
 	'DBA',
     TRUE,
     @MSG

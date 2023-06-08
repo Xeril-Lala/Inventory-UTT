@@ -28,8 +28,9 @@ namespace Engine.DAL.Routines
             return new List<IDataParameter>() {
                 MDB.CreateParameter("IN_USERNAME", EntryData?.Username, MType.String),
                 MDB.CreateParameter("IN_NAME", EntryData?.Name, MType.String),
-                MDB.CreateParameter("IN_LASTNAME", EntryData ?.Lastname, MType.String),
-                MDB.CreateParameter("IN_PASSWORD", EntryData ?.Password, MType.String),
+                MDB.CreateParameter("IN_LASTNAME", EntryData?.Lastname, MType.String),
+                MDB.CreateParameter("IN_PASSWORD", EntryData?.Password, MType.String),
+                MDB.CreateParameter("IN_GROUP", EntryData?.Group?.Code, MType.String),
                 MDB.CreateParameter("IN_USER", EntryData ?.TxnUser, MType.String),
                 MDB.CreateParameter("IN_STATUS", EntryData ?.IsEnabled, MType.Bit),
                 OutParameter

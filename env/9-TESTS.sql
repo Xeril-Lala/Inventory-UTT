@@ -129,7 +129,7 @@ CALL GET_ASSET_GROUP(
     NULL,
     NULL,
     NULL,
-    NULL,
+    false,
     @msg
 );
 SELECT @msg;
@@ -149,7 +149,7 @@ CALL GET_INVENTORY(
     NULL,
     NULL,
     NULL,
-    TRUE,
+    false,
     @msg
 );
 
@@ -182,9 +182,15 @@ CALL GET_LOAN_DTL(
     @msg
 );
 
+SELECT * FROM USER;
 
+SELECT IF(
+    AUTH_USER('MASTER.USER', SHA2('8udw153r_@123', 256)),
+    'OK',
+    'NO_AUTH'
+);
 
-SELECT 
+SELECT
 	CONCAT('public const string ', routine_name, ' = "', routine_name, '";') as NAMES
 FROM
     information_schema.routines

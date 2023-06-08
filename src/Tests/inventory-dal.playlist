@@ -1,0 +1,21 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="Test.Engine" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Test.Engine" />
+              <Rule Match="Any">
+                <Property Name="Class" Value="InventoryDAL_Ext_Test" />
+                <Property Name="Class" Value="InventoryDAL_Test" />
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

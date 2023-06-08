@@ -10,6 +10,7 @@ using Engine.Services;
 using Engine.DAL;
 using Engine.Constants;
 using Org.BouncyCastle.Crypto.Generators;
+using System.Reflection.Metadata;
 
 namespace Test
 {
@@ -47,6 +48,8 @@ namespace Test
             return conn ?? string.Empty;
         }
 
+        public static JsonNode? GetSecretSettings() => Settings?["secret"];
+
         public static bool IsSuccess(Result? result)
         {
             bool isSuccess = false;
@@ -56,5 +59,25 @@ namespace Test
 
             return isSuccess;
         }
+
+        public static string GetTestingUser() => GetSecretEnv("user_env");
+
+        public static string GetTestingPass() => GetSecretEnv("pass_env");
+
+        private static string GetSecretEnv(string secretSetting)
+        {
+            string value = string.Empty;
+
+            var key = GetSecretSettings()?[secretSetting];
+
+            if (key != null)
+            {
+                // user = Environment.GetEnvironmentVariable(key.ToString()) ?? string.Empty;
+                value = key.ToString();
+            }
+
+            return value;
+        }
+
     }
 }

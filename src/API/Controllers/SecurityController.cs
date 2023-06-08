@@ -23,8 +23,9 @@ namespace InventoryAPI.Controllers
         public SecurityController(IConfiguration conf) => _configuration = conf;
 
         [AllowAnonymous]
-        [HttpPost("token")]
+        [HttpPost("login")]
         public Result GetToken([FromBody] JsonElement data) => RequestResponse(() => {
+            // TODO: Add already logged in logic
             var jObj = JsonObject.Create(data);
             string? user = ParseProperty<string>.GetValue("user", jObj, SetErrorOnRequest),
                     password = ParseProperty<string>.GetValue("password", jObj, SetErrorOnRequest);
@@ -34,8 +35,8 @@ namespace InventoryAPI.Controllers
                 return GetJWT(user ?? string.Empty);
             } else
             {
-                ErrorManager?.Subscription?.Invoke(new Exception("Failed Authorization!"), "Failed Authorization. Incorrect User or Password");
-                return string.Empty;
+                //ErrorManager?.Subscription?.Invoke(new Exception("Failed Authorization!"), "Failed Authorization. Incorrect User or Password");
+                return C.NOT_AUTH;
             }
         });
 
@@ -87,10 +88,9 @@ namespace InventoryAPI.Controllers
 
         private bool AuthCredentials(string? user, string? password)
         {
-            var _user = _configuration["Secret:User"];
-            var _password = _configuration["Secret:Password"];
+            var result = DAL.AuthUser(user, password);
 
-            return _user == user && _password == password;
+            return result.Data != null && result?.Data?.ToString() == C.OK;
         }
     }
 }

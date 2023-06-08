@@ -15,6 +15,16 @@ namespace Engine.Constants {
         public const string SET_LOAN_MODE = "SET_LOAN_MODE";
         public const string SET_USER = "SET_USER";
         public const string SET_USER_CONTACT = "SET_USER_CONTACT";
+
+        public const string GET_ASSET_GROUP = "GET_ASSET_GROUP";
+        public const string GET_INVENTORY = "GET_INVENTORY";
+        public const string GET_LOAN = "GET_LOAN";
+        public const string GET_LOAN_DTL = "GET_LOAN_DTL";
+        public const string GET_USER = "GET_USER";
+        #endregion
+
+        #region FUNCIONS
+        public const string AUTH_USER = "AUTH_USER";
         #endregion
     }
 }

@@ -113,7 +113,7 @@ namespace Engine.BO
                         break;
                     case TypeCode.Int64:
                         obj = 0;
-                        break;                    
+                        break;
                     default:
                         break;
                 }
@@ -159,7 +159,7 @@ namespace Engine.BO
         }
 
         public bool getDefaultBoolIfDBNull(object obj) {
-            return Convert.ToBoolean(getDefaultIfDBNull(obj, TypeCode.Boolean));        
+            return Convert.ToBoolean(getDefaultIfDBNull(obj, TypeCode.Boolean));
         }
 
         public object getNullFromDate(DateTime valor)

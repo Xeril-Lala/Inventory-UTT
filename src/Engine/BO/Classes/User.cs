@@ -13,6 +13,7 @@ namespace Engine.BO
         public string? Password { get; set; }
         public string? Name { get; set; }
         public string? Lastname { get; set; }
+        public Asset? Group { get; set; }
         public UserContact? Contact { get; set; }
     }
 }

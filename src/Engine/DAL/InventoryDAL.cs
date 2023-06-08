@@ -1,10 +1,12 @@
 ﻿using Engine.BO;
 using Engine.BO.Classes;
+using Engine.Constants;
 using Engine.DAL.Routines;
 using Engine.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using D = Engine.BL.Delegates;
@@ -41,6 +43,7 @@ namespace Engine.DAL
             AddSP(new SetLoanDtl(this, OnError));
             AddSP(new SetLoanMode(this, OnError));
             AddSP(new SetInventory(this, OnError));
+            AddSP(new GetAssetGroup(this, OnError));
         }
 
         public Result? SetUser(User user) 
@@ -63,5 +66,55 @@ namespace Engine.DAL
 
         public Result? SetItem(Item item) 
             => RunSP(GetSP<SetInventory>(), item);
+
+        public List<Asset>? GetAssets(
+            string? childCode = null,
+            string? parentGroup = null,
+            string? parentSubGroup = null,
+            string? parentAltGroup = null,
+            string? childGroup = null,
+            string? childAltGroup = null,
+            bool? status = null
+        )
+        {
+            var entryData = GetAssetGroup.CreateObject(
+                childCode,
+                parentGroup,
+                parentSubGroup,
+                parentAltGroup,
+                childGroup,
+                childAltGroup,
+                status
+            );
+            
+            return RunSP(GetSP<GetAssetGroup>(), entryData);
+        }
+
+        public Result AuthUser(string? username, string? password)
+        {
+            Result result = new() { Status = C.NO_CALLBACK, Message = C.PENDING, Data = C.NOT_AUTH};
+
+            TransactionBlock(this, () => {
+                using var cmd = CreateCommand(
+                    @$"SELECT IF({SQL.AUTH_USER}('{username}', '{password}'),'{C.OK}','{C.NOT_AUTH}')", 
+                    System.Data.CommandType.Text
+                );
+
+                var oResult = cmd.ExecuteScalar();
+
+                if (oResult != null)
+                {
+                    string? sResult = oResult.ToString();
+
+                    result.Status = sResult ?? C.NOT_AUTH;
+                    result.Data = sResult;
+                    result.Message = C.COMPLETE;
+                }
+
+            }, (ex, msg) => OnError?.Invoke(ex, msg));
+
+            return result;
+        }
+
     }
 }

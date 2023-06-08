@@ -1,5 +1,9 @@
 {
   "conn": "server=127.0.0.1;uid=root;pwd=admin;database=INVENTORY_UTT",
   "failConn": "server=127.0.0.1;uid=root;pwd=FAKEPASSWORD;database=INVENTORY_UTT",
-  "urlApi": "https://localhost:7089"
+  "urlApi": "https://localhost:5001",
+  "secret": {
+    "user_env": "DEV",
+    "pass_env": "955e581504f103fdfa874f6739eff8aa0874ddbb27da5a623175e9b49d958a13"
+  }
 }

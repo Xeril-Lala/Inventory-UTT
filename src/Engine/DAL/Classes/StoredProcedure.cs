@@ -15,11 +15,11 @@ namespace Engine.DAL
 {
     public abstract class StoredProcedure<TInput, TOutput> : IServiceSP<TInput, TOutput>, IEntrySP
     {
-        public BaseDAL? DAL { get; private set; }
+        public BaseDAL DAL { get; private set; }
         public TInput? EntryData { get; set; }
 
-        private D.CallbackExceptionMsg? OnException { get; set; }
         private Action? OnProcess { get; set; }
+        protected D.CallbackExceptionMsg? OnException { get; set; }
         protected Routine<TOutput>? Routine { get; set; }
         protected TOutput? _Result { get; private set; }
 
@@ -30,7 +30,7 @@ namespace Engine.DAL
             Routine = InitRoutine();
         }
 
-        public StoredProcedure(BaseDAL? dal, D.CallbackExceptionMsg? onException, Action? onProcess = null)
+        public StoredProcedure(BaseDAL dal, D.CallbackExceptionMsg? onException, Action? onProcess = null)
         {
             EntryData = default;
             DAL = dal;

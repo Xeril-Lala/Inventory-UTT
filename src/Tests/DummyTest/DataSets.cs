@@ -15,12 +15,15 @@ namespace Test
     {
         public static User GetUser() => new()
         {
-            Username = "DBA",
+            Username = "Test",
             Name = "User",
             Lastname = "Dóe",
-            Password = "8udw153r_",
+            Password = "fakepass",
+            Group = new Asset() {
+                Code = "DEV"
+            },
             Status = Status.DISABLED,
-            TxnUser = "DBA"
+            TxnUser = TestUtils.GetTestingUser()
         };
 
         public static UserContact GetContact() => new () 
@@ -32,7 +35,7 @@ namespace Test
             Email = "email@mail.com",
             Phone = "6631226015",
             Status = Status.DISABLED,
-            TxnUser = "DBA"
+            TxnUser = TestUtils.GetTestingUser(),
         };
 
         public static Asset GetBrand() => new()
@@ -42,7 +45,7 @@ namespace Test
             Key1 = "BRAND",
             Value = "Brand TEST",
             Status = Status.DISABLED,
-            TxnUser = "DBA"
+            TxnUser = TestUtils.GetTestingUser(),
         };
 
         public static Asset GetModel() => new () 
@@ -53,7 +56,7 @@ namespace Test
             Key2 = GetBrand().Code,
             Value = "Model - TEST1",
             Status = Status.DISABLED,
-            TxnUser = "DBA"
+            TxnUser = TestUtils.GetTestingUser(),
         };
 
         public static Item GetItem() => new ()
@@ -66,7 +69,7 @@ namespace Test
             Acquisition = DateTime.Now.AddDays(-1),
             Description = "Description 1",
             Model = GetModel(),
-            TxnUser = "DBA",
+            TxnUser = TestUtils.GetTestingUser(),
             Status = Status.DISABLED,
         };
 
@@ -76,7 +79,7 @@ namespace Test
             Duration = 24,
             Unit = "HH",
             Status = Status.ENABLED,
-            TxnUser = "DBA"
+            TxnUser = TestUtils.GetTestingUser(),
         };
 
         public static Loan GetLoan() => new ()
@@ -88,7 +91,7 @@ namespace Test
             ReturnDt = null,
             LoanStatus = "STARTED",
             Status = Status.DISABLED,
-            TxnUser = "DBA"
+            TxnUser = TestUtils.GetTestingUser(),
         };
 
         public static LoanDtl GetLoanDtl() => new() 
@@ -99,7 +102,7 @@ namespace Test
             Item = GetItem(),
             Loan = GetLoan(),
             Status = Status.DISABLED,
-            TxnUser = "DBA"
+            TxnUser = TestUtils.GetTestingUser(),
         };
     }
 }

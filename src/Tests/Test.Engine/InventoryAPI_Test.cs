@@ -1,4 +1,6 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using Engine.BO;
+using Engine.Constants;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +39,38 @@ namespace Test.Engine
             }
         }
 
-        public void GetToken()
+        [TestMethod]
+        public async Task Test_0LoginAuth()
+        {
+            bool isSuccess = false;
+            string msg = C.OK;
+
+            var result = await GetToken();
+
+            if (result?.Status == C.OK)
+            {
+                isSuccess = result?.Data?.ToString() != C.NOT_AUTH;
+            }
+            else msg = result?.Data?.ToString() ?? C.ERROR;
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        private async Task<Result?> GetToken()
         {
             var client = Client;
 
-            //var res = await client.PostAsync(
-            //    "/api/Security/Token",
-            //    JsonContent.Create(new { })
-            //);
+            var content = JsonContent.Create(new { 
+                user = TestUtils.GetTestingUser(),
+                password = TestUtils.GetTestingPass()
+            });
+
+            var res = await client.PostAsync(
+                "/api/Security/login",
+                content
+            );
+
+            return await res.Content.ReadFromJsonAsync<Result>();
         }
     }
 }
