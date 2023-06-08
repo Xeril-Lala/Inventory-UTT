@@ -1,90 +1,69 @@
-import React, { useState } from "react";
-import { HiMenuAlt3 } from "react-icons/hi";
-import { MdOutlineDashboard } from "react-icons/md";
-import { RiSettings4Line } from "react-icons/ri";
-import { TbReportAnalytics } from "react-icons/tb";
-import { AiOutlineUser, AiOutlineHistory } from "react-icons/ai";
-import { FiFolder } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import {
+    FaTh,
+    FaBars,
+    FaUserAlt,
+    FaRegChartBar,
+    FaCommentAlt,
+    FaShoppingBag,
+    FaThList
+}from "react-icons/fa";
 import './sidebar.css';
+import { NavLink } from 'react-router-dom';
 
-/* page imports */
-import Historical from "../historical/historical.jsx";
-import Form from "../form/form.jsx";
-import Login from "../login/login.jsx";
 
-const Sidebar = () => {
-  const menus = [
-    { name: "Resumen", link: "/", icon: MdOutlineDashboard },
-    { name: "Prestamos", link: "/", icon: AiOutlineUser },
-    { name: "Historial", link: "/historial/historial.jsx", icon: AiOutlineHistory },
-    { name: "Inventario", link: "/", icon: TbReportAnalytics},
-    { name: "Resguardos", link: "/formulario/formulario.jsx", icon: FiFolder},
-    { name: "Opciones", link: "/", icon: RiSettings4Line, margin: true  },
-  ];
-  const [open, setOpen] = useState(true);
-  const [hidden, setHidden] = useState(true);
-  return (
-    <section className="flex gap-6 bg-slate-100 ">
-      <div
-        className={`bg-[#0e0e0e] min-h-screen ${
-          open ? "w-72" : "w-16"
-        } duration-500 text-gray-100 px-4`}
-      >
-        <div className={`text-2xl font-bold italic ${
-          hidden ? "opacity-100" : "opacity-0"
-        }`} 
-          onClick={() => setHidden(!hidden)}>
-            UTT
-        </div>
+const Sidebar = ({children}) => {
+    const[isOpen ,setIsOpen] = useState(false);
+    const toggle = () => setIsOpen (!isOpen);
+    const menuItem=[
+        {
+            path:"/",
+            name:"Login",
+            icon:<FaUserAlt/>
+        },
+        {
+            path:"/inventory",
+            name:"Inventario",
+            icon:<FaTh/>
+        },
+        {
+            path:"/activeloans",
+            name:"Prestamos Activos",
+            icon:<FaThList/>
+        },
+        {
+            path:"/historical",
+            name:"Historial",
+            icon:<FaRegChartBar/>
+        },
+        {
+            path:"/form",
+            name:"Prestamos",
+            icon:<FaCommentAlt/>
+        },
         
-        <div className="py-3 flex justify-end">
-          <HiMenuAlt3
-            size={26}
-            className="cursor-pointer"
-            onClick={() => setOpen(!open)}
-          />
-          
+    ]
+    return (
+        <div className="flex font-mono">
+           <div style={{width: isOpen ? "270px" : "70px"}} className="bg-zinc-900 h-[100vh] w-[270px] transition-all duration-500">
+               <div className="flex items-center p-6">
+                   <h1 style={{display: isOpen ? "block" : "none"}} className="text-2xl text-white italic font-bold">UTT</h1>
+                   <div style={{marginLeft: isOpen ? "125px" : "0px"}} className="flex text-xl text-white ">
+                       <FaBars onClick={toggle}/>
+                   </div>
+               </div>
+               {
+                   menuItem.map((item, index)=>(
+                       <NavLink to={item.path} key={index} className="flex text-white px-6 py-4 gap-3 transition-all duration-500 hover:bg-blue-300 " activeclassName="bg-blue-300 text-black">
+                           <div className="text-md p-1">{item.icon}</div>
+                           <div style={{display: isOpen ? "block" : "none"}} className="text-md ">{item.name}</div>
+                       </NavLink>
+                   ))
+               }
+           </div>
+           <main className="w-full p-10">{children}</main>
         </div>
-
-        <div className="mt-4 flex flex-col gap-4 relative">
-          {menus?.map((menu, i) => (
-            <Link
-              to={menu?.link}
-              key={i}
-              className={` ${
-                menu?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
-            >
-              <div>{React.createElement(menu?.icon, { size: "20" })}</div>
-              <h2
-                style={{
-                  transitionDelay: `${i + 3}00ms`,
-                }}
-                className={`whitespace-pre duration-500 ${
-                  !open && "opacity-0 translate-x-28 overflow-hidden"
-                }`}
-              >
-                {menu?.name}
-              </h2>
-              <h2
-                className={`${
-                  open && "hidden"
-                } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
-              >
-                {menu?.name}
-              </h2>
-            </Link>
-          ))}
-        </div>
-      </div>
-      <div className="m-3 text-xl text-gray-900 font-semibold w-full mr-16">
-        
-        <Form/>
-        
-      </div>
-    </section>
-  );
+    );
 };
 
 export default Sidebar;
