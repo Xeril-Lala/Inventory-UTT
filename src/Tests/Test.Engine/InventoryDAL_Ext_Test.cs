@@ -19,7 +19,7 @@ namespace Test.Engine
             {
                 Status = C.OK,
                 Message = C.COMPLETE,
-                Data = dal.GetAssets()
+                Data = dal.GetAssets(status: false)
             }, out string? msg);
 
             Assert.IsTrue(isSuccess, msg);
@@ -31,7 +31,7 @@ namespace Test.Engine
             var isSuccess = SPTest(dal => new() { 
                 Status = C.OK, 
                 Message = C.COMPLETE,
-                Data = dal.GetItems()
+                Data = dal.GetItems(status: false)
             },out string? msg);
 
             Assert.IsTrue(isSuccess, msg);
@@ -44,7 +44,7 @@ namespace Test.Engine
             {
                 Status = C.OK,
                 Message = C.COMPLETE,
-                Data = dal.GetLoans()
+                Data = dal.GetLoans(status: false)
             }, out string? msg);
 
             Assert.IsTrue(isSuccess, msg);
@@ -57,7 +57,7 @@ namespace Test.Engine
             {
                 Status = C.OK,
                 Message = C.COMPLETE,
-                Data = dal.GetLoanDtls()
+                Data = dal.GetLoanDtls(status: false)
             }, out string? msg);
 
             Assert.IsTrue(isSuccess, msg);
@@ -70,7 +70,7 @@ namespace Test.Engine
             {
                 Status = C.OK,
                 Message = C.COMPLETE,
-                Data = dal.GetUsers()
+                Data = dal.GetUsers(status: false)
             }, out string? msg);
 
             Assert.IsTrue(isSuccess, msg);
