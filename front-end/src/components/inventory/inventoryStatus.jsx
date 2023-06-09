@@ -8,7 +8,7 @@ const Inventory = () => {
     return(
  
  <div>
-    <div className="grid grid-cols-5 grid-rows-2 gap-4 w-full h-auto huetest">
+    <div className="grid grid-cols-5 grid-rows-2 gap-4 w-full h-auto">
         <div className="col-span-2 w-full h-auto text-3xl">Inventario</div>
 
         <div className="col-span-2 col-start-5 bg-white border-r-2 rounded-md shadow-md w-72 h-auto flex flex-nowrap right-0 p-1">

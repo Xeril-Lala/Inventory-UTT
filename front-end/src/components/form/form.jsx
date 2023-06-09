@@ -10,7 +10,7 @@ return (
 
 
     
-<div className="grid grid-cols-5 grid-rows-6 gap-4 bg-white rounded-md m-3 p-10 text-base font-mono">
+<div className="grid grid-cols-5 grid-rows-6 gap-4 bg-white rounded-md m-3 p-10 text-base font-mono shadow-md">
     <div className="col-span-5 text-2xl">
         Formulario de Solicitud de Equipo
     </div>

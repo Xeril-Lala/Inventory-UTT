@@ -8,10 +8,10 @@ const Login = () => {
 return (
 
 
-<section class=" min-h-screen flex items-center justify-center">
+<section class=" pt-20  flex items-center justify-center">
 
 
-  <div class="bg-white flex rounded-md shadow-lg max-w-3xl p-5 items-center">
+  <div class="flex rounded-md shadow-lg max-w-3xl p-5 items-center bg-white">
 
 
     <div class="md:w-1/2 px-8 md:px-16">
