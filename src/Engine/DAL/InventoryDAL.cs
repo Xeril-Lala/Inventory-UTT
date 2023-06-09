@@ -42,8 +42,13 @@ namespace Engine.DAL
             AddSP(new SetLoan(this, OnError));
             AddSP(new SetLoanDtl(this, OnError));
             AddSP(new SetLoanMode(this, OnError));
+            AddSP(new SetLoanLocation(this, OnError));
             AddSP(new SetInventory(this, OnError));
             AddSP(new GetAssetGroup(this, OnError));
+            AddSP(new GetInventory(this, OnError));
+            AddSP(new GetLoan(this, OnError));
+            AddSP(new GetLoanDtl(this, OnError));
+            AddSP(new GetUser(this, OnError));
         }
 
         public Result? SetUser(User user) 
@@ -63,6 +68,9 @@ namespace Engine.DAL
 
         public Result? SetLoanMode(LoanMode mode)
             => RunSP(GetSP<SetLoanMode>(), mode);
+
+        public Result? SetLoanLocation(LoanLocation mode)
+            => RunSP(GetSP<SetLoanLocation>(), mode);
 
         public Result? SetItem(Item item) 
             => RunSP(GetSP<SetInventory>(), item);
@@ -88,6 +96,106 @@ namespace Engine.DAL
             );
             
             return RunSP(GetSP<GetAssetGroup>(), entryData);
+        }
+
+        public List<Item>? GetItems(
+            int? id = null,
+            string? customId = null,
+            string? serial = null,
+            string? name = null,
+            string? model = null,
+            DateTime? fromDt = null,
+            DateTime? toDt = null,
+            bool? status = null
+        )
+        {
+            var entryData = GetInventory.CreateObject(
+                id,
+                customId,
+                serial,
+                name,
+                model,
+                fromDt,
+                toDt,
+                status
+            );
+
+            return RunSP(GetSP<GetInventory>(), entryData);
+        }
+
+        public List<Loan>? GetLoans(
+            int? id = null,
+            DateTime? fromDt = null,
+            DateTime? toDt = null,
+            string? comments = null,
+            string? mode = null,
+            bool? status = null
+        )
+        {
+            var entryData = GetLoan.CreateObject(
+                id,
+                fromDt,
+                toDt,
+                comments,
+                mode,
+                status
+            );
+
+            return RunSP(GetSP<GetLoan>(), entryData);
+        }
+
+        public List<LoanDtl>? GetLoanDtls(
+            int? id = null,
+            DateTime? fromDt = null,
+            DateTime? toDt = null,
+            int? loanId = null,
+            string? dtlDescription = null,
+            string? dtlStatus = null,
+            string? comments = null,
+            string? loanMode = null,
+            string? loanStatus = null,
+            int? inventoryId = null,
+            string? customId = null,
+            string? serial = null,
+            string? model = null,
+            string? brand = null,
+            bool? status = null
+        )
+        {
+            var entryData = GetLoanDtl.CreateObject(
+                id,
+                fromDt,
+                toDt,
+                loanId,
+                dtlDescription,
+                dtlStatus,
+                comments,
+                loanMode,
+                loanStatus,
+                inventoryId,
+                customId,
+                serial,
+                model,
+                brand,
+                status
+            );
+
+            return RunSP(GetSP<GetLoanDtl>(), entryData);
+        }
+
+        public List<User>? GetUsers(
+            string? username = null,
+            string? search = null,
+            bool? status = null
+        )
+        {
+            var entryData = GetUser.CreateObject(
+                username,
+                search,
+                status
+            );
+
+            return RunSP(GetSP<GetUser>(), entryData);
         }
 
         public Result AuthUser(string? username, string? password)

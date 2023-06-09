@@ -13,18 +13,65 @@ namespace Test.Engine
     public class InventoryDAL_Ext_Test : InventoryDAL_TestBase
     {
         [TestMethod]
-        public void Test_0()
+        public void Test_0GetAssets()
         {
-            bool isSuccess = false;
-            string? msg = string.Empty;
+            var isSuccess = SPTest(dal => new()
+            {
+                Status = C.OK,
+                Message = C.COMPLETE,
+                Data = dal.GetAssets()
+            }, out string? msg);
 
-            var dal = InventoryDAL.GetInstance((ex, iMsg) => {
-                isSuccess = false;
-                msg = iMsg;
-            });
+            Assert.IsTrue(isSuccess, msg);
+        }
 
-            var list = dal.GetAssets(status: false);
-            isSuccess = true;
+        [TestMethod]
+        public void Test_1GetItems()
+        {
+            var isSuccess = SPTest(dal => new() { 
+                Status = C.OK, 
+                Message = C.COMPLETE,
+                Data = dal.GetItems()
+            },out string? msg);
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
+        public void Test_2GetLoans()
+        {
+            var isSuccess = SPTest(dal => new()
+            {
+                Status = C.OK,
+                Message = C.COMPLETE,
+                Data = dal.GetLoans()
+            }, out string? msg);
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
+        public void Test_3GetLoansDtl()
+        {
+            var isSuccess = SPTest(dal => new()
+            {
+                Status = C.OK,
+                Message = C.COMPLETE,
+                Data = dal.GetLoanDtls()
+            }, out string? msg);
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
+        public void Test_4GetUsers()
+        {
+            var isSuccess = SPTest(dal => new()
+            {
+                Status = C.OK,
+                Message = C.COMPLETE,
+                Data = dal.GetUsers()
+            }, out string? msg);
 
             Assert.IsTrue(isSuccess, msg);
         }

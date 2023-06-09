@@ -15,6 +15,7 @@ namespace Engine.BO
         public LoanMode? Mode { get; set; }
         public string? LoanStatus { get; set; }
         public List<LoanDtl> Items { get; set; }
+        public LoanLocation? Location { get; set; }
 
         public Loan()
         {

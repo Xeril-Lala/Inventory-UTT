@@ -1,5 +1,6 @@
 ﻿using BaseAPI.Classes;
 using Engine.BO;
+using System.Text.Json.Serialization;
 
 namespace InventoryAPI.DTOs
 {
@@ -11,6 +12,8 @@ namespace InventoryAPI.DTOs
         public string? SubGroup { get; set; }
         public string? AlternativeGroup { get; set; }
         public List<string>? Description { get; set; }
+
+        [JsonIgnore]
         public string? MediaLink { get; set; }
 
         public override Asset Convert()

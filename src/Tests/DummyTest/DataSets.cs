@@ -104,5 +104,24 @@ namespace Test
             Status = Status.DISABLED,
             TxnUser = TestUtils.GetTestingUser(),
         };
+
+        public static Asset GetLocation() => new()
+        {
+            Code = "LOC1",
+            Key1 = "LOCATION",
+            Value = "Test Location",
+            Status = Status.DISABLED,
+            TxnUser = TestUtils.GetTestingUser(),
+            Desc1 = "TEST - LOCATION"
+        };
+
+        public static LoanLocation GetLoanLocation() => new ()
+        {
+            Loan = GetLoan(),
+            Location = GetLocation(),
+            Description = "Creating a Demo location",
+            Status = Status.DISABLED,
+            TxnUser = TestUtils.GetTestingUser(),
+        };
     }
 }

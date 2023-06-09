@@ -66,6 +66,11 @@ namespace Test.Engine
                 out msg
             );
 
+            isSuccess = SPTest(
+                dal => dal.SetAsset(DataSets.GetLocation()),
+                out msg
+            );
+
             Assert.IsTrue(isSuccess, msg);
         }
 
@@ -114,6 +119,20 @@ namespace Test.Engine
         }
 
         [TestMethod]
+        public void Test_9SetLoanLocation()
+        {
+            bool isSuccess = false;
+            string? msg = string.Empty;
+
+            isSuccess = SPTest(
+                dal => dal.SetLoanLocation(DataSets.GetLoanLocation()),
+                out msg
+            );
+
+            Assert.IsTrue(isSuccess, msg);
+        }
+
+        [TestMethod]
         public void Test_9StressTest()
         {
             bool isSuccess = false;
@@ -126,7 +145,7 @@ namespace Test.Engine
                     out msg
                 );
 
-                if (isSuccess)
+                if (!isSuccess)
                     break;
             }
 

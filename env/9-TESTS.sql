@@ -7,7 +7,8 @@ CALL SET_USER(
 	'Tonatiuh',
     'Lopez',
     '8udw153r_',
-	'DBA',
+	'DEV',
+    'DBA',
     TRUE,
     @MSG
 );
@@ -178,17 +179,21 @@ CALL GET_LOAN_DTL(
     NULL,
     NULL,
 	NULL,
-	true,
+	TRUE,
     @msg
 );
+
+select * from LOAN_DTL;
 
 SELECT * FROM USER;
 
 SELECT IF(
-    AUTH_USER('MASTER.USER', SHA2('8udw153r_@123', 256)),
+    AUTH_USER('MASTER.USER', SHA2('DEV_PASSWORD', 256)),
     'OK',
     'NO_AUTH'
 );
+
+SELECT SHA2('DEV_PASSWORD', 256);
 
 SELECT
 	CONCAT('public const string ', routine_name, ' = "', routine_name, '";') as NAMES

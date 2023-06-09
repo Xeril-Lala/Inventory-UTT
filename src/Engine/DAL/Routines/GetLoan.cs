@@ -9,6 +9,7 @@ using D = Engine.BL.Delegates;
 using MDB = DataService.MySQL.MySqlDataBase;
 using MType = MySql.Data.MySqlClient.MySqlDbType;
 using V = Engine.BO.Validate;
+using System.Text.RegularExpressions;
 
 namespace Engine.DAL.Routines
 {
@@ -43,8 +44,12 @@ namespace Engine.DAL.Routines
         {
             var rawLoans = DAL.ReaderPopulationBlock(cmd, OutParameter, GetSPName(), rdr => 
             {
-                // TODO: Populate Loan mode object
-                var loanMode = new LoanMode();
+                var loanMode = new LoanMode() 
+                {
+                    Code = V.Instance.getDefaultStringIfDBNull(rdr["LM_CODE"]),
+                    Duration = V.Instance.getDefaultDoubleIfDBNull(rdr["DURATION"]),
+                    Unit = V.Instance.getDefaultStringIfDBNull(rdr["DURATION_UNIT"])
+                };
 
                 var loan = new Loan
                 {
@@ -57,29 +62,31 @@ namespace Engine.DAL.Routines
                     Items = new List<LoanDtl>()
                 };
 
-                var loanDtl = new LoanDtl
-                {
-                    Id = V.Instance.getDefaultIntIfDBNull(rdr["LOAN_DTL_ID"]),
-                    Description = V.Instance.getDefaultStringIfDBNull(rdr["DESCRIPTION"]),
-                    DetailStatus = V.Instance.getDefaultStringIfDBNull(rdr["DETAIL_STATUS"]),
-                    Loan = loan
-                };
+                var locationCode = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_CODE"]);
 
-                loan.Items.Add(loanDtl);
+                if(!string.IsNullOrEmpty(locationCode))
+                {
+                    var location = new LoanLocation()
+                    {
+                        Description = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_DESCRIPTION"]),
+                        Loan = loan,
+                        Location = new ()
+                        {
+                            Code = locationCode,
+                            Key1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_GROUP"]),
+                            Key2 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_SGROUP"]),
+                            Key3 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_AGROUP"]),
+                            Value = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_VALUE"])
+                        },
+                    };
+
+                    loan.Location = location;
+                }
 
                 return loan;
             });
 
-            return rawLoans
-               .GroupBy(loan => loan.Id)
-               .Select(group =>
-               {
-                   var baseModel = group.First();
-                   var consolidatedItems = group.SelectMany(loan => loan.Items).ToList();
-                   baseModel.Items.AddRange(consolidatedItems);
-                   return baseModel;
-               })
-               .ToList();
+            return rawLoans;
         }
 
         public static object CreateObject(

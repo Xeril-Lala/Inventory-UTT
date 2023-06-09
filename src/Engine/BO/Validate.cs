@@ -139,6 +139,11 @@ namespace Engine.BO
             return Convert.ToDecimal(getDefaultIfDBNull(obj, TypeCode.Int32));
         }
 
+        public long getDefaultBigIntIfDBNull(object obj)
+        {
+            return Convert.ToInt64(getDefaultIfDBNull(obj, TypeCode.Int64));
+        }
+
         public DateTime getDefaultDateIfDBNull(object obj)
         {
             return Convert.ToDateTime(getDefaultIfDBNull(obj, TypeCode.DateTime));
