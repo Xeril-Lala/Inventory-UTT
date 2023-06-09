@@ -5,21 +5,25 @@ using Engine.BO;
 using InventoryAPI.DTOs;
 using Engine.Constants;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace InventoryAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize()]
     public class AssetController : CustomController
     {
         [HttpPost]
-        public Result SetAsset([FromBody] AssetDTO dto) => RequestResponse(() => {
-            var asset = dto.Convert();
+        public Result SetAsset([FromBody] AssetDTO dto) => RequestResponse(() => 
+            DAL.SetAsset(dto.Convert())
+        );
 
-            DAL.SetAsset(asset);
 
-            return C.OK;
+        [HttpGet]
+        public Result GetAsset([FromBody] JsonElement? json) => RequestResponse(() => {
+            return DAL.GetAssets(status: false);
         });
     }
 }
