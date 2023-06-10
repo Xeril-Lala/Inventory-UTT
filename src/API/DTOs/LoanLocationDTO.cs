@@ -29,22 +29,22 @@ namespace InventoryAPI.DTOs
             };
         }
 
-        public override LoanLocationDTO Map(LoanLocation obj)
+        public override void Map(LoanLocation obj)
         {
-            var assetDto = obj.Location != null
-                ? new AssetDTO().Map(obj.Location)
-                : new AssetDTO();
+            var assetDto = new AssetDTO();
+            var loanDto = new LoanDTO();
 
-            var loanDto = obj.Loan != null
-                ? new LoanDTO().Map(obj.Loan)
-                : new LoanDTO();
+            if (obj.Location != null)
+                assetDto.Map(obj.Location);
 
-            return new LoanLocationDTO()
-            {
-                Description = obj.Description,
-                Location = assetDto,
-                Loan = loanDto,
-            };
+            if (obj.Loan != null)
+                loanDto.Map(obj.Loan);
+
+            Description = obj.Description;
+            Location = assetDto;
+            Loan = loanDto;
+
+            MapBaseBO(this, obj);
         }
     }
 }

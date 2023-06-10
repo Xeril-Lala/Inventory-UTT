@@ -3,13 +3,9 @@ using Engine.BO.Classes;
 using Engine.Constants;
 using Engine.DAL.Routines;
 using Engine.Services;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using D = Engine.BL.Delegates;
+using V = Engine.BO.Validate;
 
 namespace Engine.DAL
 {
@@ -222,6 +218,55 @@ namespace Engine.DAL
             }, (ex, msg) => OnError?.Invoke(ex, msg));
 
             return result;
+        }
+
+        public List<Asset> GetAllAssets(
+            string? code = null,
+            string? group = null,
+            string? subGroup = null,
+            string? altGroup = null,
+            string? desc = null,
+            bool? status = null
+        )
+        {
+            var model = new List<Asset>();
+
+            TransactionBlock(this, () => {
+                var cmd = CreateCommand("SELECT * FROM ASSET", System.Data.CommandType.Text);
+
+                ReaderBlock(cmd, rdr => {
+
+                    while(rdr.Read())
+                    {
+                        model.Add(
+                            new()
+                            {
+                                Code = V.Instance.getDefaultStringIfDBNull(rdr["ASSET_CODE"]),
+                                Value = V.Instance.getDefaultStringIfDBNull(rdr["VALUE"]),
+                                Key1 = V.Instance.getDefaultStringIfDBNull(rdr["KEY1"]),
+                                Key2 = V.Instance.getDefaultStringIfDBNull(rdr["KEY2"]),
+                                Key3 = V.Instance.getDefaultStringIfDBNull(rdr["KEY3"]),
+                                Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["DESC1"]),
+                                Desc2 = V.Instance.getDefaultStringIfDBNull(rdr["DESC2"]),
+                                Desc3 = V.Instance.getDefaultStringIfDBNull(rdr["DESC3"]),
+                                Data = V.Instance.getDefaultBytesIfDBNull(rdr["BIN"])
+                            }
+                        );
+                    }
+                });
+
+            }, (ex, msg) => OnError?.Invoke(ex, msg));
+
+            return model.Where(x
+                => (code == null        || x.Code?.Contains(code) == true)
+                && (group == null       || x.Key1?.Contains(group) == true)
+                && (subGroup == null    || x.Key2?.Contains(subGroup) == true)
+                && (altGroup == null    || x.Key3?.Contains(altGroup) == true)
+                && (desc == null        || x.Desc1?.Contains(desc) == true)
+                && (desc == null        || x.Desc2?.Contains(desc) == true)
+                && (desc == null        || x.Desc3?.Contains(desc) == true)
+                && (status == null      || x.IsEnabled))
+            .ToList();
         }
 
     }

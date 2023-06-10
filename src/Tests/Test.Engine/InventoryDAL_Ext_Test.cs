@@ -22,6 +22,13 @@ namespace Test.Engine
                 Data = dal.GetAssets(status: false)
             }, out string? msg);
 
+            isSuccess = SPTest(dal => new()
+            {
+                Status = C.OK,
+                Message = C.COMPLETE,
+                Data = dal.GetAllAssets(status: false)
+            }, out msg);
+
             Assert.IsTrue(isSuccess, msg);
         }
 

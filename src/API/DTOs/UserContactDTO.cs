@@ -36,22 +36,23 @@ namespace InventoryAPI.DTOs
             };
         }
 
-        public override UserContactDTO Map(UserContact obj)
+        public override void Map(UserContact obj)
         {
-            var userDto = obj.User != null
-                ? new UserDTO().Map(obj.User)
-                : new UserDTO();
+            var userDto = new UserDTO();
 
-            return new UserContactDTO() {
-                UserDto = userDto,
-                Id = obj.ID,
-                Enrollment = obj.AlternativeID,
-                Email = obj.Email,
-                AlternativeEmail = obj.Email2,
-                Phone = obj.Phone,
-                AlternativePhone = obj.Phone2,
-                Address = obj.Address
-            };
+            if (obj.User != null)
+                userDto.Map(obj.User);
+            
+            UserDto = userDto;
+            Id = obj.ID;
+            Enrollment = obj.AlternativeID;
+            Email = obj.Email;
+            AlternativeEmail = obj.Email2;
+            Phone = obj.Phone;
+            AlternativePhone = obj.Phone2;
+            Address = obj.Address;
+
+            MapBaseBO(this, obj);
         }
     }
 }

@@ -33,22 +33,23 @@ namespace InventoryAPI.DTOs
             };
         }
 
-        public override ItemDTO Map(Item obj)
+        public override void Map(Item obj)
         {
-            var assetDto = obj.Model != null 
-                ? new AssetDTO().Map(obj.Model) 
-                : new AssetDTO();
+            var assetDto = new AssetDTO();
 
-            return new ItemDTO() {
-                Id = obj.Id,
-                Name = obj.Name,
-                About = obj.Description,
-                Acquisition = obj.Acquisition,
-                ConditionUse = obj.Condition,
-                CustomKey = obj.CustomId,
-                Model = assetDto,
-                Serial = obj.Serial
-            };
+            if (obj.Model != null)
+                assetDto.Map(obj.Model);
+
+            Id = obj.Id;
+            Name = obj.Name;
+            About = obj.Description;
+            Acquisition = obj.Acquisition;
+            ConditionUse = obj.Condition;
+            CustomKey = obj.CustomId;
+            Model = assetDto;
+            Serial = obj.Serial;
+
+            MapBaseBO(this, obj);
         }
     }
 }

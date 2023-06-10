@@ -43,22 +43,22 @@ namespace InventoryAPI.DTOs
             };
         }
 
-        public override LoanDTO Map(Loan obj)
+        public override void Map(Loan obj)
         {
-            var loanModeDto = obj.Mode != null
-                ? new LoanModeDTO().Map(obj.Mode)
-                : new LoanModeDTO();
+            var loanModeDto = new LoanModeDTO();
 
-            return new LoanDTO
-            {
-                Id = obj.Id,
-                Comments = obj.Comments,
-                LoanedOn = obj.LoanDt,
-                ReturnedOn = obj.ReturnDt,
-                Mode = loanModeDto,
-                LoanStatus = obj.LoanStatus,
-                Items = GetDtos(obj.Items)
-            };
+            if (obj.Mode != null)
+                loanModeDto.Map(obj.Mode);
+
+            Id = obj.Id;
+            Comments = obj.Comments;
+            LoanedOn = obj.LoanDt;
+            ReturnedOn = obj.ReturnDt;
+            Mode = loanModeDto;
+            LoanStatus = obj.LoanStatus;
+            Items = GetDtos(obj.Items);
+
+            MapBaseBO(this, obj);
         }
 
         static private List<LoanDtlDTO> GetDtos(List<LoanDtl> dtls)
@@ -66,7 +66,12 @@ namespace InventoryAPI.DTOs
             List<LoanDtlDTO> dtos = new();
 
             foreach (var dtl in dtls)
-                dtos.Add(new LoanDtlDTO().Map(dtl));
+            {
+                var dto = new LoanDtlDTO();
+
+                dto.Map(dtl);
+                dtos.Add(dto);
+            }
 
             return dtos;
         }

@@ -18,6 +18,8 @@ namespace Engine.Constants {
         public const string INFO = "INFO";
         public const string NO_CALLBACK = "NO_CALLBACK";
 
+        public const string ROLE = "ROLE";
+
         public const string ENABLED = "ENABLED";
         public const string DISABLED = "DISABLED";
 

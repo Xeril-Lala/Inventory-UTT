@@ -46,7 +46,8 @@ namespace Engine.DAL.Routines
                 Key1 = V.Instance.getDefaultStringIfDBNull(rdr["CHILD_GROUP"]),
                 Key2 = V.Instance.getDefaultStringIfDBNull(rdr["PARENT_GROUP"]),
                 Key3 = V.Instance.getDefaultStringIfDBNull(rdr["CHILD_AGROUP"]),
-                Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["CHILD_DESC"])
+                Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["CHILD_DESC"]),
+                Data = V.Instance.getDefaultBytesIfDBNull   (rdr["DATA"])
             }
         );
         

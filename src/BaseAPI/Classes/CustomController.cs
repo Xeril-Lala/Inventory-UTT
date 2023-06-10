@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Engine.BO;
 using Engine.Constants;
-using D = Engine.BL.Delegates;
 using Engine.Services;
-using Engine.BL;
 using Engine.DAL;
 
 namespace BaseAPI.Classes;
 
 public abstract class CustomController : ControllerBase
 {
+    // Callbacks
+    public delegate object? ActionResult();
+    public delegate Result? ActionResult_R();
+    public delegate Result? CallbackResult(Result result);
+
     protected List<RequestError> ErrorsRequest { get; set; }
     protected InventoryDAL DAL { get; set; }
     protected ExceptionManager ErrorManager { get; set; }
@@ -21,10 +24,10 @@ public abstract class CustomController : ControllerBase
     }
 
     protected Result RequestResponse(
-        D.ActionResult action,
-        D.ActionResult? action2 = null,
-        D.ActionResult? action3 = null,
-        D.ActionResult? action4 = null
+        ActionResult action,
+        ActionResult? action2 = null,
+        ActionResult? action3 = null,
+        ActionResult? action4 = null
     ) => RequestBlock(result => {
         if (result != null)
         {
@@ -42,16 +45,18 @@ public abstract class CustomController : ControllerBase
             result.Message = C.COMPLETE;
         }
 
-        return result ?? throw new Exception("RequestResponse result is Empty. RequestResponse()");
+        return result 
+            ?? throw new Exception("RequestResponse result is Empty. RequestResponse()");
     });   
 
-    private Result RequestBlock(D.CallbackResult action)
+    protected Result RequestBlock(CallbackResult action)
     {
         Result result = new() { Status = C.OK };
 
         try
         {
-            result = action(result);
+            result = action(result) 
+                  ?? throw new Exception("RequestResponse result is Empty. RequestBlock()");
 
             if (ErrorsRequest != null && ErrorsRequest.Count > 0)
             {

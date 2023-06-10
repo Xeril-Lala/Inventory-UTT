@@ -1,5 +1,7 @@
 USE INVENTORY_UTT;
 
+select * from VW_ASSET_GROUP;
+
 SET @MSG = NULL;
 
 CALL SET_USER(

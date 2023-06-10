@@ -28,23 +28,24 @@ namespace InventoryAPI.DTOs
             };
         }
 
-        public override LoanDtlDTO Map(LoanDtl obj)
+        public override void Map(LoanDtl obj)
         {
-            var itemDto = obj.Item != null
-                ? new ItemDTO().Map(obj.Item)
-                : new ItemDTO();
+            var itemDto = new ItemDTO();
+            var loanDto = new LoanDTO();
 
-            var loanDto = obj.Loan != null
-                ? new LoanDTO().Map(obj.Loan)
-                : new LoanDTO();
+            if (obj.Item != null)
+                itemDto.Map(obj.Item);
 
-            return new LoanDtlDTO() {
-                Id = obj.Id,
-                Item = itemDto,
-                Description = obj.Description,
-                DetailStatus = obj.DetailStatus,
-                Loan = loanDto
-            };
+            if (obj.Loan != null)
+                loanDto.Map(obj.Loan);
+
+            Id = obj.Id;
+            Item = itemDto;
+            Description = obj.Description;
+            DetailStatus = obj.DetailStatus;
+            Loan = loanDto;
+
+            MapBaseBO(this, obj);
         }
     }
 }

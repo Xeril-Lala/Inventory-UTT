@@ -20,19 +20,19 @@ namespace InventoryAPI.DTOs
             };
         }
 
-        public override UserDTO Map(User obj)
+        public override void Map(User obj)
         {
-            var assetDto = obj.Group != null
-                            ? new AssetDTO().Map(obj.Group)
-                            : new AssetDTO();
+            var assetDto = new AssetDTO();
 
-            return new UserDTO()
-            {
-                Name = obj.Name,
-                Lastname = obj.Lastname,
-                Username = obj.Username,
-                Group = assetDto
-            };
+            if (obj.Group != null)
+                assetDto.Map(obj.Group);
+
+            Name = obj.Name;
+            Lastname = obj.Lastname;
+            Username = obj.Username;
+            Group = assetDto;
+
+            MapBaseBO(this, obj);
         }
     }
 }

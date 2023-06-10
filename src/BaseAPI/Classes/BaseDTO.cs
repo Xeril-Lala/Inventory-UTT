@@ -7,26 +7,30 @@ namespace BaseAPI.Classes
     {
         public string? User { get; set; }
         public DateTime? LastModified { get; set; }
-        public abstract BaseDTO<T> Map(T obj);
+        public bool? IsActive { get; set; }
+        public abstract void Map(T obj);
         public abstract T Convert();
 
-        public static List<TDto> MapList<TDto, TObj>(List<TObj> list) where TDto : BaseDTO<TObj>, new()
+        public static List<TDto> MapList<TDto>(List<T>? list) where TDto : BaseDTO<T>, new()
         {
             List<TDto> mappedList = new ();
 
-            foreach (var item in list)
+            if(list != null)
             {
-                var dto = new TDto();
-                dto.Map(item);
-                mappedList.Add(dto);
+                foreach (var item in list)
+                {
+                    var dto = new TDto();
+                    dto.Map(item);
+                    mappedList.Add(dto);
+                }
             }
 
             return mappedList;
         }
 
-        public List<TObj> ConvertList<TDto, TObj>(List<TDto> list) where TDto : BaseDTO<TObj>, new()
+        public List<T> ConvertList<TDto>(List<TDto> list) where TDto : BaseDTO<T>, new()
         {
-            List<TObj> convertedList = new ();
+            List<T> convertedList = new ();
 
             foreach (var item in list)
                 convertedList.Add(item.Convert());
@@ -34,10 +38,18 @@ namespace BaseAPI.Classes
             return convertedList;
         }
 
-        public static void MapBaseBO<InType>(BaseBO bo, InType dto ) where InType : BaseDTO<BaseBO>
+        public static TDto Map<TDto>(T obj) where TDto : BaseDTO<T>, new()
+        {
+            TDto dto = new ();
+            dto.Map(obj);
+            return dto;
+        }
+
+        public static void MapBaseBO(BaseDTO<T> dto, BaseBO bo)
         {
             dto.User = bo.TxnUser;
             dto.LastModified = DateComparison(bo.CreatedOn, bo.UpdatedOn ?? bo.CreatedOn);
+            dto.IsActive = bo.IsEnabled;
         }
 
         public static DateTime? DateComparison(DateTime? dt1, DateTime? dt2) => dt1 >= dt2

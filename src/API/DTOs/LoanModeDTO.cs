@@ -19,13 +19,13 @@ namespace InventoryAPI.DTOs
             };
         }
 
-        public override LoanModeDTO Map(LoanMode obj)
+        public override void Map(LoanMode obj)
         {
-            return new LoanModeDTO() { 
-                Code = obj.Code,
-                Unit = obj.Unit,
-                Duration = obj.Duration,
-            };
+            Code = obj.Code;
+            Unit = obj.Unit;
+            Duration = obj.Duration;
+
+            MapBaseBO(this, obj);
         }
     }
 }

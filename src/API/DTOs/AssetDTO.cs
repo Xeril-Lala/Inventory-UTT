@@ -43,7 +43,7 @@ namespace InventoryAPI.DTOs
             };
         }
 
-        public override AssetDTO Map(Asset obj)
+        public override void Map(Asset obj)
         {
             List<string> description = new ();
 
@@ -51,17 +51,16 @@ namespace InventoryAPI.DTOs
             AddDescription(obj.Desc2, description);
             AddDescription(obj.Desc3, description);
 
-            return new AssetDTO()
-            {
-                Code = obj.Code,
-                Value = obj.Value,
-                Description = description,
-                Group = obj.Key1,
-                SubGroup = obj.Key2,
-                AlternativeGroup = obj.Key3,
-                // TODO: Media Link
-                MediaLink = string.Empty,   
-            };
+            Code = obj.Code;
+            Value = obj.Value;
+            Description = description;
+            Group = obj.Key1;
+            SubGroup = obj.Key2;
+            AlternativeGroup = obj.Key3;
+            // TODO: Media Link
+            MediaLink = string.Empty;
+
+            MapBaseBO(this, obj);
         }
 
         static private void AddDescription(string? rawDesc, List<string> description)
