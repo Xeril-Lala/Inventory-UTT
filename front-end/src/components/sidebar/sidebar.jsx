@@ -41,6 +41,11 @@ const Sidebar = ({children}) => {
             name:"Prestamos",
             icon:<FaCommentAlt/>
         },
+        {
+            path:"/userSingUp",
+            name:"Alta Usuarios",
+            icon:<FaUserAlt/>
+        }
         
     ]
     return (
