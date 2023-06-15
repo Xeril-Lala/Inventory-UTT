@@ -8,7 +8,7 @@ CALL SET_USER(
 	'Tonatiuh.Lopez',
 	'Tonatiuh',
     'Lopez',
-    '8udw153r_',
+    SHA2('8udw153r_', 256),
 	'DEV',
     'DBA',
     TRUE,
@@ -62,7 +62,7 @@ CALL SET_ASSET(
 SELECT @MSG;
 
 CALL SET_INVENTORY(
-    null,
+    1,
     'ABCXXXX124',
     'DESCRIPTION',
     'INV_2',
@@ -94,6 +94,10 @@ CALL SET_LOAN(
     NOW() + 1,
     'TEST_MODE',
     'STS_TEST',
+    'Tonatiuh Lopez',
+    'Tonatiuh.User',
+    '6631226015',
+    'ltonatiuh.011@gmail.com',
     'DBA',
     TRUE,
     @m_id,
@@ -195,8 +199,6 @@ SELECT IF(
     'NO_AUTH'
 );
 
-SELECT SHA2('DEV_PASSWORD', 256);
-
 SELECT
 	CONCAT('public const string ', routine_name, ' = "', routine_name, '";') as NAMES
 FROM
@@ -204,3 +206,20 @@ FROM
 WHERE
     routine_type = 'PROCEDURE'
 AND routine_schema = 'INVENTORY_UTT';
+
+SELECT
+		*
+	FROM
+		VW_USER;
+
+SELECT LAST_INSERT_ID();
+
+select * from ASSET;
+
+select * from USER;
+
+SELECT * FROM USER_CONTACT;
+
+SELECT * FROM VW_INVENTORY;
+
+select * from VW_LOAN;

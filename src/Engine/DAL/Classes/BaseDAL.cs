@@ -67,7 +67,7 @@ namespace Engine.DAL
             return id;
         }
 
-        public List<T> ReaderPopulationBlock<T>(MySqlCommand cmd, IDataParameter outParam, string routineName, Func<IDataReader, T> onRow) where T : BaseBO
+        public List<T> ReaderPopulationBlock<T>(MySqlCommand cmd, IDataParameter? outParam, string routineName, Func<IDataReader, T> onRow) where T : BaseBO
         {
             List<T> values = new();
 
@@ -82,9 +82,12 @@ namespace Engine.DAL
 
             });
 
-            GetResult(outParam, routineName, out Result oResult);
-            if (oResult.Status != C.OK)
-                OnError?.Invoke(new Exception($"Could not get result from Reader Routine {routineName}"), oResult.Message);
+            if(outParam != null)
+            {
+                GetResult(outParam, routineName, out Result oResult);
+                if (oResult.Status != C.OK)
+                    OnError?.Invoke(new Exception($"Could not get result from Reader Routine {routineName}"), oResult.Message);
+            }
 
             return values;
         }

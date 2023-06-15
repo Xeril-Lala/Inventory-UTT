@@ -1,14 +1,13 @@
 using BaseAPI;
 using BaseAPI.Classes;
+using Engine.BO;
 using Engine.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.Json;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Unicode;
 
 Builder.Build(new WebProperties("InventoryAPI", WebApplication.CreateBuilder(args))
 {
@@ -34,12 +33,15 @@ Builder.Build(new WebProperties("InventoryAPI", WebApplication.CreateBuilder(arg
             };
         });
 
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
         web.Services.AddControllers().AddJsonOptions( options => {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         });
 
+        CustomController.GetUser = identity => identity.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
     },
     appCallback: app =>
     {

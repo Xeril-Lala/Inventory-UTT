@@ -38,6 +38,15 @@ namespace Engine.DAL.Routines
         }
 
         protected override Result OnResult(MySqlCommand cmd)
-            => BDAL.FetchResult(cmd, OutParameter, GetSPName());
+        {
+            Result result = BDAL.FetchResult(cmd, OutParameter, GetSPName());
+
+            if (result.Status == C.OK && result.Message == C.COMPLETE)
+                result.Data = InventoryDAL.GetInstance(OnException)
+                    .GetUsers(username: EntryData?.Username)?
+                    .FirstOrDefault();
+
+            return result;
+        }
     }
 }

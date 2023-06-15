@@ -3,6 +3,9 @@ using Engine.BO;
 using Engine.Constants;
 using Engine.Services;
 using Engine.DAL;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using System.Text.RegularExpressions;
 
 namespace BaseAPI.Classes;
 
@@ -11,7 +14,9 @@ public abstract class CustomController : ControllerBase
     // Callbacks
     public delegate object? ActionResult();
     public delegate Result? ActionResult_R();
-    public delegate Result? CallbackResult(Result result);
+    public delegate Result? CallbackResult(Result? result);
+
+    public static Func<ClaimsPrincipal, string?>? GetUser { get; set; } = null;
 
     protected List<RequestError> ErrorsRequest { get; set; }
     protected InventoryDAL DAL { get; set; }
@@ -76,6 +81,17 @@ public abstract class CustomController : ControllerBase
         Info = msg,
         Exception = ex
     });
+
+    protected string? GetUserIdentity() => GetUser?.Invoke(User);
+
+    protected bool IsSHA256(string? str)
+    {
+        string pattern = @"^[0-9A-Fa-f]{64}$";
+
+        Regex regex = new (pattern);
+
+        return !string.IsNullOrEmpty(str) && regex.IsMatch(str);
+    }
 
     public static void ErrorResult(CustomController controller, Result result, Exception? ex = null)
     {

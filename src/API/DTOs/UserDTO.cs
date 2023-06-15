@@ -10,14 +10,28 @@ namespace InventoryAPI.DTOs
         public string? Lastname { get; set; }
         public AssetDTO? Group { get; set; }
 
+        public UserDTO() : base()
+        {
+            Group = null;
+        }
+
+        public UserDTO(User? obj) : base(obj) 
+        {
+        }
+
         public override User Convert()
         {
-            return new User() {
+            var model =  new User()
+            {
                 Name = Name,
                 Lastname = Lastname,
                 Username = Username,
-                Group = Group?.Convert()
+                Group = Group?.Convert(),
             };
+
+            ConvertBaseBO(model, this);
+
+            return model;
         }
 
         public override void Map(User obj)

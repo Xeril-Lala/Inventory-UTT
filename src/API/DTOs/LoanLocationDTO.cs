@@ -14,19 +14,28 @@ namespace InventoryAPI.DTOs
         public AssetDTO? Location { get; set; }
         public string? Description { get; set; }
 
-        public LoanLocationDTO()
+        public LoanLocationDTO() : base()
         {
-            Location = new ();
-            Loan = new ();
+            Location = null;
+            Loan = null;
+        }
+
+        public LoanLocationDTO(LoanLocation obj) : base(obj)
+        {
         }
 
         public override LoanLocation Convert()
         {
-            return new LoanLocation() {
+            var model =  new LoanLocation()
+            {
                 Loan = Loan?.Convert(),
                 Location = Location?.Convert(),
                 Description = Description
             };
+
+            ConvertBaseBO(model, this);
+
+            return model;
         }
 
         public override void Map(LoanLocation obj)

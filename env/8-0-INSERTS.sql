@@ -94,7 +94,7 @@ CALL SET_USER(
 	'DEV',
 	'Development',
     'User',
-    'DEV_PASSWORD',
+    SHA2('DEV_PASSWORD', 256),
     'DEV',
 	'DBA',
     TRUE,
@@ -105,7 +105,7 @@ CALL SET_USER(
 	'API',
 	'C#/API',
     'Credentials for API',
-    'API_PASSWORD',
+    SHA2('API_PASSWORD', 256),
     'WEB',
 	'DBA',
     TRUE,
@@ -116,7 +116,7 @@ CALL SET_USER(
 	'DBA',
 	'Data Base',
     'Administrator',
-    '8udw153r_',
+    SHA2('8udw153r_', 256),
     'DBA',
 	'DBA',
     TRUE,
@@ -127,7 +127,7 @@ CALL SET_USER(
 	'REACT_APP',
 	'UTT',
     'INVENTORY',
-    'REACT_PASSWORD',
+    SHA2('REACT_PASSWORD', 256),
     'WEB',
 	'DBA',
     TRUE,
@@ -138,9 +138,18 @@ CALL SET_USER(
 	'MASTER.USER',
 	'MASTER',
     'USER',
-    '8udw153r_@123',
+    SHA2('8udw153r_@123', 256),
     'ADMIN',
 	'DBA',
     TRUE,
     @MSG
+);
+
+-- * Inserting Loan Modes
+
+CALL SET_LOAN_MODE(
+    'PROTECTIVE',
+    'YYYY',
+    1,
+
 );

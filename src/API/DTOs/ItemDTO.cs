@@ -14,14 +14,19 @@ namespace InventoryAPI.DTOs
         public string? Serial { get; set; }
         public string? ConditionUse { get; set; }
 
-        public ItemDTO()
+        public ItemDTO() : base()
         {
-            Model = new ();
+            Model = null;
+        }
+
+        public ItemDTO(Item? obj) : base(obj)
+        {
         }
 
         public override Item Convert()
         {
-            return new Item() {
+            var model = new Item() 
+            {
                 Id = Id,
                 Name = Name,
                 Acquisition = Acquisition ?? DateTime.Now,
@@ -29,8 +34,12 @@ namespace InventoryAPI.DTOs
                 Model = Model?.Convert(),
                 Serial = Serial,
                 CustomId = CustomKey,
-                Description = About
+                Description = About,
             };
+
+            ConvertBaseBO(model, this);
+
+            return model;
         }
 
         public override void Map(Item obj)

@@ -18,7 +18,7 @@ namespace Test
             Username = "Test",
             Name = "User",
             Lastname = "Dóe",
-            Password = "fakepass",
+            Password = "176c1e698b521373d77ce655d2e56a1d816f644edb4cca2777dca9c0e6e50c7e",
             Group = new Asset() {
                 Code = "DEV"
             },
@@ -88,6 +88,10 @@ namespace Test
             Mode = GetLoanMode(),
             Comments = "Comments - Test",
             LoanDt = DateTime.Now,
+            Responsible = "User Dev",
+            ResponsibleId = "0001",
+            ResponsibleContact = "fake@mail.com",
+            ResponsibleContact2 = "80000000",
             ReturnDt = null,
             LoanStatus = "STARTED",
             Status = Status.DISABLED,

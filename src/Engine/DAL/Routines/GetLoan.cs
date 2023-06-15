@@ -58,6 +58,10 @@ namespace Engine.DAL.Routines
                     LoanDt = V.Instance.getDefaultDateIfDBNull(rdr["LOAN_DT"]),
                     ReturnDt = V.Instance.getDefaultDateIfDBNull(rdr["RETURN_DT"]),
                     Mode = loanMode,
+                    Responsible = V.Instance.getDefaultStringIfDBNull(rdr["RESPONSIBLE"]),
+                    ResponsibleId = V.Instance.getDefaultStringIfDBNull(rdr["RESPONSIBLE_KEY"]),
+                    ResponsibleContact = V.Instance.getDefaultStringIfDBNull(rdr["RESPONSIBLE_CONTACT1"]),
+                    ResponsibleContact2 = V.Instance.getDefaultStringIfDBNull(rdr["RESPONSIBLE_CONTACT2"]),
                     LoanStatus = V.Instance.getDefaultStringIfDBNull(rdr["LOAN_STATUS"]),
                     Items = new List<LoanDtl>()
                 };

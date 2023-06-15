@@ -9,14 +9,26 @@ namespace InventoryAPI.DTOs
         public string? Unit { get; set; }
         public double Duration { get; set; }
 
+        public LoanModeDTO() : base()
+        {
+        }
+
+        public LoanModeDTO(LoanMode obj) : base(obj) 
+        {
+        }
+
         public override LoanMode Convert()
         {
-            return new LoanMode()
+            var model = new LoanMode()
             {
                 Code = Code,
                 Unit = Unit,
-                Duration = Duration
+                Duration = Duration,
             };
+
+            ConvertBaseBO(model, this);
+
+            return model;
         }
 
         public override void Map(LoanMode obj)

@@ -234,25 +234,17 @@ namespace Engine.DAL
             TransactionBlock(this, () => {
                 var cmd = CreateCommand("SELECT * FROM ASSET", System.Data.CommandType.Text);
 
-                ReaderBlock(cmd, rdr => {
-
-                    while(rdr.Read())
-                    {
-                        model.Add(
-                            new()
-                            {
-                                Code = V.Instance.getDefaultStringIfDBNull(rdr["ASSET_CODE"]),
-                                Value = V.Instance.getDefaultStringIfDBNull(rdr["VALUE"]),
-                                Key1 = V.Instance.getDefaultStringIfDBNull(rdr["KEY1"]),
-                                Key2 = V.Instance.getDefaultStringIfDBNull(rdr["KEY2"]),
-                                Key3 = V.Instance.getDefaultStringIfDBNull(rdr["KEY3"]),
-                                Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["DESC1"]),
-                                Desc2 = V.Instance.getDefaultStringIfDBNull(rdr["DESC2"]),
-                                Desc3 = V.Instance.getDefaultStringIfDBNull(rdr["DESC3"]),
-                                Data = V.Instance.getDefaultBytesIfDBNull(rdr["BIN"])
-                            }
-                        );
-                    }
+                model = ReaderPopulationBlock<Asset>(cmd, null, "GetAllAssets", rdr 
+                => new() {
+                    Code = V.Instance.getDefaultStringIfDBNull(rdr["ASSET_CODE"]),
+                    Value = V.Instance.getDefaultStringIfDBNull(rdr["VALUE"]),
+                    Key1 = V.Instance.getDefaultStringIfDBNull(rdr["KEY1"]),
+                    Key2 = V.Instance.getDefaultStringIfDBNull(rdr["KEY2"]),
+                    Key3 = V.Instance.getDefaultStringIfDBNull(rdr["KEY3"]),
+                    Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["DESC1"]),
+                    Desc2 = V.Instance.getDefaultStringIfDBNull(rdr["DESC2"]),
+                    Desc3 = V.Instance.getDefaultStringIfDBNull(rdr["DESC3"]),
+                    Data = V.Instance.getDefaultBytesIfDBNull(rdr["BIN"])
                 });
 
             }, (ex, msg) => OnError?.Invoke(ex, msg));

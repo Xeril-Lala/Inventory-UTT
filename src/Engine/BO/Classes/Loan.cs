@@ -14,6 +14,10 @@ namespace Engine.BO
         public DateTime? ReturnDt { get; set; }
         public LoanMode? Mode { get; set; }
         public string? LoanStatus { get; set; }
+        public string? Responsible { get; set; }
+        public string? ResponsibleId { get; set; }
+        public string? ResponsibleContact { get; set; }
+        public string? ResponsibleContact2 { get; set; }
         public List<LoanDtl> Items { get; set; }
         public LoanLocation? Location { get; set; }
 

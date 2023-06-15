@@ -16,6 +16,12 @@ namespace InventoryAPI.DTOs
         [JsonIgnore]
         public string? MediaLink { get; set; }
 
+        public AssetDTO() : base()
+        { }
+
+        public AssetDTO(Asset? obj) : base(obj)
+        { }
+
         public override Asset Convert()
         {
             string? desc1 = null, desc2 = null, desc3 = null;
@@ -27,20 +33,21 @@ namespace InventoryAPI.DTOs
                 desc3 = Description.ElementAtOrDefault(2);
             }
 
-            return new()
+            var model = new Asset()
             {
                 Code = Code,
                 Value = Value,
-                Key1 = Group, 
-                Key2 = SubGroup, 
+                Key1 = Group,
+                Key2 = SubGroup,
                 Key3 = AlternativeGroup,
                 Desc1 = desc1,
                 Desc2 = desc2,
                 Desc3 = desc3,
-                TxnUser = User,
-                CreatedOn = LastModified,
-                UpdatedOn = LastModified
             };
+
+            ConvertBaseBO(model, this);
+
+            return model;
         }
 
         public override void Map(Asset obj)

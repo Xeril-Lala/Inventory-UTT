@@ -11,21 +11,30 @@ namespace InventoryAPI.DTOs
         public string? DetailStatus { get; set; }
         public LoanDTO? Loan { get; set; }
 
-        public LoanDtlDTO()
+        public LoanDtlDTO() : base()
         {
-            Item = new ();
-            Loan = new ();
+            Item = null;
+            Loan = null;
+        }
+
+        public LoanDtlDTO(LoanDtl? obj) : base(obj)
+        {
         }
 
         public override LoanDtl Convert()
         {
-            return new LoanDtl() {
+            var model = new LoanDtl()
+            {
                 Id = Id,
                 Item = Item?.Convert(),
                 Description = Description,
                 DetailStatus = DetailStatus,
-                Loan = Loan?.Convert()
+                Loan = Loan?.Convert(),
             };
+
+            ConvertBaseBO(model, this);
+
+            return model;
         }
 
         public override void Map(LoanDtl obj)
