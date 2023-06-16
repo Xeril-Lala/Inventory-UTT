@@ -60,6 +60,16 @@ namespace Engine.DAL.Routines
                     Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_DESC"]),
                     Data = Array.Empty<byte>()
                 },
+                Location = new()
+                {
+                    Code = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_CODE"]),
+                    Key1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_GROUP"]),
+                    Key2 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_SGROUP"]),
+                    Key3 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_AGROUP"]),
+                    Value = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_VALUE"]),
+                    Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_DESCRIPTION"]),
+                    Data = Array.Empty<byte>()
+                },
                 Serial = V.Instance.getDefaultStringIfDBNull(rdr["SERIAL"]),
                 Condition = V.Instance.getDefaultStringIfDBNull(rdr["CONDITION_USE"])
             }

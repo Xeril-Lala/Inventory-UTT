@@ -151,5 +151,25 @@ CALL SET_LOAN_MODE(
     'PROTECTIVE',
     'YYYY',
     1,
+    'DBA',
+    TRUE,
+    @MSG
+);
 
+CALL SET_LOAN_MODE(
+    'COMMON',
+    NULL,
+    NULL,
+    'DBA',
+    TRUE,
+    @MSG
+);
+
+CALL SET_LOAN_MODE(
+    'STATIC',
+    'YYYY',
+    1,
+    'DBA',
+    TRUE,
+    @MSG
 );

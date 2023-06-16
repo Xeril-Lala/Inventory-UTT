@@ -11,6 +11,7 @@ namespace InventoryAPI.DTOs
         public string? About { get; set; }
         public DateTime? Acquisition { get; set; }
         public AssetDTO? Model { get; set; }
+        public AssetDTO? Location { get; set; }
         public string? Serial { get; set; }
         public string? ConditionUse { get; set; }
 
@@ -32,6 +33,7 @@ namespace InventoryAPI.DTOs
                 Acquisition = Acquisition ?? DateTime.Now,
                 Condition = ConditionUse,
                 Model = Model?.Convert(),
+                Location = Location?.Convert(),
                 Serial = Serial,
                 CustomId = CustomKey,
                 Description = About,
@@ -46,8 +48,13 @@ namespace InventoryAPI.DTOs
         {
             var assetDto = new AssetDTO();
 
+            var locDto = new AssetDTO();
+
             if (obj.Model != null)
                 assetDto.Map(obj.Model);
+
+            if (obj.Location != null)
+                locDto.Map(obj.Location);
 
             Id = obj.Id;
             Name = obj.Name;
@@ -56,6 +63,7 @@ namespace InventoryAPI.DTOs
             ConditionUse = obj.Condition;
             CustomKey = obj.CustomId;
             Model = assetDto;
+            Location = locDto;
             Serial = obj.Serial;
 
             MapBaseBO(this, obj);

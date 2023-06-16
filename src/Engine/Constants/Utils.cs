@@ -9,6 +9,8 @@ namespace Engine.Constants
 {
     public static class Utils
     {
+        private static Random random = new Random();
+
         public static byte[] GetImage(string url)
         {
             byte[] imageBytes;
@@ -83,6 +85,20 @@ namespace Engine.Constants
         {
             int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
             return dt.AddDays(-1 * diff).Date;
+        }
+
+        public static string GenerateRandomCode()
+        {
+            const string letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            StringBuilder code = new StringBuilder(10);
+
+            for (int i = 0; i < 10; i++)
+            {
+                int index = random.Next(letters.Length);
+                code.Append(letters[index]);
+            }
+
+            return code.ToString();
         }
     }
 }

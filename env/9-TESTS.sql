@@ -1,7 +1,5 @@
 USE INVENTORY_UTT;
 
-select * from VW_ASSET_GROUP;
-
 SET @MSG = NULL;
 
 CALL SET_USER(
@@ -68,6 +66,7 @@ CALL SET_INVENTORY(
     'INV_2',
     NOW(),
     NULL,-- 'MD1',-- 'TEST',
+    'LOC_A',
     'TEST123-xx',
     'CONDITION TEST - UPDATE',
     'DBA',
@@ -144,7 +143,7 @@ SELECT @msg;
 CALL GET_USER(
 	NULL,
     'T',
-    NULL,
+    TRUE,
     @msg
 );
 
@@ -223,3 +222,11 @@ SELECT * FROM USER_CONTACT;
 SELECT * FROM VW_INVENTORY;
 
 select * from VW_LOAN;
+
+select * from INVENTORY;
+
+# SET FOREIGN_KEY_CHECKS = 0;
+#
+# TRUNCATE ASSET;
+#
+# SET FOREIGN_KEY_CHECKS = 1;

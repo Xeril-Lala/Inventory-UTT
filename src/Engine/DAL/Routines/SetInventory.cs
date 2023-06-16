@@ -39,6 +39,7 @@ namespace Engine.DAL.Routines
                 MDB.CreateParameter("IN_NAME", EntryData?.Name, MType.String),
                 MDB.CreateParameter("IN_ACQUISITION_DT", EntryData?.Acquisition, MType.DateTime),
                 MDB.CreateParameter("IN_MODEL_CODE", EntryData?.Model?.Code, MType.String),
+                MDB.CreateParameter("IN_LOCATION_CODE", EntryData?.Location?.Code, MType.String),
                 MDB.CreateParameter("IN_SERIAL", EntryData?.Serial, MType.String),
                 MDB.CreateParameter("IN_CONDITION", EntryData?.Condition, MType.String),
                 MDB.CreateParameter("IN_USER", EntryData?.TxnUser, MType.String),

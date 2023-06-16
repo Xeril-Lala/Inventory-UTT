@@ -69,6 +69,7 @@ namespace Test
             Acquisition = DateTime.Now.AddDays(-1),
             Description = "Description 1",
             Model = GetModel(),
+            Location = GetLocation(),
             TxnUser = TestUtils.GetTestingUser(),
             Status = Status.DISABLED,
         };

@@ -9,6 +9,8 @@ using System.Text.Json.Nodes;
 using ClosedXML;
 using ClosedXML.Excel;
 using System.Net;
+using U = Engine.Constants.Utils;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace InventoryAPI.Controllers
 {
@@ -82,11 +84,121 @@ namespace InventoryAPI.Controllers
 
         private void ExcelItemProcessor(XLWorkbook wb)
         {
-            foreach(var ws in wb.Worksheets)
+            if(wb.Worksheets.Count > 0)
             {
-                var row = ws.LastRowUsed();
+                var ws = wb.Worksheet(1);
+                var lastRow = ws.LastRowUsed();
 
-                Console.WriteLine(row.FirstCell().Value);
+                int maxRow = lastRow.RowNumber();
+
+                for(int rowPos = 2; rowPos <= maxRow; rowPos++)
+                {
+                    var row = ws.Row(rowPos);
+
+                    try
+                    {
+                        string? customId = row.Cell(1).Value.GetText();
+                        string? itemName = row.Cell(2).Value.GetText();
+                        row.Cell(5).TryGetValue(out string? brand);
+                        row.Cell(6).TryGetValue(out string? model);
+                        row.Cell(7).TryGetValue(out string? serial);
+                        string? location = row.Cell(9).Value.GetText();
+                        string? use = row.Cell(12).Value.GetText();
+
+                        var oModel = DAL
+                            .GetAllAssets(value: model)
+                            .FirstOrDefault();
+
+                        var oLocation = DAL
+                            .GetAllAssets(value: location)
+                            .FirstOrDefault();
+
+                        if(oModel == null)
+                        {
+                            var oBrand = DAL
+                                .GetAllAssets(value: brand)
+                                .FirstOrDefault();
+
+                            if (oBrand == null)
+                            {
+                                var brandResult = DAL.SetAsset(new Asset() {
+                                    Code = U.GenerateRandomCode(),
+                                    Value = brand,
+                                    Key1 = C.BRAND,
+                                    Desc1 = brand
+                                });
+
+                                if (brandResult?.Status == C.ERROR)
+                                    throw new Exception("Cant Generate Brand from Excel!");
+
+                                oBrand = (Asset?)brandResult?.Data;
+                            }
+
+                            var modelResult = DAL.SetAsset(new Asset() {
+                                Code = U.GenerateRandomCode(),
+                                Value = model,
+                                Desc1 = model,
+                                Key1 = C.MODEL,
+                                Key2 = oBrand?.Code
+                            });
+
+                            if (modelResult?.Status == C.ERROR)
+                                throw new Exception("Cant Generate Model from Excel!");
+
+                            oModel = (Asset?)modelResult?.Data;
+                        }
+
+
+                        if(oLocation == null)
+                        {
+                            var locationResult = DAL.SetAsset(new Asset() {
+                                Code = U.GenerateRandomCode(),
+                                Value = location,
+                                Desc1 = model,
+                                Key1 = C.LOCATION
+                            });
+
+                            if (locationResult?.Status == C.ERROR)
+                                throw new Exception("Cant Generate Location from Excel!");
+
+                            oLocation = (Asset?)locationResult?.Data;
+                        }
+
+                        var oItem = DAL.GetItems(customId: customId)?.FirstOrDefault();
+                        int? id = null;
+                        DateTime acquisition = DateTime.Now;
+
+
+                        if(oItem != null)
+                        {
+                            id = oItem.Id;
+                            acquisition = oItem.Acquisition;
+                        }
+
+                        var result = DAL.SetItem(new Item()
+                        {
+                            Id = id,
+                            Acquisition = acquisition,
+                            Condition = use,
+                            CustomId = customId,
+                            Name = itemName,
+                            Description = "LOADED FROM EXCEL",
+                            Location = oLocation,
+                            Model = oModel,
+                            Serial = serial,
+                            TxnUser = GetUserIdentity()
+                        });
+
+                        if (result?.Status == C.ERROR)
+                            throw new Exception("Cant Generate Item from Excel!");
+
+                    } catch (Exception ex)
+                    {
+                        var cell = row.LastCellUsed();
+                        row.Cell(cell.Address.ColumnNumber + 1).Value = ex.Message;
+                        Console.WriteLine(ex.Message);
+                    }
+                }
             }
         }
 

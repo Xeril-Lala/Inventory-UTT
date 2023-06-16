@@ -15,6 +15,7 @@ namespace Engine.BO
         public string? Description { get; set; }
         public DateTime Acquisition { get; set; }
         public Asset? Model { get; set; }
+        public Asset? Location { get; set; }
         public string? Serial { get; set; }
         public string? Condition { get; set; }
     }

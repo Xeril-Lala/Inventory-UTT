@@ -23,6 +23,12 @@ namespace Engine.Constants {
         public const string ENABLED = "ENABLED";
         public const string DISABLED = "DISABLED";
 
+        public const string MODEL = "MODEL";
+        public const string BRAND = "BRAND";
+        public const string LOCATION = "LOCATION";
+        public const string USER_GROUP = "USER_GROUP";
+        public const string APP_GROUP = "APP_GROUP";
+
         /* Json Options */
         public static readonly JsonSerializerOptions CustomJsonOptions = new JsonSerializerOptions
         {

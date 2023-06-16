@@ -226,6 +226,7 @@ namespace Engine.DAL
             string? subGroup = null,
             string? altGroup = null,
             string? desc = null,
+            string? value = null,
             bool? status = null
         )
         {
@@ -257,6 +258,7 @@ namespace Engine.DAL
                 && (desc == null        || x.Desc1?.Contains(desc) == true)
                 && (desc == null        || x.Desc2?.Contains(desc) == true)
                 && (desc == null        || x.Desc3?.Contains(desc) == true)
+                && (value == null       || x.Value?.Contains(value) == true)
                 && (status == null      || x.IsEnabled))
             .ToList();
         }
