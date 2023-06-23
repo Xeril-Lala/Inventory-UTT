@@ -9,12 +9,11 @@ return (
 
 
 
-    
-<div className="grid grid-cols-5 grid-rows-6 gap-4 bg-white rounded-md m-3 p-10 text-base font-mono shadow-md">
-    <div className="col-span-5 text-2xl">
+<div class="w-full h-auto text-3xl">
+    <div class="w-full h-auto text-3xl mb-12">
         Formulario de Solicitud de Equipo
     </div>
-    
+<div className="grid grid-cols-5 gap-4 bg-white rounded-md m-3 px-10 pb-10 pt-6 text-base font-mono shadow-md">
     <div className="col-start-4 row-start-2 flex flex-nowrap flex-col">
         Fecha
         <input type="date" placeholder="today" className=" bg-gray-100 rounded-md p-2"/>
@@ -32,7 +31,7 @@ return (
 
     <div className="col-span-3 row-start-3 flex flex-nowrap flex-col">
         Matricula o Numero de Empleado
-        <input type="text" placeholder="1234567891" className=" bg-gray-100 rounded-md p-2"/>
+        <input type="number" min="0" placeholder="1234567891" class="[appearance:textfield] bg-gray-100 rounded-md p-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"></input>
     </div>
 
     <div className="col-start-4 row-start-3 flex flex-nowrap flex-col">
@@ -67,7 +66,7 @@ return (
     </div>
 
 </div>
-    
+    </div>
 );
 };
 
