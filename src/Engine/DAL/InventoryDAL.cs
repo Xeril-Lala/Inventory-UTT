@@ -251,15 +251,15 @@ namespace Engine.DAL
             }, (ex, msg) => OnError?.Invoke(ex, msg));
 
             return model.Where(x
-                => (code == null        || x.Code?.Contains(code) == true)
-                && (group == null       || x.Key1?.Contains(group) == true)
-                && (subGroup == null    || x.Key2?.Contains(subGroup) == true)
-                && (altGroup == null    || x.Key3?.Contains(altGroup) == true)
-                && (desc == null        || x.Desc1?.Contains(desc) == true)
-                && (desc == null        || x.Desc2?.Contains(desc) == true)
-                && (desc == null        || x.Desc3?.Contains(desc) == true)
-                && (value == null       || x.Value?.Contains(value) == true)
-                && (status == null      || x.IsEnabled))
+                => (string.IsNullOrEmpty(code)        || x.Code?.Contains(code) == true)
+                && (string.IsNullOrEmpty(group)       || x.Key1?.Contains(group) == true)
+                && (string.IsNullOrEmpty(subGroup)    || x.Key2?.Contains(subGroup) == true)
+                && (string.IsNullOrEmpty(altGroup)    || x.Key3?.Contains(altGroup) == true)
+                && (string.IsNullOrEmpty(desc)        || x.Desc1?.Contains(desc) == true)
+                && (string.IsNullOrEmpty(desc)        || x.Desc2?.Contains(desc) == true)
+                && (string.IsNullOrEmpty(desc)        || x.Desc3?.Contains(desc) == true)
+                && (string.IsNullOrEmpty(value)       || x.Value?.Contains(value) == true)
+                && (status == null                    || x.IsEnabled))
             .ToList();
         }
 

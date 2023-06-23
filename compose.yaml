@@ -1,0 +1,25 @@
+services:
+  utt-db:
+    container_name: mysql-utt
+    build: ./Dockerfile
+    ports:
+      - 3306:3306
+    networks:
+      - utt-network
+  utt-api:
+    container_name: net-api-utt
+    build: ./Dockerfile.API
+    ports: 
+      - 8080:8080
+    networks:
+      - utt-network
+    depends_on:
+      - mysql-db
+    configs:
+      - app-settings
+configs:
+  app-settings:
+    external: true
+networks:
+  utt-network:
+    driver: bridge

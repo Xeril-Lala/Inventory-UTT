@@ -10,7 +10,6 @@ using ClosedXML;
 using ClosedXML.Excel;
 using System.Net;
 using U = Engine.Constants.Utils;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace InventoryAPI.Controllers
 {
@@ -82,6 +81,9 @@ namespace InventoryAPI.Controllers
         });
 
 
+        // TODO: Add Export excel Method!
+
+        #region Excel Methods
         private void ExcelItemProcessor(XLWorkbook wb)
         {
             if(wb.Worksheets.Count > 0)
@@ -97,39 +99,42 @@ namespace InventoryAPI.Controllers
 
                     try
                     {
-                        string? customId = row.Cell(1).Value.GetText();
-                        string? itemName = row.Cell(2).Value.GetText();
+                        row.Cell(1).TryGetValue(out string? customId);
+                        row.Cell(2).TryGetValue(out string? itemName);
                         row.Cell(5).TryGetValue(out string? brand);
                         row.Cell(6).TryGetValue(out string? model);
                         row.Cell(7).TryGetValue(out string? serial);
-                        string? location = row.Cell(9).Value.GetText();
-                        string? use = row.Cell(12).Value.GetText();
+                        row.Cell(9).TryGetValue(out string? location);
+                        row.Cell(12).TryGetValue(out string? use);
 
-                        var oModel = DAL
+                        serial = string.IsNullOrEmpty(serial) ? null : serial;
+
+                        var oModel = string.IsNullOrEmpty(model) ? null : DAL
                             .GetAllAssets(value: model)
                             .FirstOrDefault();
 
-                        var oLocation = DAL
+                        var oLocation = string.IsNullOrEmpty(location) ? null : DAL
                             .GetAllAssets(value: location)
                             .FirstOrDefault();
 
-                        if(oModel == null)
+                        if(oModel == null && !string.IsNullOrEmpty(model))
                         {
-                            var oBrand = DAL
+                            var oBrand = string.IsNullOrEmpty(brand) ? null : DAL
                                 .GetAllAssets(value: brand)
                                 .FirstOrDefault();
 
-                            if (oBrand == null)
+                            if (oBrand == null && !string.IsNullOrEmpty(brand))
                             {
                                 var brandResult = DAL.SetAsset(new Asset() {
                                     Code = U.GenerateRandomCode(),
                                     Value = brand,
                                     Key1 = C.BRAND,
-                                    Desc1 = brand
+                                    Desc1 = brand,
+                                    TxnUser = GetUserIdentity()
                                 });
 
                                 if (brandResult?.Status == C.ERROR)
-                                    throw new Exception("Cant Generate Brand from Excel!");
+                                    throw new Exception($"Cant Generate Brand from Excel! Row: {row}");
 
                                 oBrand = (Asset?)brandResult?.Data;
                             }
@@ -139,27 +144,28 @@ namespace InventoryAPI.Controllers
                                 Value = model,
                                 Desc1 = model,
                                 Key1 = C.MODEL,
-                                Key2 = oBrand?.Code
+                                Key2 = oBrand?.Code,
+                                TxnUser = GetUserIdentity()
                             });
 
                             if (modelResult?.Status == C.ERROR)
-                                throw new Exception("Cant Generate Model from Excel!");
+                                throw new Exception($"Cant Generate Model from Excel! Row: {row}");
 
                             oModel = (Asset?)modelResult?.Data;
                         }
 
-
-                        if(oLocation == null)
+                        if(oLocation == null && !string.IsNullOrEmpty(location))
                         {
                             var locationResult = DAL.SetAsset(new Asset() {
                                 Code = U.GenerateRandomCode(),
                                 Value = location,
-                                Desc1 = model,
-                                Key1 = C.LOCATION
+                                Desc1 = location,
+                                Key1 = C.LOCATION,
+                                TxnUser = GetUserIdentity()
                             });
 
                             if (locationResult?.Status == C.ERROR)
-                                throw new Exception("Cant Generate Location from Excel!");
+                                throw new Exception($"Cant Generate Location from Excel! Row: {row}");
 
                             oLocation = (Asset?)locationResult?.Data;
                         }
@@ -190,17 +196,20 @@ namespace InventoryAPI.Controllers
                         });
 
                         if (result?.Status == C.ERROR)
-                            throw new Exception("Cant Generate Item from Excel!");
+                            throw new Exception($"Cant Generate Item from Excel! Row: {row}");
 
                     } catch (Exception ex)
                     {
-                        var cell = row.LastCellUsed();
-                        row.Cell(cell.Address.ColumnNumber + 1).Value = ex.Message;
-                        Console.WriteLine(ex.Message);
+                        //var cell = row.LastCellUsed();
+                        //row.Cell(cell.Address.ColumnNumber + 1).Value = ex.Message;
+                        //Console.WriteLine(ex.Message);
+
+                        ErrorManager?.Subscription?.Invoke(ex, ex.Message);
                     }
                 }
             }
         }
+        #endregion
 
     }
 }

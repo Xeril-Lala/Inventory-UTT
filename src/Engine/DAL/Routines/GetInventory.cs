@@ -43,35 +43,39 @@ namespace Engine.DAL.Routines
 
         protected override List<Item> OnResult(MySqlCommand cmd)
         =>  DAL.ReaderPopulationBlock(cmd, OutParameter, GetSPName(), rdr =>
-            new Item()
             {
-                Id = V.Instance.getDefaultIntIfDBNull(rdr["INVENTORY_ID"]),
-                Name = V.Instance.getDefaultStringIfDBNull(rdr["NAME"]),
-                CustomId = V.Instance.getDefaultStringIfDBNull(rdr["CUSTOM_ID"]),
-                Description = V.Instance.getDefaultStringIfDBNull(rdr["DESCRIPTION"]),
-                Acquisition = V.Instance.getDefaultDateIfDBNull(rdr["ACQUISITION_DT"]),
-                Model = new Asset()
+                var item = new Item()
                 {
-                    Code = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_CODE"]),
-                    Value = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_VALUE"]),
-                    Key1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_GROUP"]),
-                    Key2 = V.Instance.getDefaultStringIfDBNull(rdr["BRAND_GROUP"]),
-                    Key3 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_ALTERNATIVE"]),
-                    Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_DESC"]),
-                    Data = Array.Empty<byte>()
-                },
-                Location = new()
-                {
-                    Code = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_CODE"]),
-                    Key1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_GROUP"]),
-                    Key2 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_SGROUP"]),
-                    Key3 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_AGROUP"]),
-                    Value = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_VALUE"]),
-                    Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_DESCRIPTION"]),
-                    Data = Array.Empty<byte>()
-                },
-                Serial = V.Instance.getDefaultStringIfDBNull(rdr["SERIAL"]),
-                Condition = V.Instance.getDefaultStringIfDBNull(rdr["CONDITION_USE"])
+                    Id = V.Instance.getDefaultIntIfDBNull(rdr["INVENTORY_ID"]),
+                    Name = V.Instance.getDefaultStringIfDBNull(rdr["NAME"]),
+                    CustomId = V.Instance.getDefaultStringIfDBNull(rdr["CUSTOM_ID"]),
+                    Description = V.Instance.getDefaultStringIfDBNull(rdr["DESCRIPTION"]),
+                    Acquisition = V.Instance.getDefaultDateIfDBNull(rdr["ACQUISITION_DT"]),
+                    Model = new Asset()
+                    {
+                        Code = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_CODE"]),
+                        Value = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_VALUE"]),
+                        Key1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_GROUP"]),
+                        Key2 = V.Instance.getDefaultStringIfDBNull(rdr["BRAND_GROUP"]),
+                        Key3 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_ALTERNATIVE"]),
+                        Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_DESC"]),
+                        Data = Array.Empty<byte>()
+                    },
+                    Location = new()
+                    {
+                        Code = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_CODE"]),
+                        Key1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_GROUP"]),
+                        Key2 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_SGROUP"]),
+                        Key3 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_AGROUP"]),
+                        Value = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_VALUE"]),
+                        Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_DESCRIPTION"]),
+                        Data = Array.Empty<byte>()
+                    },
+                    Serial = V.Instance.getDefaultStringIfDBNull(rdr["SERIAL"]),
+                    Condition = V.Instance.getDefaultStringIfDBNull(rdr["CONDITION_USE"])
+                };
+
+                return item;
             }
         );
 

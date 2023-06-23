@@ -24,7 +24,7 @@ namespace InventoryAPI.DTOs
             Contact = null;
         }
 
-        public LoanDTO(Loan obj) : base(obj) 
+        public LoanDTO(Loan? obj) : base(obj) 
         {
         }
 

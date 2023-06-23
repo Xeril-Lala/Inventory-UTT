@@ -5,35 +5,31 @@
         public string? Info { get; set; }
         public Exception? Exception { get; set; }
 
-        public string FormatError
+        public object FormatError
         {
             get
             {
-                string format = $"Error -> {Info}";
-
-                if (Exception != null)
-                {
-                    format = $"{format} - Details {Exception.Message}. \n Source {Exception.Source}. \n On {Exception.StackTrace}";
-                }
-
-                return format;
+                return new {
+                    Info,
+                    Exception?.Message,
+                    Exception?.Source
+                };
             }
         }
 
-        public static string FormatErrors(List<RequestError> errors)
+        public static List<object> FormatErrors(List<RequestError> errors)
         {
-            string result = string.Empty;
-
+            var parsedErrors = new List<object>();
 
             if (errors != null && errors.Count > 0)
             {
                 foreach (var err in errors)
                 {
-                    result += $" * {err.FormatError} ";
+                    parsedErrors.Add(err.FormatError);
                 }
             }
 
-            return result;
+            return parsedErrors;
         }
     }
 }
