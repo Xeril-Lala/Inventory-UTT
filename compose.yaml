@@ -1,25 +1,33 @@
+name: inventory-utt
 services:
-  utt-db:
-    container_name: mysql-utt
-    build: ./Dockerfile
+  db:
+    container_name: mysql
+    env_file: .env
+    build:
+      context: ./ 
+      dockerfile: ./Dockerfile
     ports:
       - 3306:3306
     networks:
       - utt-network
-  utt-api:
-    container_name: net-api-utt
-    build: ./Dockerfile.API
+  api:
+    container_name: net-api
+    env_file: .env
+    environment:
+      - DB_CONNECTION=server=mysql;uid=root;pwd=${MYSQL_ROOT_PASSWORD};database=INVENTORY_UTT
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile.API
+      args:
+        - DB_CONNECTION=server=mysql;uid=root;pwd=${MYSQL_ROOT_PASSWORD};database=INVENTORY_UTT
+        - API_KEY=${API_KEY}
+
     ports: 
-      - 8080:8080
+      - 8080:80
     networks:
       - utt-network
     depends_on:
-      - mysql-db
-    configs:
-      - app-settings
-configs:
-  app-settings:
-    external: true
+      - db
 networks:
   utt-network:
     driver: bridge

@@ -1,12 +1,22 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
-COPY ./src ./
+COPY ./src/ ./
 
 # Building binaries
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
-WORKDIR /bin
-COPY --from=build /src/app .
+WORKDIR /app/out
+
+ARG DB_CONNECTION
+ARG API_KEY
+
+RUN mv ./appsettings.Docker.json ./appsettings.json
+
+COPY ./env/set-env.sh .
+RUN ./set-env.sh
+
+# FROM mcr.microsoft.com/dotnet/aspnet:6.0
+# WORKDIR /app
+# COPY --from=build /app/out/ .
 ENTRYPOINT [ "dotnet", "InventoryAPI.dll" ]
