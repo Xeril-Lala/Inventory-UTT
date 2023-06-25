@@ -18,11 +18,10 @@ return (
 
     <div className="col-span-2 row-start-2 flex flex-nowrap flex-col">
         Nombre Completo
-            <input type="text" placeholder="aaaaa">
-            </input>
+            <input type="text" placeholder="aaaaa"/>
     </div>
     <div className="col-span-2 row-start-3">
-        <input type="number" min="0" placeholder="Matricula o Numero de Empleado" class="bg-gray-100 rounded-md p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"></input>
+        <input type="number" min="0" placeholder="Matricula o Numero de Empleado" class="bg-gray-100 rounded-md p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
     </div>
     <div className="col-span-2 row-start-4"><input type="text" placeholder="Nombre Completo"></input></div>
     <div className="col-span-2 row-start-5"><input type="text" placeholder="Nombre Completo"></input></div>
