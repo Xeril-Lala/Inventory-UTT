@@ -21,7 +21,6 @@ services:
       args:
         - DB_CONNECTION=server=mysql;uid=root;pwd=${MYSQL_ROOT_PASSWORD};database=INVENTORY_UTT
         - API_KEY=${API_KEY}
-
     ports: 
       - 8080:80
     networks:
