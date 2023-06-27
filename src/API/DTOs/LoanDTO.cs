@@ -8,7 +8,7 @@ namespace InventoryAPI.DTOs
     {
         public int? Id { get; set; }
         public string? Comments { get; set; }
-        public DateTime LoanedOn { get; set; }
+        public DateTime? LoanedOn { get; set; }
         public DateTime? ReturnedOn { get; set; }
         public LoanModeDTO? Mode { get; set; }
         public string? LoanStatus { get; set; }

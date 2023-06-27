@@ -10,7 +10,7 @@ namespace Engine.BO
     {
         public int? Id { get; set; }
         public string? Comments { get; set; }
-        public DateTime LoanDt { get; set; }
+        public DateTime? LoanDt { get; set; }
         public DateTime? ReturnDt { get; set; }
         public LoanMode? Mode { get; set; }
         public string? LoanStatus { get; set; }

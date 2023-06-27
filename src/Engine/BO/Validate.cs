@@ -56,7 +56,7 @@ namespace Engine.BO
             return obj2;
         }
 
-        public byte[] getDefaultBytesIfDBNull(object value) 
+        public byte[] getDefaultBytesIfDBNull(object value)
         {
             byte[] bytes;
 
@@ -72,10 +72,11 @@ namespace Engine.BO
                 }
 
                 return bytes;
-            } catch
+            }
+            catch
             {
                 return new byte[] { };
-            }            
+            }
         }
 
         #endregion
@@ -121,9 +122,9 @@ namespace Engine.BO
             return obj;
         }
 
-        public string? getDefaultStringIfDBNull(object obj) => 
+        public string? getDefaultStringIfDBNull(object obj) =>
         Convert.ToString(getDefaultIfDBNull(obj, TypeCode.String));
-        
+
         public int getDefaultIntIfDBNull(object obj)
         {
             return Convert.ToInt32(getDefaultIfDBNull(obj, TypeCode.Int32));
@@ -144,18 +145,24 @@ namespace Engine.BO
             return Convert.ToInt64(getDefaultIfDBNull(obj, TypeCode.Int64));
         }
 
-        public DateTime getDefaultDateIfDBNull(object obj)
+        public DateTime? getDefaultDateIfDBNull(object obj)
         {
+            if (obj == DBNull.Value)
+                return null;
+
             return Convert.ToDateTime(getDefaultIfDBNull(obj, TypeCode.DateTime));
         }
 
-        public TimeSpan getDefaultTimeSpanIfDBNull(object obj) 
+        public TimeSpan getDefaultTimeSpanIfDBNull(object obj)
         {
-            if (obj != null && obj.GetType() == typeof(TimeSpan)) {                
+            if (obj != null && obj.GetType() == typeof(TimeSpan))
+            {
                 return (TimeSpan)obj;
-            } else {
+            }
+            else
+            {
                 return new TimeSpan();
-            }            
+            }
         }
 
         public long getDefaultLongIfDBNull(object obj)
@@ -163,7 +170,8 @@ namespace Engine.BO
             return Convert.ToInt64(getDefaultIfDBNull(obj, TypeCode.DateTime));
         }
 
-        public bool getDefaultBoolIfDBNull(object obj) {
+        public bool getDefaultBoolIfDBNull(object obj)
+        {
             return Convert.ToBoolean(getDefaultIfDBNull(obj, TypeCode.Boolean));
         }
 
@@ -181,7 +189,7 @@ namespace Engine.BO
                 return DBNull.Value;
             else
                 return valor;
-        }        
+        }
 
         #endregion
     }

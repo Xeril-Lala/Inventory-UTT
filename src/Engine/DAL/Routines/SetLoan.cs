@@ -44,8 +44,16 @@ namespace Engine.DAL.Routines
             };
         }
 
-        protected override Result OnResult(MySqlCommand cmd) => BDAL.FetchResult(cmd, OutParameter, GetSPName(), 
-            result => result.Data = OutId.Value
-        );
+        protected override Result OnResult(MySqlCommand cmd)
+        {
+            Result result = BDAL.FetchResult(cmd, OutParameter, GetSPName(), result => result.Data = OutId.Value);
+
+            if (result.Status == C.OK && result.Message == C.COMPLETE)
+                result.Data = InventoryDAL.GetInstance(OnException)
+                    .GetLoans(id: (int?)result.Data)?
+                    .FirstOrDefault();
+
+            return result;
+        }
     }
 }

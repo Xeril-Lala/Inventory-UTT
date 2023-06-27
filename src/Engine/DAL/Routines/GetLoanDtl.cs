@@ -98,7 +98,7 @@ namespace Engine.DAL.Routines
                 var loanDtl = new LoanDtl
                 {
                     Id = V.Instance.getDefaultIntIfDBNull(rdr["LOAN_DTL_ID"]),
-                    Description = V.Instance.getDefaultStringIfDBNull(rdr["LOAN_STL_DESC"]),
+                    Description = V.Instance.getDefaultStringIfDBNull(rdr["LOAN_DTL_DESC"]),
                     DetailStatus = V.Instance.getDefaultStringIfDBNull(rdr["LOAN_DTL_STS"]),
                     Item = new Item()
                     {
@@ -114,7 +114,7 @@ namespace Engine.DAL.Routines
                             Key1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_GROUP"]),
                             Key2 = V.Instance.getDefaultStringIfDBNull(rdr["BRAND_GROUP"]),
                             Key3 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_ALTERNATIVE"]),
-                            Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_DESCRIPTION"]),
+                            Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_DESC"]),
                             Data = Array.Empty<byte>()
                         },
                         Serial = V.Instance.getDefaultStringIfDBNull(rdr["SERIAL"]),

@@ -104,6 +104,8 @@ CALL SET_LOAN(
 );
 SELECT @msg result, @m_id id;
 
+SELECT * FROM VW_LOAN_DTL;
+
 SET @m_id_dtl = null;
 CALL SET_LOAN_DTL(
     null,
@@ -206,22 +208,12 @@ WHERE
     routine_type = 'PROCEDURE'
 AND routine_schema = 'INVENTORY_UTT';
 
-update
-	INVENTORY
-set
-	LOCATION_CODE = null
-where
-    CUSTOM_ID IN (
-		  '10-0464', '10-0465', '10-0466',
-		  '10-0467', '10-0468', '10-0469',
-		  '10-0470', '10-0471', '13-0592',
-		  '14-0009', 'FAM-0245', 'FAM-0246', 'FAM-0247'
-	) or INVENTORY_ID = 2;
-
-SELECT * FROM VW_INVENTORY WHERE LOCATION_GROUP <> 'LOCATION';
-
 # SET FOREIGN_KEY_CHECKS = 0;
 #
 #
 #
 # SET FOREIGN_KEY_CHECKS = 1;
+
+SELECT * FROM LOAN_MODE;
+SELECT * FROM LOAN;
+SELECT * FROM LOAN_DTL;

@@ -37,12 +37,15 @@ namespace BaseAPI.Classes
             return mappedList;
         }
 
-        public List<T> ConvertList<TDto>(List<TDto> list) where TDto : BaseDTO<T>, new()
+        public static List<TResult> ConvertList<TDto, TResult>(List<TDto>? list) where TDto : BaseDTO<TResult>, new()
         {
-            List<T> convertedList = new ();
+            List<TResult> convertedList = new ();
 
-            foreach (var item in list)
-                convertedList.Add(item.Convert());
+            if (list != null)
+            {
+                foreach (var item in list)
+                    convertedList.Add(item.Convert());
+            }
 
             return convertedList;
         }

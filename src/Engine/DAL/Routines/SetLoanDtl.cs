@@ -29,7 +29,7 @@ namespace Engine.DAL.Routines
             return new List<IDataParameter>()
             {
                 MDB.CreateParameter("IN_ID", EntryData?.Id, MType.Int32),
-                MDB.CreateParameter("IN_LOAN_ID", EntryData?.Loan ?.Id, MType.Int32),
+                MDB.CreateParameter("IN_LOAN_ID", EntryData?.Loan?.Id, MType.Int32),
                 MDB.CreateParameter("IN_INVENTORY_ID", EntryData?.Item?.Id, MType.Int32),
                 MDB.CreateParameter("IN_DESC", EntryData?.Description, MType.Text),                
                 MDB.CreateParameter("IN_LN_STATUS", EntryData?.DetailStatus, MType.String),
@@ -40,8 +40,16 @@ namespace Engine.DAL.Routines
             };
         }
 
-        protected override Result OnResult(MySqlCommand cmd) => BDAL.FetchResult(cmd, OutParameter, GetSPName(),
-            result => result.Data = OutId.Value
-        );
+        protected override Result OnResult(MySqlCommand cmd)
+        {
+            Result result = BDAL.FetchResult(cmd, OutParameter, GetSPName(), result => result.Data = OutId.Value);
+
+            if (result.Status == C.OK && result.Message == C.COMPLETE)
+                result.Data = InventoryDAL.GetInstance(OnException)
+                    .GetLoanDtls(id: (int?)result.Data)?
+                    .FirstOrDefault();
+
+            return result;
+        }
     }
 }

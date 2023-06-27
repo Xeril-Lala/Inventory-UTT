@@ -26,7 +26,7 @@ namespace InventoryAPI.Controllers
 
             result = DAL.SetItem(itemDTO.Convert());
 
-            if(result != null)
+            if (result != null)
                 result.Data = new ItemDTO((Item?)result?.Data);
 
             return result;
@@ -49,14 +49,15 @@ namespace InventoryAPI.Controllers
                 }
             }
 
-            return new {
+            return new
+            {
                 fileCount = files.Count,
                 size,
             };
         });
 
         [HttpGet]
-        public Result GetItems([FromBody] JsonElement obj) => RequestResponse(() => 
+        public Result GetItems([FromBody] JsonElement obj) => RequestResponse(() =>
         {
             var jObj = JsonObject.Create(obj);
 
@@ -76,7 +77,7 @@ namespace InventoryAPI.Controllers
 
         [HttpGet("{id}")]
         public Result GetItem(int id) => RequestResponse(() =>
-        { 
+        {
             return new ItemDTO(DAL.GetItems(id)?.FirstOrDefault());
         });
 
@@ -86,14 +87,14 @@ namespace InventoryAPI.Controllers
         #region Excel Methods
         private void ExcelItemProcessor(XLWorkbook wb)
         {
-            if(wb.Worksheets.Count > 0)
+            if (wb.Worksheets.Count > 0)
             {
                 var ws = wb.Worksheet(1);
                 var lastRow = ws.LastRowUsed();
 
                 int maxRow = lastRow.RowNumber();
 
-                for(int rowPos = 2; rowPos <= maxRow; rowPos++)
+                for (int rowPos = 2; rowPos <= maxRow; rowPos++)
                 {
                     var row = ws.Row(rowPos);
 
@@ -117,7 +118,7 @@ namespace InventoryAPI.Controllers
                             .GetAllAssets(value: location)
                             .FirstOrDefault();
 
-                        if(oModel == null && !string.IsNullOrEmpty(model))
+                        if (oModel == null && !string.IsNullOrEmpty(model))
                         {
                             var oBrand = string.IsNullOrEmpty(brand) ? null : DAL
                                 .GetAllAssets(value: brand)
@@ -125,7 +126,8 @@ namespace InventoryAPI.Controllers
 
                             if (oBrand == null && !string.IsNullOrEmpty(brand))
                             {
-                                var brandResult = DAL.SetAsset(new Asset() {
+                                var brandResult = DAL.SetAsset(new Asset()
+                                {
                                     Code = U.GenerateRandomCode(),
                                     Value = brand,
                                     Key1 = C.BRAND,
@@ -139,7 +141,8 @@ namespace InventoryAPI.Controllers
                                 oBrand = (Asset?)brandResult?.Data;
                             }
 
-                            var modelResult = DAL.SetAsset(new Asset() {
+                            var modelResult = DAL.SetAsset(new Asset()
+                            {
                                 Code = U.GenerateRandomCode(),
                                 Value = model,
                                 Desc1 = model,
@@ -154,9 +157,10 @@ namespace InventoryAPI.Controllers
                             oModel = (Asset?)modelResult?.Data;
                         }
 
-                        if(oLocation == null && !string.IsNullOrEmpty(location))
+                        if (oLocation == null && !string.IsNullOrEmpty(location))
                         {
-                            var locationResult = DAL.SetAsset(new Asset() {
+                            var locationResult = DAL.SetAsset(new Asset()
+                            {
                                 Code = U.GenerateRandomCode(),
                                 Value = location,
                                 Desc1 = location,
@@ -172,10 +176,10 @@ namespace InventoryAPI.Controllers
 
                         var oItem = DAL.GetItems(customId: customId)?.FirstOrDefault();
                         int? id = null;
-                        DateTime acquisition = DateTime.Now;
+                        DateTime? acquisition = DateTime.Now;
 
 
-                        if(oItem != null)
+                        if (oItem != null)
                         {
                             id = oItem.Id;
                             acquisition = oItem.Acquisition;
@@ -198,7 +202,8 @@ namespace InventoryAPI.Controllers
                         if (result?.Status == C.ERROR)
                             throw new Exception($"Cant Generate Item from Excel! Row: {row}");
 
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         //var cell = row.LastCellUsed();
                         //row.Cell(cell.Address.ColumnNumber + 1).Value = ex.Message;

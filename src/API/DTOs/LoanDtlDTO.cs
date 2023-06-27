@@ -46,7 +46,10 @@ namespace InventoryAPI.DTOs
                 itemDto.Map(obj.Item);
 
             if (obj.Loan != null)
+            {
+                obj.Loan.Items = new List<LoanDtl>();
                 loanDto.Map(obj.Loan);
+            }
 
             Id = obj.Id;
             Item = itemDto;
