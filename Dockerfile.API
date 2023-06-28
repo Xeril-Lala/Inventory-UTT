@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /app
+COPY ./src/ ./
+
+# Building binaries
+RUN dotnet restore
+RUN dotnet publish -c Release -o out
+
+WORKDIR /app/out
+
+ARG DB_CONNECTION
+ARG API_KEY
+
+# Adding Configurations
+RUN mv ./appsettings.Docker.json ./appsettings.json
+
+RUN sed -i "s/\${API_KEY}/$API_KEY/g" ./appsettings.json
+RUN sed -i "s/\${DB_CONNECTION}/$DB_CONNECTION/g" ./appsettings.json
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+COPY --from=build /app/out/ .
+
+#Getting Fonts
+COPY ./fonts/* /usr/share/fonts/
+
+ENTRYPOINT [ "dotnet", "InventoryAPI.dll" ]
