@@ -13,7 +13,7 @@ namespace InventoryAPI.DTOs
         {
         }
 
-        public LoanModeDTO(LoanMode obj) : base(obj) 
+        public LoanModeDTO(LoanMode? obj) : base(obj) 
         {
         }
 

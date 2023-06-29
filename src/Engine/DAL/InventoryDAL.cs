@@ -3,6 +3,7 @@ using Engine.BO.Classes;
 using Engine.Constants;
 using Engine.DAL.Routines;
 using Engine.Services;
+using System.Diagnostics;
 using System.Linq;
 using D = Engine.BL.Delegates;
 using V = Engine.BO.Validate;
@@ -38,7 +39,6 @@ namespace Engine.DAL
             AddSP(new SetLoan(this, OnError));
             AddSP(new SetLoanDtl(this, OnError));
             AddSP(new SetLoanMode(this, OnError));
-            AddSP(new SetLoanLocation(this, OnError));
             AddSP(new SetInventory(this, OnError));
             AddSP(new GetAssetGroup(this, OnError));
             AddSP(new GetInventory(this, OnError));
@@ -64,9 +64,6 @@ namespace Engine.DAL
 
         public Result? SetLoanMode(LoanMode mode)
             => RunSP(GetSP<SetLoanMode>(), mode);
-
-        public Result? SetLoanLocation(LoanLocation mode)
-            => RunSP(GetSP<SetLoanLocation>(), mode);
 
         public Result? SetItem(Item item) 
             => RunSP(GetSP<SetInventory>(), item);
@@ -261,6 +258,27 @@ namespace Engine.DAL
                 && (string.IsNullOrEmpty(value)       || x.Value?.Contains(value) == true)
                 && (status == null                    || x.IsEnabled))
             .ToList();
+        }
+
+        public List<LoanMode> GetLoanModes()
+        {
+            var model = new List<LoanMode>();
+
+            TransactionBlock(this, () => {
+
+                var cmd = CreateCommand("SELECT * FROM LOAN_MODE", System.Data.CommandType.Text);
+
+                model = ReaderPopulationBlock<LoanMode>(cmd, null, "GetLoanModes", rdr
+                => new()
+                {
+                    Code = V.Instance.getDefaultStringIfDBNull(rdr["LM_CODE"]),
+                    Duration = V.Instance.getDefaultDoubleIfDBNull(rdr["DURATION"]),
+                    Unit = V.Instance.getDefaultStringIfDBNull(rdr["DURATION_UNIT"])
+                });
+
+            }, (ex, msg) => OnError?.Invoke(ex, msg));
+
+            return model;
         }
 
     }

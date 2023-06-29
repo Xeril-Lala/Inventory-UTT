@@ -120,13 +120,13 @@ namespace Test
             Desc1 = "TEST - LOCATION"
         };
 
-        public static LoanLocation GetLoanLocation() => new ()
-        {
-            Loan = GetLoan(),
-            Location = GetLocation(),
-            Description = "Creating a Demo location",
-            Status = Status.DISABLED,
-            TxnUser = TestUtils.GetTestingUser(),
-        };
+        //public static LoanLocation GetLoanLocation() => new ()
+        //{
+        //    Loan = GetLoan(),
+        //    Location = GetLocation(),
+        //    Description = "Creating a Demo location",
+        //    Status = Status.DISABLED,
+        //    TxnUser = TestUtils.GetTestingUser(),
+        //};
     }
 }

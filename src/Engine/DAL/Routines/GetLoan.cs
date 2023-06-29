@@ -66,26 +66,26 @@ namespace Engine.DAL.Routines
                     Items = new List<LoanDtl>()
                 };
 
-                var locationCode = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_CODE"]);
+                //var locationCode = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_CODE"]);
 
-                if(!string.IsNullOrEmpty(locationCode))
-                {
-                    var location = new LoanLocation()
-                    {
-                        Description = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_DESCRIPTION"]),
-                        Loan = loan,
-                        Location = new ()
-                        {
-                            Code = locationCode,
-                            Key1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_GROUP"]),
-                            Key2 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_SGROUP"]),
-                            Key3 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_AGROUP"]),
-                            Value = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_VALUE"])
-                        },
-                    };
+                //if(!string.IsNullOrEmpty(locationCode))
+                //{
+                //    var location = new LoanLocation()
+                //    {
+                //        Description = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_DESCRIPTION"]),
+                //        Loan = loan,
+                //        Location = new ()
+                //        {
+                //            Code = locationCode,
+                //            Key1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_GROUP"]),
+                //            Key2 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_SGROUP"]),
+                //            Key3 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_AGROUP"]),
+                //            Value = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_VALUE"])
+                //        },
+                //    };
 
-                    loan.Location = location;
-                }
+                //    loan.Location = location;
+                //}
 
                 return loan;
             });

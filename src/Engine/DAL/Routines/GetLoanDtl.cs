@@ -74,27 +74,6 @@ namespace Engine.DAL.Routines
                     Items = new List<LoanDtl>()
                 };
 
-                var locationCode = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_CODE"]);
-
-                if (!string.IsNullOrEmpty(locationCode))
-                {
-                    var location = new LoanLocation()
-                    {
-                        Description = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_DESCRIPTION"]),
-                        Loan = currentLoan,
-                        Location = new()
-                        {
-                            Code = locationCode,
-                            Key1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_GROUP"]),
-                            Key2 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_SGROUP"]),
-                            Key3 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_AGROUP"]),
-                            Value = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_VALUE"])
-                        },
-                    };
-
-                    currentLoan.Location = location;
-                }
-
                 var loanDtl = new LoanDtl
                 {
                     Id = V.Instance.getDefaultIntIfDBNull(rdr["LOAN_DTL_ID"]),
@@ -112,7 +91,7 @@ namespace Engine.DAL.Routines
                             Code = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_CODE"]),
                             Value = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_VALUE"]),
                             Key1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_GROUP"]),
-                            Key2 = V.Instance.getDefaultStringIfDBNull(rdr["BRAND_GROUP"]),
+                            Key2 = V.Instance.getDefaultStringIfDBNull(rdr["BRAND_CODE"]),
                             Key3 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_ALTERNATIVE"]),
                             Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_DESC"]),
                             Data = Array.Empty<byte>()
@@ -123,7 +102,22 @@ namespace Engine.DAL.Routines
                     Loan = currentLoan
                 };
 
-                currentLoan.Items.Add(loanDtl);
+                var locationCode = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_CODE"]);
+
+                if (!string.IsNullOrEmpty(locationCode))
+                {
+                    var location = new Asset()
+                    {
+                        Code = locationCode,
+                        Key1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_GROUP"]),
+                        Key2 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_SGROUP"]),
+                        Key3 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_AGROUP"]),
+                        Value = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_VALUE"]),
+                        Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["LOCATION_DESCRIPTION"]),
+                    };
+
+                    loanDtl.Item.Location = location;
+                }
                 
                 return loanDtl;
             });

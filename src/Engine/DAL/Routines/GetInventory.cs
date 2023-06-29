@@ -56,7 +56,7 @@ namespace Engine.DAL.Routines
                         Code = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_CODE"]),
                         Value = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_VALUE"]),
                         Key1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_GROUP"]),
-                        Key2 = V.Instance.getDefaultStringIfDBNull(rdr["BRAND_GROUP"]),
+                        Key2 = V.Instance.getDefaultStringIfDBNull(rdr["BRAND_CODE"]),
                         Key3 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_ALTERNATIVE"]),
                         Desc1 = V.Instance.getDefaultStringIfDBNull(rdr["MODEL_DESC"]),
                         Data = Array.Empty<byte>()

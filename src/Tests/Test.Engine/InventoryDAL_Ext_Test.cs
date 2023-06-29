@@ -82,5 +82,18 @@ namespace Test.Engine
 
             Assert.IsTrue(isSuccess, msg);
         }
+
+        [TestMethod]
+        public void Test_5LoanMode()
+        {
+            var isSuccess = SPTest(dal => new() 
+            { 
+                Status = C.OK,
+                Message = C.COMPLETE,
+                Data = dal.GetLoanModes() 
+            }, out string? msg);
+
+            Assert.IsTrue(isSuccess, msg);
+        }
     }
 }

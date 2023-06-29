@@ -120,15 +120,16 @@ CALL SET_LOAN_DTL(
 );
 SELECT @msg, @m_id_dtl DTL_ID;
 
-CALL SET_LOAN_LOCATION(
-	@m_id,
-    'LOC_A',
-    'Ubication for test',
-    'DBA',
-    true,
-    @msg
-);
-SELECT @msg;
+## TODO: Remove Loan Location SP
+# CALL SET_LOAN_LOCATION(
+# 	@m_id,
+#     'LOC_A',
+#     'Ubication for test',
+#     'DBA',
+#     true,
+#     @msg
+# );
+# SELECT @msg;
 
 CALL GET_ASSET_GROUP(
 	NULL,
@@ -217,3 +218,9 @@ AND routine_schema = 'INVENTORY_UTT';
 SELECT * FROM LOAN_MODE;
 SELECT * FROM LOAN;
 SELECT * FROM LOAN_DTL;
+SELECT * FROM ASSET WHERE ASSET_CODE = 'AISBRJhKPi';
+SELECT * from VW_ASSET_GROUP WHERE CHILD_CODE = 'AISBRJhKPi';
+SELECT * from VW_INVENTORY WHERE INVENTORY_ID = 100;
+SELECT * FROM VW_LOAN_DTL WHERE INVENTORY_ID = 100;
+
+SELECT * FROM LOAN_MODE;

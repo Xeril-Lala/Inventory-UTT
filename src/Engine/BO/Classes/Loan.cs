@@ -19,7 +19,7 @@ namespace Engine.BO
         public string? ResponsibleContact { get; set; }
         public string? ResponsibleContact2 { get; set; }
         public List<LoanDtl> Items { get; set; }
-        public LoanLocation? Location { get; set; }
+        //public LoanLocation? Location { get; set; }
 
         public Loan()
         {

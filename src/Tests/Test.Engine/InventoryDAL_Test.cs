@@ -118,19 +118,19 @@ namespace Test.Engine
             Assert.IsTrue(isSuccess, msg);
         }
 
-        [TestMethod]
-        public void Test_9SetLoanLocation()
-        {
-            bool isSuccess = false;
-            string? msg = string.Empty;
+        //[TestMethod]
+        //public void Test_9SetLoanLocation()
+        //{
+        //    bool isSuccess = false;
+        //    string? msg = string.Empty;
 
-            isSuccess = SPTest(
-                dal => dal.SetLoanLocation(DataSets.GetLoanLocation()),
-                out msg
-            );
+        //    isSuccess = SPTest(
+        //        dal => dal.SetLoanLocation(DataSets.GetLoanLocation()),
+        //        out msg
+        //    );
 
-            Assert.IsTrue(isSuccess, msg);
-        }
+        //    Assert.IsTrue(isSuccess, msg);
+        //}
 
         [TestMethod]
         public void Test_9StressTest()
