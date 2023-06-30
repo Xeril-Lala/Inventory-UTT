@@ -17,7 +17,7 @@ const Sidebar = ({children}) => {
     const toggle = () => setIsOpen (!isOpen);
     const menuItem=[
         {
-            path:"/",
+            path:"/Login",
             name:"Login",
             icon:<FaUserAlt/>
         },
@@ -27,7 +27,7 @@ const Sidebar = ({children}) => {
             icon:<FaTh/>
         },
         {
-            path:"/activeloans",
+            path:"/",
             name:"Prestamos Activos",
             icon:<FaThList/>
         },
@@ -50,23 +50,23 @@ const Sidebar = ({children}) => {
     ]
     return (
         <div className="flex font-mono ">
-           <div style={{width: isOpen ? "270px" : "70px"}} className="bg-zinc-900 h-[100vh] w-[270px] transition-all duration-500">
-               <div className="flex items-center p-6">
-                   <h1 style={{display: isOpen ? "block" : "none"}} className="text-2xl text-white italic font-bold">UTT</h1>
-                   <div style={{marginLeft: isOpen ? "125px" : "0px"}} className="flex text-xl text-white ">
-                       <FaBars onClick={toggle}/>
-                   </div>
-               </div>
-               {
-                   menuItem.map((item, index)=>(
-                       <NavLink to={item.path} key={index} className="flex text-white px-6 py-4 gap-3 transition-all duration-500 hover:bg-blue-300 " activeclassName="bg-blue-300 text-black">
-                           <div className="text-md p-1">{item.icon}</div>
-                           <div style={{display: isOpen ? "block" : "none"}} className="text-md ">{item.name}</div>
-                       </NavLink>
-                   ))
-               }
-           </div>
-           <main className="w-full p-10 bg-blue-50">{children}</main>
+            <div style={{width: isOpen ? "270px" : "70px"}} className="bg-zinc-900 h-[100vh] w-[270px] transition-all duration-500">
+                <div className="flex items-center p-6">
+                    <h1 style={{display: isOpen ? "block" : "none"}} className="text-2xl text-white italic font-bold">UTT</h1>
+                    <div style={{marginLeft: isOpen ? "125px" : "0px"}} className="flex text-xl text-white ">
+                        <FaBars onClick={toggle}/>
+                    </div>
+                </div>
+                {
+                    menuItem.map((item, index)=>(
+                        <NavLink to={item.path} key={index} className="flex text-white px-6 py-4 gap-3 transition-all duration-500 hover:bg-blue-300 " activeclassName="bg-blue-300 text-black">
+                            <div className="text-md p-1">{item.icon}</div>
+                            <div style={{display: isOpen ? "block" : "none"}} className="text-md ">{item.name}</div>
+                        </NavLink>
+                    ))
+                }
+            </div>
+            <main className="w-full p-10 bg-blue-50">{children}</main>
         </div>
     );
 };

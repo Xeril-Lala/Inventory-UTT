@@ -15,7 +15,8 @@ const App = () => {
       <Sidebar>
         <Routes>
 
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<ActiveLoans />} />
+          <Route path="/Login" element={<Login />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/activeloans" element={<ActiveLoans />} />
           <Route path="/historical" element={<Historical />} />
