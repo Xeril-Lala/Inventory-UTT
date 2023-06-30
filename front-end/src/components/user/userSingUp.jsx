@@ -1,8 +1,12 @@
+<<<<<<< Updated upstream
 import react from 'react';
 import DataTable from 'react-data-table-component';
 //import axios from "axiois";
 
 
+=======
+import { react, useEffect, useState } from 'react';
+>>>>>>> Stashed changes
 
 
 const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 2)}</pre>;
@@ -32,7 +36,6 @@ const data = [
 ]
 
 const UserSingUp = () => {
-
 
 return (
 
