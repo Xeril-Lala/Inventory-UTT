@@ -31,7 +31,7 @@ const data = [
     },
 ]
 
-const UserSingUp = () => {
+const Equipment = () => {
 
 
 return (
@@ -84,4 +84,4 @@ return (
 );
 };
 
-export default UserSingUp;
+export default Equipment;

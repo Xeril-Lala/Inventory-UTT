@@ -42,6 +42,11 @@ const Sidebar = ({children}) => {
             icon:<FaCommentAlt/>
         },
         {
+            path:"/equipment",
+            name:"Alta Equipos",
+            icon:<FaCommentAlt/>
+        },
+        {
             path:"/userSingUp",
             name:"Alta Usuarios",
             icon:<FaUserAlt/>
@@ -49,7 +54,8 @@ const Sidebar = ({children}) => {
         
     ]
     return (
-        <div className="flex font-mono ">
+        <div className="flex font-mono">
+            
             <div style={{width: isOpen ? "270px" : "70px"}} className="bg-zinc-900 h-[100vh] w-[270px] transition-all duration-500">
                 <div className="flex items-center p-6">
                     <h1 style={{display: isOpen ? "block" : "none"}} className="text-2xl text-white italic font-bold">UTT</h1>
