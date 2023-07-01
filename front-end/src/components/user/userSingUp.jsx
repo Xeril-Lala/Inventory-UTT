@@ -1,62 +1,31 @@
-<<<<<<< Updated upstream
-import react from 'react';
+import react from 'react'
 import DataTable from 'react-data-table-component';
-//import axios from "axiois";
 
+const UserSingUp = (props) => {
+    console.log(props)
 
-=======
-import { react, useEffect, useState } from 'react';
->>>>>>> Stashed changes
-
-
-const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 2)}</pre>;
-
-const columns = [
-    {
-        name: 'Title',
-        selector: row => row.title,
-    },
-    {
-        name: 'Year',
-        selector: row => row.year,
-    },
-];
-
-const data = [
-    {
-        id: 1,
-        title: 'Beetlejuice',
-        year: '1988',
-    },
-    {
-        id: 2,
-        title: 'Ghostbusters',
-        year: '1984',
-    },
-]
-
-const UserSingUp = () => {
-
+    const [ usersTest ] =  props;
+    const columns = [
+        {
+            name: 'Nombre',
+            selector: row => row.title,
+            sortable: true,
+        },
+    ];
 return (
 
 
 
     
-<div class="w-full h-auto text-3xl">
-    <div class="w-full h-auto text-3xl mb-12">
+<div className="w-full h-auto text-3xl">
+    <div className="w-full h-auto text-3xl mb-12">
         Formulario para alta de nuevo usuario
     </div>
 
     <div className="w-[100%] flex direction-col">
 
-        <div className="w-[60%] bg-red-900">
-        <DataTable
-            columns={columns}
-            data={data}
-            expandableRows
-            expandableRowsComponent={ExpandedComponent}
-        />
-        </div>
+        <div className="w-[60%] bg-red-300">
+    
 
         <div className="grid grid-cols-2  gap-4 bg-white rounded-md m-3 p-10 w-[40%] text-base font-mono shadow-md">
             <div className="col-span-2 row-start-2 flex flex-nowrap flex-col">

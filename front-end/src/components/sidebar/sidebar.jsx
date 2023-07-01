@@ -47,10 +47,10 @@ const Sidebar = ({children}) => {
             icon:<FaCommentAlt/>
         },
         {
-            path:"/userSingUp",
+            path:"/userList",
             name:"Alta Usuarios",
             icon:<FaUserAlt/>
-        }
+        },
         
     ]
     return (

@@ -1,30 +1,32 @@
-import { react, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import UserSingUp from '../user/userSingUp.jsx';
+import DataTable from 'react-data-table-component';
 import axios from 'axios';
-import userSingUp from '../user/userSingUp.jsx';
 
+    
+    
 
+const UserList = () => {
+    const [user, getUsers] = useState('');
+    const url = 'https://jsonplaceholder.typicode.com/';
+    
+    useEffect(() =>{
+        getAllUsers();
+    }, []);
 
-export default function userList(){
+    const getAllUsers = () => {
+        axios.get(`${url}users`)
+        .then((response) => {
+            const allUsers = response.data.name;
+            getUsers(allUsers);
+        })
+        .catch(error => console.error(`Error: ${error}`));
+    }
 
-const URL = "http://localhost:8080/api/";
-const test = "Asset/fdUaTHTfgj";
-const [ data, getData] = useState('');
-
-
-
-useEffect(() => {
-    testEndPoint();
-},[]);  
-
-const testEndPoint = () => {
-    axios.get(`${URL}/Assets`)
-    .then((response) => {
-        const allData = response.data.data.group;
-        getData(allData);
-    })
-    .catch (error => console.error(`Error: ${error}`));
+return (
+    
+    <UserSingUp data={user}/>
+)
 }
-    return (
-        <userSingUp data={data}/>
-    )
-}
+
+export default UserList;

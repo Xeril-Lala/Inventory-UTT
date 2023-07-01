@@ -1,4 +1,4 @@
-import React from 'react';
+import {react, useEffect, useStat} from 'react';
 import Sidebar from './components/sidebar/sidebar.jsx';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Historical from './components/historical/historical.jsx';
@@ -7,7 +7,7 @@ import Form from './components/form/form.jsx';
 import Login from './components/login/login.jsx'
 import Inventory from './components/inventory/inventoryStatus.jsx';
 import Equipment from './components/equipment/equipment.jsx';
-import UserSingUp from './components/user/userSingUp.jsx';
+import UserList from './components/user/userList.jsx';
 import './App.css';
 
 const App = () => {
@@ -22,8 +22,8 @@ const App = () => {
           <Route path="/activeloans" element={<ActiveLoans />} />
           <Route path="/historical" element={<Historical />} />
           <Route path="/form" element={<Form />} />
-          <Route path="/Equipment" element={<Equipment />} />
-          <Route path="/userSingUp" element={<UserSingUp />} />
+          <Route path="/userList" element={<UserList />} />
+
           
         </Routes>
       </Sidebar>
