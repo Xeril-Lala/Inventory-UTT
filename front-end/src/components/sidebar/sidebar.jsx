@@ -47,7 +47,7 @@ const Sidebar = ({children}) => {
             icon:<FaCommentAlt/>
         },
         {
-            path:"/userList",
+            path:"/userSingUp",
             name:"Alta Usuarios",
             icon:<FaUserAlt/>
         },
@@ -65,7 +65,7 @@ const Sidebar = ({children}) => {
                 </div>
                 {
                     menuItem.map((item, index)=>(
-                        <NavLink to={item.path} key={index} className="flex text-white px-6 py-4 gap-3 transition-all duration-500 hover:bg-blue-300 " activeclassName="bg-blue-300 text-black">
+                        <NavLink to={item.path} key={index} className="flex text-white px-6 py-4 gap-3 transition-all duration-500 hover:bg-blue-300 " activeclassname="bg-blue-300 text-black">
                             <div className="text-md p-1">{item.icon}</div>
                             <div style={{display: isOpen ? "block" : "none"}} className="text-md ">{item.name}</div>
                         </NavLink>

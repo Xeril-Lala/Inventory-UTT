@@ -7,7 +7,7 @@ import Form from './components/form/form.jsx';
 import Login from './components/login/login.jsx'
 import Inventory from './components/inventory/inventoryStatus.jsx';
 import Equipment from './components/equipment/equipment.jsx';
-import UserList from './components/user/userList.jsx';
+import UserSingUP from './components/user/userSingUp.jsx';
 import './App.css';
 
 const App = () => {
@@ -22,7 +22,7 @@ const App = () => {
           <Route path="/activeloans" element={<ActiveLoans />} />
           <Route path="/historical" element={<Historical />} />
           <Route path="/form" element={<Form />} />
-          <Route path="/userList" element={<UserList />} />
+          <Route path="/userSingUp" element={<UserSingUP />} />
 
           
         </Routes>
