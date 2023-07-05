@@ -1,54 +1,99 @@
-import react from 'react';
-
-
+import react, { useState } from 'react';
+import { sha256 } from 'js-sha256';
+import SecurityService from '../../services/Security';
+import {C} from '../../constants/C';
+import { LoginLocalStorage } from '../../constants/Utils';
+import { AuthContext } from '../../context/Context';
+import { Navigate } from 'react-router-dom';
 
 const Login = () => {
 
+  const { setUserInfo, userInfo } = react.useContext(AuthContext);
+  const request = new SecurityService();
+  const [userValue, setUser] = useState('');
+  const [passwordValue, setPassword] = useState('');
+  const [formMsg, setMsg] = useState('');
 
-return (
+  const auth = (event) => {
+    event.preventDefault();
 
+    if(userValue && passwordValue) {
+      var hashedPassword = sha256(passwordValue);
 
-<section class=" pt-20  flex items-center justify-center">
+      request.authLogin(
+        userValue,
+        hashedPassword,
+        res => {
 
+          if(!res.data?.token || res.data == C.status.common.no_auth) {
+            setMsg('Usuario o Contraseña incorrectos');
+          } else {
+            setUserInfo(res.data);
+            setMsg('');
+          }
 
-  <div class="flex rounded-md shadow-lg max-w-3xl p-5 items-center bg-white">
+        }
+      );
+    } else {
+      setMsg('Favor de llenar los campos necesarios!');
+    }
 
+    event.target.reset();
+  }
 
-    <div class="md:w-1/2 px-8 md:px-16">
-      <h2 class="font-normal text-2xl text-[#4d0f1c]">Login</h2>
-      <p class="text-xs mt-4 text-[#4d0f1c]">If you are already a member, easily log in</p>
+  var user = typeof userInfo === 'function' ? userInfo() : null;
 
-      <form action="" class="flex flex-col gap-4 text-sm">
-        <input class="p-2 mt-8 rounded-md border" type="email" name="email" placeholder="Email"/>
-        <div class="relative">
-          <input class="p-2 rounded-md border w-full" type="password" name="password" placeholder="Password"/>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-eye absolute top-1/2 right-3 -translate-y-1/2" viewBox="0 0 16 16">
-            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
-            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
-          </svg>
+  if (user?.token) {
+    return <Navigate to="/" replace />;
+  } else return (
+    <section class="pt-20 flex items-center justify-center">
+      <div class="flex border rounded-md shadow-lg max-w-3xl p-5 items-center bg-white">
+
+        <div class="md:w-1/2 px-8 md:px-16">
+          <h2 class="font-normal text-2xl text-[#4d0f1c]">Iniciar Sesión</h2>
+
+          <form onSubmit={auth} class="flex flex-col gap-4 text-sm">
+
+            <input
+              class="p-2 mt-8 rounded-md border"
+              onChange={e => setUser(e.target.value)}
+              name='username'
+              placeholder="Usuario"
+              autoFocus="true"
+              autoComplete='off'
+            />
+
+            <input
+              class="p-2 rounded-md border w-full"
+              onChange={e => setPassword(e.target.value)}
+              name='password'
+              type="password"
+              placeholder="Contraseña"
+            />
+
+            <p className={ 
+                `text-red-500 text-xs italic  ${formMsg ? '' : 'hidden'} `
+              }
+            >
+              {formMsg}
+            </p>
+
+            <button type='submit' class="bg-[#4d0f1c] rounded-md text-white py-2 hover:scale-105 duration-300">Siguiente</button>
+          </form>
+
+          <div class="mt-5 text-xs border-b border-[#4d0f1c] py-4 text-[#4d0f1c]">
+            <a href="#">¿Olvidó su contraseña?</a>
+          </div>
         </div>
-        <button class="bg-[#4d0f1c] rounded-md text-white py-2 hover:scale-105 duration-300">Login</button>
-      </form>
 
-      <div class="mt-5 text-xs border-b border-[#4d0f1c] py-4 text-[#4d0f1c]">
-        <a href="#">Forgot your password?</a>
+        <div class="md:block hidden w-1/2">
+          {/* TODO: Add your images on Constants JS */}
+          <img class="rounded-md" src="https://www.coracyt.gob.mx/images/2021/noviembre/UTT_CONFERENCIAS-F-4.jpg" />
+        </div>
+
       </div>
-
-      <div class="mt-3 text-xs flex justify-between items-center text-[#4d0f1c]">
-        <p>Don't have an account?</p>
-        <button class="py-2 px-5 bg-white border rounded-md hover:scale-110 duration-300">Register</button>
-      </div>
-    </div>
-
-
-    <div class="md:block hidden w-1/2">
-      <img class="rounded-md" src="https://www.coracyt.gob.mx/images/2021/noviembre/UTT_CONFERENCIAS-F-4.jpg"/>
-    </div>
-  </div>
-</section>
-
-
-    );
+    </section>
+  );
 };
 
 
