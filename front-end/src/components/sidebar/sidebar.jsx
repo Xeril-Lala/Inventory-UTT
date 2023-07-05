@@ -54,7 +54,7 @@ const Sidebar = ({children}) => {
         
     ]
     return (
-        <div className="flex font-mono">
+        <div className="flex font-mono bg-zinc-900 height-[100%]">
             
             <div style={{width: isOpen ? "270px" : "70px"}} className="bg-zinc-900 h-[100vh] w-[270px] transition-all duration-500">
                 <div className="flex items-center p-6">

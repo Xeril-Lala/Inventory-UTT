@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { AiFillEdit } from 'react-icons/ai';
 
 const UserSelected = ({ item }) => {
   const [name, setName] = useState('');
@@ -31,10 +32,10 @@ const UserSelected = ({ item }) => {
   };
 
   return (
-    <div>
+    <div className="w-[100%]">
       {item && (
         <div>
-          <div className="grid grid-cols-2 gap-4 bg-white rounded-md p-12 w-[20%] text-base font-mono shadow-md fixed right-[40%]">
+          <div className="grid grid-cols-2 gap-4 p-12 text-base font-mono relative">
             <div className="col-span-2 row-start-2 flex flex-nowrap flex-col">
               <p>Nombre(s)</p>
               <input
@@ -99,8 +100,13 @@ const UserSelected = ({ item }) => {
                 readOnly={readOnly}
               />
             </div>
+            <button
+              onClick={handleEditClick}
+              className="absolute top-2 right-2 bg-transparent text-gray-600 hover:text-green-500  active:text-green-700 "
+            >
+              <AiFillEdit />
+            </button>
           </div>
-          <button onClick={handleEditClick}>Editar</button>
         </div>
       )}
     </div>
