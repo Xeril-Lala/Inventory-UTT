@@ -12,7 +12,7 @@ const UserForm = () => {
             <div className="flex justify-center">
                 
                 <button 
-                    className="hover:bg-green-500 hover:transition-colors hover:duration-300 bg-slate-900 text-white p-2 text-base w-[50%] rounded-md shadow-md" 
+                    className="hover:bg-green-500 hover:transition-colors hover:duration-300 active:text-green-700 rounded p-4 shadow-md font-mono text-base font-medium bg-red-950 text-white  w-[50%]  focus:bg-green-300" 
                     onClick={handleButtonClick}
                 >
                     Nuevo Usuario
