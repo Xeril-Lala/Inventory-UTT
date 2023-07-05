@@ -1,6 +1,9 @@
 import axios from "axios";
+import {C} from "../constants/C";
 
 class HttpBase {
+    static onError = () => {};
+
     constructor({baseUrl}) {
         if (!baseUrl) {
             throw new Error('Required parameters missing');
@@ -9,9 +12,24 @@ class HttpBase {
         this.baseUrl = baseUrl;
     }
 
-    authenticationHeader(token)
-    {
+    authenticationHeader(token) {
         return {'Authorization': `Bearer ${token}`}
+    }
+
+    getResponse({
+        result, 
+        callback = () => {},  
+        errorCallback = () => {}
+    }) {
+
+        if(result.status == C.status.common.ok) {
+            if (typeof callback === 'function') {
+                callback(result);
+            }
+        } else {
+            this.broadcastError(result, errorCallback);
+        }
+
     }
 
     request({
@@ -30,20 +48,32 @@ class HttpBase {
         }
 
         axios({
-            url: new URL(endpoint, this.baseUrl).href,
+            url: `${this.baseUrl}/${endpoint}`,
             ...options,
         }).then(res => {
-            if (typeof this.callback === 'function') {
-                callback(res.data);
-            }
-        }).catch(error => {
-            console.error(error);
 
-            // TODO: Implement generic error as static prop!
-            if (typeof this.errorCallback === 'function') {
-                errorCallback(error);
-            }
-        });
+            this.getResponse({
+                result: res.data, 
+                callback: callback,
+                errorCallback: errorCallback
+            });
+
+        }).catch(error => this.broadcastError(error, errorCallback));
+    }
+
+    broadcastError(error, errorCallback = () => {}) {
+
+        console.error(error);
+
+        // TODO: Implement generic error as static prop!
+        if (typeof errorCallback === 'function') {
+            errorCallback(error);
+        }
+
+        if (typeof HttpBase.onError === 'function') {
+            HttpBase.onError(error);
+        }
+
     }
 
 }

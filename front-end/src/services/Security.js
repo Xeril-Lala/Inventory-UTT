@@ -1,26 +1,26 @@
 import HttpBase from "./HttpBase";
-import C from "../constants/C";
+import {C} from "../constants/C";
 
 
 class SecurityService extends HttpBase {
 
-    constructor() {x
-        let x = C.api_url();
-
+    constructor() {
         super({
-            baseUrl: `${C.api_url()}/Security`,
-            
+            baseUrl: `${C.api_url()}Security`,        
         });
     }
 
     authLogin(username, password, callback = () => { }) {
         this.request({
-            endpoint: '/login',
+            endpoint: 'login',
             options: {
                 method: 'post',
                 data: {
                     "user": username,
                     "password": password
+                },
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             },
             callback: callback
@@ -30,7 +30,7 @@ class SecurityService extends HttpBase {
     // Check & Refresh token
     checkToken(token, callback = () => { }) {
         this.request({
-            endpoint: '/checkToken',
+            endpoint: 'checkToken',
             token: token,
             options: {
                 method: 'get',

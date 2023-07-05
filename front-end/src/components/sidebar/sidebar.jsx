@@ -5,22 +5,19 @@ import {
     FaUserAlt,
     FaRegChartBar,
     FaCommentAlt,
-    FaShoppingBag,
-    FaThList
+    FaThList,
+    FaSignOutAlt
 }from "react-icons/fa";
 import './sidebar.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink} from 'react-router-dom';
+import { AuthContext } from '../../context/Context';
 
 
 const Sidebar = ({children}) => {
-    const[isOpen ,setIsOpen] = useState(false);
+    const { logout } = React.useContext(AuthContext);
+    const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen (!isOpen);
     const menuItem=[
-        {
-            path:"/",
-            name:"Login",
-            icon:<FaUserAlt/>
-        },
         {
             path:"/inventory",
             name:"Inventario",
@@ -57,14 +54,20 @@ const Sidebar = ({children}) => {
                        <FaBars onClick={toggle}/>
                    </div>
                </div>
-               {
+                {
                    menuItem.map((item, index)=>(
                        <NavLink to={item.path} key={index} className="flex text-white px-6 py-4 gap-3 transition-all duration-500 hover:bg-blue-300 " activeclassName="bg-blue-300 text-black">
                            <div className="text-md p-1">{item.icon}</div>
                            <div style={{display: isOpen ? "block" : "none"}} className="text-md ">{item.name}</div>
                        </NavLink>
                    ))
-               }
+                }
+                <NavLink onClick={logout} to={'/login'} key={100} className="flex text-white px-6 py-4 gap-3 transition-all duration-500 hover:bg-blue-300" >
+                    <div className="text-md p-1">
+                        <FaSignOutAlt/>
+                    </div>
+                    <div style={{display: isOpen ? "block" : "none"}} className="text-md">Cerrar Sesión</div>
+                </NavLink>
            </div>
            <main className="w-full p-10 bg-blue-50">{children}</main>
         </div>
