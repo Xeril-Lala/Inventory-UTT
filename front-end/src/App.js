@@ -51,6 +51,12 @@ const App = () => {
               } 
             />
             <Route 
+              path="/equipment" 
+              element={
+                <Equipment />
+              } 
+            />
+            <Route 
               path="/userSingUp" 
               element={
                 <UserSingUp />

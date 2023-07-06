@@ -37,7 +37,7 @@ const UserSelected = ({ item }) => {
         <div>
           <div className="grid grid-cols-2 gap-4 p-12 text-base font-mono relative">
             <div className="col-span-2 row-start-2 flex flex-nowrap flex-col">
-              <p>Nombre(s)</p>
+              <p>Equipo</p>
               <input
                 type="text"
                 value={name}
@@ -47,19 +47,9 @@ const UserSelected = ({ item }) => {
                 readOnly={readOnly}
               />
             </div>
-            <div className="col-span-2 row-start-3 flex flex-nowrap flex-col">
-              <p>Apellido(s)</p>
-              <input
-                type="text"
-                value={userName}
-                onChange={handleUserNameChange}
-                placeholder="Apellido"
-                className="bg-gray-100 rounded-md p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                readOnly={readOnly}
-              />
-            </div>
+            
             <div className="col-span-2 row-start-4 flex flex-nowrap flex-col">
-              <p>Matricula/Numero de Empleado</p>
+              <p>Numero de Serie</p>
               <input
                 type="number"
                 min="0"

@@ -1,87 +1,132 @@
-import react from 'react';
+import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-//import axios from "axiois";
+import axios from 'axios';
+import EquipmentForm from './equipmentForm.jsx';
+import EquipmentSelected from './equipmentSelected.jsx';
+import './equipmentStyle.css';
+import UserService from '../../services/User.js';
+import HttpBase from '../../services/HttpBase.js';
 
-
-
-
-const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 2)}</pre>;
-
-const columns = [
-    {
-        name: 'Title',
-        selector: row => row.title,
-    },
-    {
-        name: 'Year',
-        selector: row => row.year,
-    },
-];
-
-const data = [
-    {
-        id: 1,
-        title: 'Beetlejuice',
-        year: '1988',
-    },
-    {
-        id: 2,
-        title: 'Ghostbusters',
-        year: '1984',
-    },
-]
 
 const Equipment = () => {
+    const userService = new UserService();
 
+    const [data, setData] = useState([]);
+    const [resource, setResource] = useState('users');
+    const [showForm, setShowForm] = useState(true);
+    const [showSelected, setShowSelected] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
 
-return (
+    useEffect(() => {
 
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`https://jsonplaceholder.typicode.com/${resource}`);
+                setData(response.data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
 
+        };
+        fetchData();
+    }, [resource]);
 
-    
-<div class="w-full h-auto text-3xl">
-    <div class="w-full h-auto text-3xl mb-12">
-        Formulario para alta de nuevo usuario
-    </div>
+    const abc = () => {
+        userService.getUsers({callback: (x) => {
 
-    <div className="w-[100%] flex direction-col">
+            // Data to Data Table
+            // [].map();
+            console.log(x);
+        }});
+    };
 
-        <div className="w-[60%] bg-red-900">
-        <DataTable
-            columns={columns}
-            data={data}
-            expandableRows
-            expandableRowsComponent={ExpandedComponent}
-        />
+    const columns = [
+        {
+            name: 'Equipo',
+            selector: 'name',
+            sortable: true,
+        },
+    ];
+
+    const customStyles = {
+        rows: {
+            style: {
+                minHeight: '4em', // override the row height
+                '&:not(:last-of-type)': {
+                    borderBottomStyle: 'solid',
+                    borderBottomWidth: '0.5px',
+                    borderBottomColor: '#f0f0f0',
+                },
+            },
+        },
+        headCells: {
+            style: {
+                paddingLeft: '8px', // override the cell padding for head cells
+                paddingRight: '8px',
+            },
+        },
+        cells: {
+            style: {
+                paddingLeft: '2em', // override the cell padding for data cells
+                paddingRight: '12em',
+            },
+        },
+        header: {
+            style: {
+                fontSize: '0.8em',
+            },
+        },
+        headRow: {
+            style: {
+                fontSize: '1.5em',
+            },
+        },
+    };
+
+    const handleRowClick = (row) => {
+        setSelectedItem(row);
+        setShowForm(false);
+        setShowSelected(true);
+    };
+
+    const handleBackClick = () => {
+        setSelectedItem(null);
+        setShowForm(true);
+        setShowSelected(false);
+    };
+
+    return (
+        <div className="w-full h-auto text-3xl">
+            <div className="w-full h-auto text-3xl mb-12">Formulario Equipo</div>
+            <div className="w-[100%] flex direction-col ml-16 ">
+                <div className="w-[100%] flex direction-col">
+                    <div className="w-[35%] rounded-md shadow-md bg-white p-10">
+                        <DataTable
+                            title="Equipos Inventariados"
+                            columns={columns}
+                            data={data}
+                            onRowClicked={handleRowClick}
+                            customStyles={customStyles}
+                        />
+                    </div>
+                    <div className="ml-24 w-[50%]">
+                        {showForm && <EquipmentForm />}
+                        {showSelected && (
+                            <div className="bg-white p-12 flex justify-center flex-col items-center rounded-md shadow-md">
+                                <button
+                                    className="hover:bg-green-500 hover:transition-colors hover:duration-300 active:text-green-700 shadow-md font-mono text-base font-medium bg-red-950 text-white p-2 w-[50%] rounded-md focus:bg-green-300"
+                                    onClick={handleBackClick}
+                                >
+                                    Nuevo Equipo
+                                </button>
+                                <EquipmentSelected item={selectedItem} />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div className="grid grid-cols-2  gap-4 bg-white rounded-md m-3 p-10 w-[40%] text-base font-mono shadow-md">
-            <div className="col-span-2 row-start-2 flex flex-nowrap flex-col">
-                Nombre(s)
-                <input type="number" min="0" placeholder="Matricula o Numero de Empleado" class="bg-gray-100 rounded-md p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
-            </div>
-            <div className="col-span-2 row-start-3  flex flex-nowrap flex-col">
-                Apellido(s)
-                <input type="number" min="0" placeholder="Matricula o Numero de Empleado" class="bg-gray-100 rounded-md p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
-            </div>
-            <div className="col-span-2 row-start-4  flex flex-nowrap flex-col">
-                Matricula/Numero de Empleado
-                <input type="number" min="0" placeholder="Matricula o Numero de Empleado" class="bg-gray-100 rounded-md p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
-            </div>
-            <div className="col-span-2 row-start-5  flex flex-nowrap flex-col">
-                Turno
-                <input type="number" min="0" placeholder="Matricula o Numero de Empleado" class="bg-gray-100 rounded-md p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
-            </div>
-            <div className="col-span-2 row-start-6  flex flex-nowrap flex-col">
-                Grupo
-                <input type="number" min="0" placeholder="Matricula o Numero de Empleado" class="bg-gray-100 rounded-md p-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
-            </div>
-        </div>
-    </div>
-
-</div>
-    
-);
+    );
 };
 
 export default Equipment;

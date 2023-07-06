@@ -114,7 +114,7 @@ const UserSignUp = () => {
                         {showSelected && (
                             <div className="bg-white p-12 flex justify-center flex-col items-center rounded-md shadow-md">
                                 <button
-                                    className="hover:bg-green-500 hover:transition-colors hover:duration-300 active:text-green-700 bg-slate-900 text-white p-2 text-base w-[50%] rounded-md shadow-md focus:bg-green-300"
+                                    className="hover:bg-green-500 hover:transition-colors hover:duration-300 active:text-green-700 rounded p-4 shadow-md font-mono text-base font-medium bg-red-950 text-white  w-[50%]  focus:bg-green-300"
                                     onClick={handleBackClick}
                                 >
                                     Nuevo Usuario
