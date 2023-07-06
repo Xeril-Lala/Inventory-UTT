@@ -48,6 +48,11 @@ const Sidebar = ({children}) => {
             name:"Alta Usuarios",
             icon:<FaUserAlt/>
         },
+        {
+            path:"/user",
+            name:"usuario",
+            icon:<FaUserAlt/>
+        },
         
     ]
     return (

@@ -10,12 +10,14 @@ import UserSingUp from './components/user/userSingUp.jsx';
 import './App.css';
 import { BrowserRouter, Outlet, Route, Routes, Switch } from 'react-router-dom';
 import { AuthProvider } from './providers/AuthProvider.js';
+import UserTable from './components/user/userShow.jsx';
 import ProtectedRoute from './components/protected-route/ProtectedRoute.jsx';
 
 const App = () => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   return (
+   
     <BrowserRouter>
       <AuthProvider>
         <Routes>
@@ -60,6 +62,12 @@ const App = () => {
               path="/userSingUp" 
               element={
                 <UserSingUp />
+              } 
+            />
+            <Route 
+              path="/user" 
+              element={
+                <UserTable />
               } 
             />
             <Route path="*" element={<> <h1>Not Founded</h1> </>} />
