@@ -10,7 +10,6 @@ import HttpBase from '../../services/HttpBase.js';
 
 const UserSignUp = () => {
     const userService = new UserService();
-
     const [data, setData] = useState([]);
     const [resource, setResource] = useState('users');
     const [showForm, setShowForm] = useState(true);

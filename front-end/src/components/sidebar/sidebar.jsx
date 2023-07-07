@@ -34,7 +34,7 @@ const Sidebar = ({children}) => {
             icon:<FaRegChartBar/>
         },
         {
-            path:"/form",
+            path:"/loanform",
             name:"Prestamos",
             icon:<FaCommentAlt/>
         },

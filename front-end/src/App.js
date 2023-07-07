@@ -11,6 +11,7 @@ import './App.css';
 import { BrowserRouter, Outlet, Route, Routes, Switch } from 'react-router-dom';
 import { AuthProvider } from './providers/AuthProvider.js';
 import UserTable from './components/user/userShow.jsx';
+import LoanForm from './components/loans/loanForm.jsx';
 import ProtectedRoute from './components/protected-route/ProtectedRoute.jsx';
 
 const App = () => {
@@ -47,9 +48,9 @@ const App = () => {
               } 
             />
             <Route 
-              path="/form" 
+              path="/loanform" 
               element={
-                <Form />
+                <LoanForm />
               } 
             />
             <Route 

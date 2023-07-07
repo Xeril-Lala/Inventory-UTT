@@ -1,26 +1,27 @@
 import React from 'react';
+import UserRow from './userRow';
 
-    const UserTable = ({ columns, data }) => {
+
+const UserTable = ({ data }) => {
     return (
         <table>
         <thead>
             <tr>
-            {columns.map(column => (
-                <th key={column.field}>{column.header}</th>
-            ))}
+            <th>Username</th>
+            <th>Name</th>
+            <th>Lastname</th>
+            <th>Group</th>
+            <th>Last Modified</th>
+            <th>Active</th>
             </tr>
         </thead>
         <tbody>
-            {data.map((row, index) => (
-            <tr key={index}>
-                {columns.map(column => (
-                <td key={column.field}>{row[column.field]}</td>
-                ))}
-            </tr>
+            {data.map((user) => (
+            <UserRow key={user.username} user={user} />
             ))}
         </tbody>
         </table>
     );
-    };
+};
 
 export default UserTable;

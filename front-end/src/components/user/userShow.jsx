@@ -1,25 +1,28 @@
-import React from 'react';
-import UserTable from '../dataTables/userTable.jsx';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import UserContainer from '../dataTables/userContainer.jsx';
 
 const UserShow = () => {
-    const columns = [
-        { header: 'Nombre', field: 'name' },
-        { header: 'Edad', field: 'age' },
-        { header: 'Email', field: 'email' },
-    ];
+    const [data, setData] = useState([]);
 
-    const data = [
-        { name: 'John Doe', age: 30, email: 'johndoe@example.com' },
-        { name: 'Jane Smith', age: 25, email: 'janesmith@example.com' },
-        // Otros datos...
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/User');
+            setData(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <div>
-        <h1>Tabla de Datos</h1>
-        <UserTable columns={columns} data={data} />
+            <h1>User Table</h1>
+            <UserContainer />
         </div>
     );
 };
-
 export default UserShow;
