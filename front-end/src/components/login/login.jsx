@@ -2,7 +2,7 @@ import react, { useState } from 'react';
 import { sha256 } from 'js-sha256';
 import SecurityService from '../../services/Security';
 import {C} from '../../constants/C';
-import { LoginLocalStorage } from '../../constants/Utils';
+import { LoginLocalStorage } from '../../constants/utils';
 import { AuthContext } from '../../context/Context';
 import { Navigate } from 'react-router-dom';
 

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { LoginLocalStorage } from "../constants/Utils"
+import { LoginLocalStorage } from "../constants/utils"
 import { AuthContext } from "../context/Context";
 
 export const AuthProvider = ( {children} ) => {
