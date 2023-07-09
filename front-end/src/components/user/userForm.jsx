@@ -74,12 +74,22 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
 
     const toggleEdit = () => setEditable((value) => !value);
 
+    const clearForm = () => setUserData({
+        username: '',
+        name: '',
+        lastname: '',
+        group: '',
+        id: '',
+        email: '',
+        password: ''
+    });
+
     return (
         <div>
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
                 { isEditable && <FaSave onClick={async () => await updateUser()} className="text-2xl mr-2 cursor-pointer hover:text-green-500" title="Guardar" /> }
-                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
+                { isEditable && <FaUserPlus onClick={clearForm} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Usuario" />}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">

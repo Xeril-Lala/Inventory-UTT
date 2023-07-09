@@ -23,11 +23,11 @@ const Sidebar = ({children}) => {
             name:"Inventario",
             icon:<FaTh/>
         },
-        {
-            path:"/",
-            name:"Prestamos Activos",
-            icon:<FaThList/>
-        },
+        // {
+        //     path:"/",
+        //     name:"Prestamos Activos",
+        //     icon:<FaThList/>
+        // },
         {
             path:"/historical",
             name:"Historial",
