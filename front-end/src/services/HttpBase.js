@@ -32,7 +32,7 @@ class HttpBase {
 
     }
 
-    request({
+    async request({
         endpoint = '', 
         options = { method: 'get' }, 
         callback = () => {}, 
@@ -43,14 +43,18 @@ class HttpBase {
         if(token) {
             let header = this.authenticationHeader(token);
             options.headers =  {
+                ...options.headers,
                 ...header
             }
         }
 
-        axios({
-            url: `${this.baseUrl}/${endpoint}`,
-            ...options,
-        }).then(res => {
+        let res = null;
+
+        try {
+            res = await axios({
+                ...options,
+                url: !endpoint ? this.baseUrl : `${this.baseUrl}/${endpoint}`
+            });
 
             this.getResponse({
                 result: res.data, 
@@ -58,20 +62,40 @@ class HttpBase {
                 errorCallback: errorCallback
             });
 
-        }).catch(error => this.broadcastError(error, errorCallback));
+        } catch (err) {
+            this.broadcastError(err, errorCallback);
+        }
+        
+        return res?.data;
     }
 
     broadcastError(error, errorCallback = () => {}) {
 
-        console.error(error);
+        const getError = () => {
 
-        // TODO: Implement generic error as static prop!
+            const getCustomError = () => {
+                var err = error?.data
+                .map((error) => error.message)
+                .join(" ");
+
+                return err;
+            }
+
+            return  error?.message ?? 
+                error?.title ?? 
+                getCustomError() ?? 
+                C.status.common.error
+            ;
+        };
+
+        console.error(getError());
+
         if (typeof errorCallback === 'function') {
-            errorCallback(error);
+            errorCallback(getError());
         }
 
         if (typeof HttpBase.onError === 'function') {
-            HttpBase.onError(error);
+            HttpBase.onError(getError());
         }
 
     }

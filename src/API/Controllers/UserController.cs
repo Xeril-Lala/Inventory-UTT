@@ -26,17 +26,78 @@ namespace InventoryAPI.Controllers
         {
             var jObj = JsonObject.Create(obj);
 
+            return InsertUser(jObj);
+        });
+
+        [HttpPost("contact")]
+        public Result SetContact([FromBody] UserContactDTO contact) => RequestBlock(result => InsertUserContact(contact));
+
+        [HttpPost("fullInfo")]
+        public Result SetFullInfo([FromBody] JsonElement obj)
+        => RequestBlock(result => 
+        {
+            var jObj = JsonObject.Create(obj);
+            var contact = JsonSerializer.Deserialize<UserContactDTO>(jObj, options: new JsonSerializerOptions()
+            {
+                AllowTrailingCommas = true,
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            var userResult = InsertUser(jObj);
+
+            if(contact != null && userResult?.Status == C.OK)
+            {
+                var contactResult = InsertUserContact(contact);
+                var user = (UserDTO?)userResult.Data;
+                var userContact = (UserContactDTO?)contactResult?.Data;
+
+                if (user != null && userContact != null)
+                {
+                    userContact.User = null;
+                    user.Contact = userContact;
+                    userResult.Data = user;
+                }
+            }
+
+            result = userResult;
+
+            return result;
+        });
+
+        [HttpGet]
+        public Result GetUsers(string? username = null, string? search = null, bool? isActive = null ) 
+        => RequestResponse(() =>
+        {
+            var model = DAL.GetUsers(username, search, isActive);
+
+            return UserDTO.MapList<UserDTO>(model);
+        });
+
+        [HttpGet("{username}")]
+        public Result GetDBUser(string username)
+        => RequestResponse(() =>
+        {
+            var model = DAL.GetUsers(username: username)?.FirstOrDefault();
+
+            return new UserDTO(model);
+        });
+
+        private Result? InsertUser(JsonObject? jObj)
+        {
+            Result? result = null;
+
             string? hashedPassword = ParseProperty<string?>.GetValue("password", jObj);
 
-            if (IsSHA256(hashedPassword)) 
+            if (hashedPassword == null || IsSHA256(hashedPassword))
             {
-                var user = new UserDTO() 
+                var user = new UserDTO()
                 {
                     Username = ParseProperty<string?>.GetValue("username", jObj, ErrorManager.Subscription),
                     Name = ParseProperty<string?>.GetValue("name", jObj),
                     Lastname = ParseProperty<string?>.GetValue("lastname", jObj),
                     IsActive = ParseProperty<bool?>.GetValue("isActive", jObj),
-                    Group = new AssetDTO() 
+                    Group = new AssetDTO()
                     {
                         Code = ParseProperty<string?>.GetValue("group", jObj, ErrorManager.Subscription)
                     },
@@ -47,51 +108,26 @@ namespace InventoryAPI.Controllers
                 oUser.Password = hashedPassword;
 
                 result = DAL.SetUser(oUser);
-
                 if (result != null)
                     result.Data = new UserDTO((User?)result.Data);
 
-            } else
+            }
+            else
             {
                 ErrorManager?.Subscription?.Invoke(new Exception("Password is not hashed (SHA256)"), "No hashed password!");
             }
 
             return result;
-        });
+        }
 
-        [HttpPost("contact")]
-        public Result SetContact([FromBody] UserContactDTO contact)
-        => RequestBlock(result =>
+        private Result? InsertUserContact(UserContactDTO contact)
         {
             contact.AuditUser = GetUserIdentity();
-            result = DAL.SetUserContact(contact.Convert());
-
+            var result = DAL.SetUserContact(contact.Convert());
             if (result != null)
                 result.Data = new UserContactDTO((UserContact?)result.Data);
 
             return result;
-        });
-
-        [HttpGet]
-        public Result GetUsers([FromBody] JsonElement obj) => RequestResponse(() =>
-        {
-            var jObj = JsonObject.Create(obj);
-
-            var model = DAL.GetUsers(
-                ParseProperty<string?>.GetValue("username", jObj),
-                ParseProperty<string?>.GetValue("search", jObj),
-                ParseProperty<bool?>.GetValue("isActive", jObj)
-            );
-
-            return UserDTO.MapList<UserDTO>(model);
-        });
-
-        [HttpGet("{username}")]
-        public Result GetDBUser(string username) => RequestResponse(() =>
-        {
-            var model = DAL.GetUsers(username: username)?.FirstOrDefault();
-
-            return new UserDTO(model);
-        });
+        }
     }
 }

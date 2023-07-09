@@ -63,6 +63,8 @@ namespace BaseAPI
                 name: "default",
                 pattern: "{controller}/{action=Index}/{id?}"
             );
+
+            app.UseHttpLogging();
         }
 
         private static void SetConnections(WebProperties props)

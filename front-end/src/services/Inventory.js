@@ -1,16 +1,16 @@
 import HttpBase from "./HttpBase";
-import {C} from "../constants/C";
+import { C } from "../constants/C";
 import { getAuthToken } from "../constants/Utils";
 
 class InventoryService extends HttpBase {
 
     constructor() {
         super({
-            baseUrl: `${C.api_url()}item`,        
+            baseUrl: `${C.api_url()}item`,
         });
     }
 
-    getItems(
+    async getItems(
         {
             isActive = true,
             id = null,
@@ -21,14 +21,13 @@ class InventoryService extends HttpBase {
             fromDt = null,
             toDt = null
         },
-        callback = () => {}
-    ) 
-    {
-        this.request({ 
+        callback = () => { }
+    ) {
+        return await this.request({
             token: getAuthToken(),
             options: {
-                data: {
-                    isActive, id, customId, serial, name, model, fromDt, toDt            
+                params: {
+                    isActive, id, customId, serial, name, model, fromDt, toDt
                 },
                 headers: {
                     'Content-Type': 'application/json'
@@ -38,8 +37,8 @@ class InventoryService extends HttpBase {
         });
     }
 
-    getItem(id, callback = () => {}) {
-        this.request({
+    async getItem(id, callback = () => { }) {
+        return await this.request({
             endpoint: `${id}`,
             token: getAuthToken(),
             options: {
@@ -51,8 +50,8 @@ class InventoryService extends HttpBase {
         });
     }
 
-    setItem(
-        { 
+    async setItem(
+        {
             isActive = null,
             id = null,
             name = null,
@@ -62,21 +61,20 @@ class InventoryService extends HttpBase {
             model = {
                 code: null
             },
-            location= {
+            location = {
                 code: null
             },
             serial = null,
             conditionUse = null
-        }, 
-        callback = () => {}
-    ) 
-    {
-        this.request({
+        },
+        callback = () => { }
+    ) {
+        return await this.request({
             token: getAuthToken(),
             options: {
                 method: 'post',
-                data: {
-                    isActive, id, name, customKey, 
+                params: {
+                    isActive, id, name, customKey,
                     about, acquisition, model,
                     location, serial, conditionUse
                 },
@@ -88,25 +86,24 @@ class InventoryService extends HttpBase {
         })
     }
 
-    setItemExcel(
+    async setItemExcel(
         file,
-        callback = () => {}
-    ) 
-    {
+        callback = () => { }
+    ) {
         const formData = new FormData();
         formData.append('files', file);
-      
-        this.request({
-          token: getAuthToken(),
-          endpoint: 'excel',
-          options: {
-            method: 'post',
-            data: formData,
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          },
-          callback: callback
+
+        return await this.request({
+            token: getAuthToken(),
+            endpoint: 'excel',
+            options: {
+                method: 'post',
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            },
+            callback: callback
         });
     }
 
