@@ -16,17 +16,22 @@ namespace InventoryAPI.Controllers
     public class LoanController : CustomController
     {
         [HttpGet]
-        public Result GetLoans([FromBody] JsonElement obj) => RequestResponse(() =>
+        public Result GetLoans(
+            int? id = null,
+            DateTime? fromDt = null,
+            DateTime? toDt = null,
+            string? comments = null,
+            string? mode = null,
+            bool? isActive = null
+        ) => RequestResponse(() =>
         {
-            var jObj = JsonObject.Create(obj);
-            
             var list = DAL.GetLoans(
-                id: ParseProperty<int?>.GetValue("id", jObj),
-                fromDt: ParseProperty<DateTime?>.GetValue("fromDt", jObj),
-                toDt: ParseProperty<DateTime?>.GetValue("toDt", jObj),
-                comments: ParseProperty<string?>.GetValue("comments", jObj),
-                mode: ParseProperty<string?>.GetValue("mode", jObj),
-                status: ParseProperty<bool?>.GetValue("isActive", jObj)
+                id: id,
+                fromDt: fromDt,
+                toDt: toDt,
+                comments: comments,
+                mode: mode,
+                status: isActive
             );
 
             if(list != null)
@@ -54,26 +59,40 @@ namespace InventoryAPI.Controllers
         });
 
         [HttpGet("detail")]
-        public Result GetDetail([FromBody] JsonElement obj) => RequestResponse(() => 
-        { 
-            var jObj = JsonObject.Create(obj);
-
+        public Result GetDetail(
+            int? id = null,
+            DateTime? fromDt = null,
+            DateTime? toDt = null,
+            int? loanId = null,
+            string? dtlDescription = null,
+            string? dtlStatus = null,
+            string? comments = null,
+            string? loanMode = null,
+            string? loanStatus = null,
+            int? inventoryId = null,
+            string? customId = null,
+            string? serial = null,
+            string? model = null,
+            string? brand = null,
+            bool? isActive = null
+        ) => RequestResponse(() => 
+        {
             var list = DAL.GetLoanDtls(
-                id: ParseProperty<int?>.GetValue("id", jObj),
-                fromDt: ParseProperty<DateTime?>.GetValue("fromDt", jObj),
-                toDt: ParseProperty<DateTime?>.GetValue("toDt", jObj),
-                loanId: ParseProperty<int?>.GetValue("loanId", jObj),
-                dtlDescription: ParseProperty<string?>.GetValue("dtlDescription", jObj),
-                dtlStatus: ParseProperty<string?>.GetValue("dtlStatus", jObj),
-                comments: ParseProperty<string?>.GetValue("comments", jObj),
-                loanMode: ParseProperty<string?>.GetValue("loanMode", jObj),
-                loanStatus: ParseProperty<string?>.GetValue("loanStatus", jObj),
-                inventoryId: ParseProperty<int?>.GetValue("inventoryId", jObj),
-                customId: ParseProperty<string?>.GetValue("customId", jObj),
-                serial: ParseProperty<string?>.GetValue("serial", jObj),
-                model: ParseProperty<string?>.GetValue("model", jObj),
-                brand: ParseProperty<string?>.GetValue("brand", jObj),
-                status: ParseProperty<bool?>.GetValue("isActive", jObj)
+                id: id,
+                fromDt: fromDt,
+                toDt: toDt,
+                loanId: loanId,
+                dtlDescription: dtlDescription,
+                dtlStatus: dtlStatus,
+                comments: comments,
+                loanMode: loanMode,
+                loanStatus: loanStatus,
+                inventoryId: inventoryId,
+                customId: customId,
+                serial: serial,
+                model: model,
+                brand: brand,
+                status: isActive
             );
 
             return LoanDtlDTO.MapList<LoanDtlDTO>(list);

@@ -2,7 +2,7 @@ import react, { useState } from 'react';
 import { sha256 } from 'js-sha256';
 import SecurityService from '../../services/Security';
 import {C} from '../../constants/C';
-import { LoginLocalStorage } from '../../constants/Utils';
+import { LoginLocalStorage } from '../../constants/utils';
 import { AuthContext } from '../../context/Context';
 import { Navigate } from 'react-router-dom';
 
@@ -14,13 +14,13 @@ const Login = () => {
   const [passwordValue, setPassword] = useState('');
   const [formMsg, setMsg] = useState('');
 
-  const auth = (event) => {
+  const auth = async (event) => {
     event.preventDefault();
 
     if(userValue && passwordValue) {
       var hashedPassword = sha256(passwordValue);
 
-      request.authLogin(
+      var res = await request.authLogin(
         userValue,
         hashedPassword,
         res => {
@@ -31,9 +31,10 @@ const Login = () => {
             setUserInfo(res.data);
             setMsg('');
           }
-
+          
         }
       );
+      
     } else {
       setMsg('Favor de llenar los campos necesarios!');
     }

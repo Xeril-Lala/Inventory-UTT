@@ -1,6 +1,6 @@
 import HttpBase from "./HttpBase";
 import {C} from "../constants/C";
-import { getAuthToken } from "../constants/Utils";
+import { getAuthToken } from "../constants/utils";
 
 class UserService extends HttpBase {
 
@@ -10,7 +10,7 @@ class UserService extends HttpBase {
         });
     }
 
-    getUsers(
+    async getUsers(
         { 
             username = null, 
             search = null, 
@@ -19,10 +19,37 @@ class UserService extends HttpBase {
         callback = () => {}
     ) 
     {
-        this.request({
+        return await this.request({
             token: getAuthToken(),
             options: {
-                data: { username, search, isActive },
+                method: 'get',
+                params: { username, search, isActive }
+            },
+            callback: callback
+        });
+    }
+
+    async getUser(username, callback = () => {}) {
+        return await this.request({
+          token: getAuthToken(),
+          endpoint: `${username}`,
+          callback: callback
+        });
+    }
+
+    async setUser({ isActive = null, username = null, password = null, name = null, lastname = null, group = null }, callback = () => {}) {
+        return await this.request({
+            token: getAuthToken(),
+            options: {
+                method: 'post',
+                data: {
+                    isActive,
+                    username,
+                    password,
+                    name,
+                    lastname,
+                    group
+                },
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -31,42 +58,8 @@ class UserService extends HttpBase {
         });
     }
 
-    getUser(username, callback = () => {}) {
-        this.request({
-          token: getAuthToken(),
-          endpoint: `${username}`,
-          options: {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          },
-          callback: callback
-        });
-    }
-
-    setUser({ isActive = null, username = null, password = null, name = null, lastname = null, group = null }, callback = () => {}) {
-        this.request({
-            token: getAuthToken(),
-            options: {
-            method: 'post',
-            data: {
-                isActive,
-                username,
-                password,
-                name,
-                lastname,
-                group
-            },
-            headers: {
-                'Content-Type': 'application/json'
-            }
-            },
-            callback: callback
-        });
-    }
-
-    setContact({ isActive = null, id = null, userDetails = { username: null }, enrollment = null, email = null, alternativeEmail = null, phone = null, alternativePhone = null, address = null }, callback = () => {}) {
-        this.request({
+    async setContact({ isActive = null, id = null, userDetails = { username: null }, enrollment = null, email = null, alternativeEmail = null, phone = null, alternativePhone = null, address = null }, callback = () => {}) {
+        return await this.request({
           token: getAuthToken(),
           endpoint: 'contact',
           options: {
@@ -87,6 +80,33 @@ class UserService extends HttpBase {
             }
           },
           callback: callback
+        });
+    }
+
+    async setFullInfo(
+        {
+            isActive = null, id = null, enrollment = null, email = null, alternativeEmail = null, phone = null, alternativePhone = null, address = null,
+            username = null, password = null, name = null, lastname = null, group = null
+        },
+        callback = () => {}
+    ) {
+        return await this.request({
+            token: getAuthToken(),
+            endpoint: 'fullInfo',
+            options: {
+                method: 'post',
+                data: {
+                    userDetails: {
+                        username: username
+                    },
+                    isActive, id, enrollment, email, alternativeEmail, phone, alternativePhone, address,
+                    username, password, name, lastname, group
+                },
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            },
+            callback: callback
         });
     }
 

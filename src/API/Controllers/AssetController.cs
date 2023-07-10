@@ -35,35 +35,48 @@ namespace InventoryAPI.Controllers
         });
 
         [HttpGet]
-        public Result GetAll([FromBody] JsonElement obj) => RequestResponse(() =>
+        public Result GetAll(
+            string? code = null,
+            string? group = null,
+            string? subGroup = null,
+            string? altGroup = null,
+            string? desc = null,
+            bool? isActive = null
+        ) => RequestResponse(() =>
         {
-            JsonObject? jObj = JsonObject.Create(obj);
 
             var list = DAL.GetAllAssets(
-                code: ParseProperty<string?>.GetValue("code", jObj),
-                group: ParseProperty<string?>.GetValue("group", jObj),
-                subGroup: ParseProperty<string?>.GetValue("subGroup", jObj),
-                altGroup: ParseProperty<string?>.GetValue("altGroup", jObj),
-                desc: ParseProperty<string?>.GetValue("desc", jObj),
-                status: ParseProperty<bool?>.GetValue("isActive", jObj)
+                code: code,
+                group: group,
+                subGroup: subGroup,
+                altGroup: altGroup,
+                desc: desc,
+                status: isActive
             );
 
             return AssetDTO.MapList<AssetDTO>(list);
         });
 
         [HttpGet("group")]
-        public Result GetAllGroup([FromBody] JsonElement obj) => RequestResponse(() =>
+        public Result GetAllGroup(
+            string? childCode = null,
+            string? parentGroup = null,
+            string? parentSubGroup = null,
+            string? parentAltGroup = null,
+            string? childGroup = null,
+            string? childAltGroup = null,
+            bool? isActive = null
+        ) => RequestResponse(() =>
         {
-            JsonObject? jObj = JsonObject.Create(obj);
 
             var list = DAL.GetAssets(
-                childCode: ParseProperty<string?>.GetValue("childCode", jObj),
-                parentGroup: ParseProperty<string?>.GetValue("parentGroup", jObj),
-                parentSubGroup: ParseProperty<string?>.GetValue("parentSubGroup", jObj),
-                parentAltGroup: ParseProperty<string?>.GetValue("parentAltGroup", jObj),
-                childGroup: ParseProperty<string?>.GetValue("childGroup", jObj),
-                childAltGroup: ParseProperty<string?>.GetValue("childAltGroup", jObj),
-                status: ParseProperty<bool?>.GetValue("isActive", jObj)
+                childCode: childCode,
+                parentGroup: parentGroup,
+                parentSubGroup: parentSubGroup,
+                parentAltGroup: parentAltGroup,
+                childGroup: childGroup,
+                childAltGroup: childAltGroup,
+                status: isActive
             );
 
             return AssetDTO.MapList<AssetDTO>(list);

@@ -10,8 +10,8 @@ class SecurityService extends HttpBase {
         });
     }
 
-    authLogin(username, password, callback = () => { }) {
-        this.request({
+    async authLogin(username, password, callback = () => { }) {
+        return await this.request({
             endpoint: 'login',
             options: {
                 method: 'post',
@@ -28,8 +28,8 @@ class SecurityService extends HttpBase {
     }
 
     // Check & Refresh token
-    checkToken(token, callback = () => { }) {
-        this.request({
+    async checkToken(token, callback = () => { }) {
+        return await this.request({
             endpoint: 'checkToken',
             token: token,
             options: {

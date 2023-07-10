@@ -33,7 +33,8 @@ namespace InventoryAPI.Controllers
         });
 
         [HttpPost("Excel")]
-        public Result SetItem(List<IFormFile> files) => RequestResponse(() =>
+        public Result SetItem(List<IFormFile> files)
+        => RequestResponse(() =>
         {
             long size = files.Sum(f => f.Length);
 
@@ -57,22 +58,29 @@ namespace InventoryAPI.Controllers
         });
 
         [HttpGet]
-        public Result GetItems([FromBody] JsonElement obj) => RequestResponse(() =>
+        public Result GetItems(
+            int? id = null,
+            string? customId = null,
+            string? serial = null,
+            string? name = null,
+            string? model = null,
+            DateTime? fromDt = null,
+            DateTime? toDt = null,
+            bool? isActive = null
+        ) => RequestResponse(() =>
         {
-            var jObj = JsonObject.Create(obj);
-
-            var model = DAL.GetItems(
-                id: ParseProperty<int?>.GetValue("id", jObj),
-                customId: ParseProperty<string?>.GetValue("customId", jObj),
-                serial: ParseProperty<string?>.GetValue("serial", jObj),
-                name: ParseProperty<string?>.GetValue("name", jObj),
-                model: ParseProperty<string?>.GetValue("model", jObj),
-                fromDt: ParseProperty<DateTime?>.GetValue("fromDt", jObj),
-                toDt: ParseProperty<DateTime?>.GetValue("toDt", jObj),
-                status: ParseProperty<bool?>.GetValue("isActive", jObj)
+            var list = DAL.GetItems(
+                id: id,
+                customId: customId,
+                serial: serial,
+                name: name,
+                model: model,
+                fromDt: fromDt,
+                toDt: toDt,
+                status: isActive
             );
 
-            return ItemDTO.MapList<ItemDTO>(model);
+            return ItemDTO.MapList<ItemDTO>(list);
         });
 
         [HttpGet("{id}")]

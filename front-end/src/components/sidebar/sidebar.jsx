@@ -23,11 +23,11 @@ const Sidebar = ({children}) => {
             name:"Inventario",
             icon:<FaTh/>
         },
-        {
-            path:"/",
-            name:"Prestamos Activos",
-            icon:<FaThList/>
-        },
+        // {
+        //     path:"/",
+        //     name:"Prestamos Activos",
+        //     icon:<FaThList/>
+        // },
         {
             path:"/historical",
             name:"Historial",
@@ -38,11 +38,11 @@ const Sidebar = ({children}) => {
             name:"Prestamos",
             icon:<FaCommentAlt/>
         },
-        {
-            path:"/equipment",
-            name:"Alta Equipos",
-            icon:<FaCommentAlt/>
-        },
+        // {
+        //     path:"/equipment",
+        //     name:"Alta Equipos",
+        //     icon:<FaCommentAlt/>
+        // },
         {
             path:"/userSingUp",
             name:"Alta Usuarios",
@@ -79,7 +79,7 @@ const Sidebar = ({children}) => {
                     <div style={{display: isOpen ? "block" : "none"}} className="text-md">Cerrar Sesión</div>
                 </NavLink>
            </div>
-           <main className="w-full p-10 bg-blue-50">{children}</main>
+           <main className="w-full p-6 sm:p-4 bg-blue-50">{children}</main>
         </div>
     );
 };

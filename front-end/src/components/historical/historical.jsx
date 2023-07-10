@@ -1,112 +1,78 @@
-import React, { useEffect, useState } from 'react';
-import DataTable from 'react-data-table-component';
-import axios from 'axios';
-import './historicalStyle.css';
-import UserService from '../../services/User.js';
-import HttpBase from '../../services/HttpBase.js';
-
+import { C } from '../../constants/C.js';
+import CustomTable from '../customTable/customTable.jsx';
+import AssetService from '../../services/Asset.js';
+import React, { useState } from 'react';
+import '../customTable/customStyle.css';
 
 const Historical = () => {
-    const userService = new UserService();
+    const assetService = new AssetService();
+    const [asset, setAsset] = useState(null);
 
-    const [data, setData] = useState([]);
-    const [resource, setResource] = useState('users');
-    const [showForm, setShowForm] = useState(true);
-    const [showSelected, setShowSelected] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const convertData = response => {
+        return response?.data.map(x => [
+            x.code,
+            x.value,
+            x.description,
+            x.lastModified,
+            //x.isActive,
+            x.auditUser,
+            x?.group?.value ?? 'NA'
+        ]);
+    }
 
-    useEffect(() => {
+    const getAssetInfo = async (row) => {
+        console.log(row);
 
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`https://jsonplaceholder.typicode.com/${resource}`);
-                setData(response.data);
-            } catch (error) {
-                console.error('Error:', error);
-            }
+        var res = await assetService.getAsset(row[0]);
 
-        };
-        fetchData();
-    }, [resource]);
+        if(res?.status == C.status.common.ok){
+            setAsset(res.data);
+        }
 
-    const abc = () => {
-        userService.getUsers({callback: (x) => {
-
-            // Data to Data Table
-            // [].map();
-            console.log(x);
-        }});
     };
 
     const columns = [
         {
-            name: 'Equipo',
-            selector: 'name',
+            name: 'Codigo',
+            selector: row => row[0],
+            sortable: true,
+        },
+        {
+            name: 'Ubicacion',
+            selector: row => row[1],
+            sortable: true,
+        },
+        {
+            name: 'Descripcion',
+            selector: row => row[2],
+            sortable: true,
+        },
+        {
+            name: 'Fecha de Modificacion',
+            selector: row => row[3],
+            sortable: true,
+        },
+        {
+            name: 'Auditor',
+            selector: row => row[4],
             sortable: true,
         },
     ];
 
-    const customStyles = {
-        rows: {
-            style: {
-                minHeight: '4em', // override the row height
-                '&:not(:last-of-type)': {
-                    borderBottomStyle: 'solid',
-                    borderBottomWidth: '0.5px',
-                    borderBottomColor: '#f0f0f0',
-                },
-            },
-        },
-        headCells: {
-            style: {
-                paddingLeft: '8px', // override the cell padding for head cells
-                paddingRight: '8px',
-            },
-        },
-        cells: {
-            style: {
-                paddingLeft: '2em', // override the cell padding for data cells
-                paddingRight: '12em',
-            },
-        },
-        header: {
-            style: {
-                fontSize: '0.8em',
-            },
-        },
-        headRow: {
-            style: {
-                fontSize: '1.5em',
-            },
-        },
-    };
-
-    const handleRowClick = (row) => {
-        setSelectedItem(row);
-        setShowForm(false);
-        setShowSelected(true);
-    };
-
-    const handleBackClick = () => {
-        setSelectedItem(null);
-        setShowForm(true);
-        setShowSelected(false);
-    };
-
     return (
-        <div className="w-full h-auto text-3xl">
-            <div className="w-full h-auto text-3xl mb-12">Historial de los Equipos</div>
-            <div className="w-[100%] flex direction-col ml-16 ">
-                <div className="w-[100%] flex direction-col">
-                    <div className="w-[95%] rounded-md shadow-md bg-white p-10">
-                        <DataTable
-                            title="Equipos Inventariados"
-                            columns={columns}
-                            data={data}
-                            onRowClicked={handleRowClick}
-                            customStyles={customStyles}
-                        />
-                    </div>
+        <div className="mx-4 sm:mx-auto h-auto">
+            <div className="h-auto text-3xl mb-6">Historical</div>
+
+            <div className="grid grid-cols-4 gap-4 md:auto-cols-min">
+                <div className="col-span-4 rounded-md shadow-md bg-white p-6 overflow-scroll h-[700px]" >
+                    <CustomTable
+                        title={'Lista Equipos'}
+                        columns={columns}
+                        styles={C.styles.dataTable}
+                        onSelectRow={getAssetInfo}
+                        onHook={async () => await assetService.getAssets({})}
+                        convertData={convertData}
+                    />
                     
                 </div>
             </div>
