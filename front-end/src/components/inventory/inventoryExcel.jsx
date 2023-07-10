@@ -1,55 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import { FaUserPlus, FaTrash, FaEdit, FaUserEdit, FaSave } from 'react-icons/fa';
-import UserService from '../../services/User';
+import AssetService from '../../services/Asset';
 import { C } from '../../constants/C';
 import { sha256 } from 'js-sha256';
 import { toast } from 'react-toastify';
 
-const UserForm = ({ user, updateUserCallback = () => {} }) => {
-    const userService = new UserService();
+const InventoryExcel = ({ asset, updateAssetCallback = () => {} }) => {
+    const assetService = new AssetService();
     
     const [isEditable, setEditable] = useState(false);
-    const [userData, setUserData] = useState({
-        username: '',
-        name: '',
-        lastname: '',
-        group: '',
-        id: '',
-        email: '',
-        password: ''
+    const [assetData, setAssetData] = useState({
+        code: '',
+        value: '',
+        description: '',
+        lastModified: '',
+        auditUser: '',
     });
 
     useEffect(() => {
-        if (user) {
-            setUserData({
-                username: user?.username || '',
-                name: user?.name || '',
-                lastname: user?.lastname || '',
-                group: user?.group?.code || '',
-                id: user?.contact?.id || '',
-                email: user?.contact?.email || '',
-                password: ''
+        if (asset) {
+            setAssetData({
+                code: asset?.code || '',
+                value: asset?.value || '',
+                description: asset?.description || '',
+                lastModified: asset?.lastModified || '',
+                auditUser: asset?.auditUser || '',
             });
         }
-    }, [user]);
+    }, [asset]);
 
-    const updateUser = async (active = true) => {
+    const updateAsset = async (active = true) => {
         var data = {
-            ...userData,
+            ...assetData,
             isActive: active
         }
 
-        if(!userData?.password) {
-            data.password = null;
-        } else {
-            data.password = sha256(userData.password);
-        }
+        // if(!usertData?.password) {
+        //     data.password = null;
+        // } else {
+        //     data.password = sha256(userData.password);
+        // }
 
-        const response = await userService.setFullInfo(data);
+        const response = await assetService.setAsset(data);
 
         if (response?.status == C.status.common.ok) {
-            updateUserCallback(response.data);
-            toast.success('Usuario Actualizado', {
+            updateAssetCallback(response.data);
+            toast.success('Equipo Actualizado', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -61,79 +57,88 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
             });
         }
 
-        setUserData(temp => ({...temp, password: ''}))
+        //setAssetData(temp => ({...temp, password: ''}))
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setUserData((prevUserData) => ({
-            ...prevUserData,
-            [name]: value,
+        const { asset, value } = e.target;
+        setAssetData((prevAssetData) => ({
+            ...prevAssetData,
+            [asset]: value,
         }));
     };
 
     const toggleEdit = () => setEditable((value) => !value);
 
+    const clearForm = () => setAssetData({
+        code: '',
+        value: '',
+        description: '',
+        lastModified: '',
+        auditUser: '',
+    });
+
     return (
         <div>
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
-                { isEditable && <FaSave onClick={async () => await updateUser()} className="text-2xl mr-2 cursor-pointer hover:text-green-500" title="Guardar" /> }
-                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
+                { isEditable && <FaSave onClick={async () => await updateAsset()} className="text-2xl mr-2 cursor-pointer hover:text-green-500" title="Guardar" /> }
+                {/* { isEditable && <FaUserPlus onClick={clearForm} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Usuario" />} */}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Usuario</p>
+                    <p>Archivo .XLS</p>
                     <input
-                        type="text"
-                        name="username"
-                        placeholder="Usuario"
+                        type="file"
+                        name="code"
+                        placeholder="Codigo de Equipo"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.username}
+                        accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        value={assetData.code}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
                 </div>
-
+{/* 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Nombre(s)</p>
+                    <p>Ubicacion</p>
                     <input
                         type="text"
                         name="name"
                         placeholder="Nombre"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.name}
+                        value={assetData.value}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Apellido(s)</p>
+                    <p>Descipcion</p>
                     <input
                         type="text"
                         name="lastname"
-                        placeholder="Apellido"
+                        placeholder="Descipcion"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.lastname}
+                        value={assetData.description}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Rol</p>
+                    <p>Auditor</p>
                     <input
                         type="text"
                         name="group"
                         placeholder="Rol"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.group}
+                        value={assetData.lastModified}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
                 </div>
-
+{/*
                 { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Contraseña</p>
                     <input
@@ -141,7 +146,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         name="password"
                         placeholder="Contraseña"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.password}
+                        value={assetData.auditUser}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
@@ -154,7 +159,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         name="id"
                         placeholder="Matricula/Numero de Empleado"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.id}
+                        value={assetData.id}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
@@ -167,14 +172,14 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         name="email"
                         placeholder="Correo Electronico"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.email}
+                        value={assetData.email}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
-                </div>
+                </div> */} 
             </div>
         </div>
     );
 };
 
-export default UserForm;
+export default InventoryExcel;

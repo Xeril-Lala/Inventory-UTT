@@ -3,7 +3,7 @@ import UserForm from './userForm.jsx';
 import UserService from '../../services/User.js';
 import { C } from '../../constants/C.js';
 import CustomTable from '../customTable/customTable.jsx';
-import './userStyle.css';
+import '../customTable/customStyle.css';
 
 const UserSignUp = () => {
     const userService = new UserService();

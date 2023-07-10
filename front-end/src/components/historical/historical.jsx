@@ -1,51 +1,83 @@
-import react from 'react';
-import { useEffect, useState } from 'react';
-import { FiFilter, FiAlertCircle } from 'react-icons/fi';
-import { MdLaptop } from "react-icons/md";
-import { RxCrossCircled } from "react-icons/rx";
+import { C } from '../../constants/C.js';
+import CustomTable from '../customTable/customTable.jsx';
+import AssetService from '../../services/Asset.js';
+import React, { useState } from 'react';
+import '../customTable/customStyle.css';
+
 const Historical = () => {
+    const assetService = new AssetService();
+    const [asset, setAsset] = useState(null);
 
-   const [data, setData] = useState([]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('URL_DE_LA_API');
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (error) {
-      console.error('Error al obtener los datos:', error);
+    const convertData = response => {
+        return response?.data.map(x => [
+            x.code,
+            x.value,
+            x.description,
+            x.lastModified,
+            //x.isActive,
+            x.auditUser,
+            x?.group?.value ?? 'NA'
+        ]);
     }
-  };
- 
 
-return (
+    const getAssetInfo = async (row) => {
+        console.log(row);
 
-   <table>
-      <thead>
-        <tr>
-          <th>Columna 1</th>
-          <th>Columna 2</th>
-          <th>Columna 3</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item, index) => (
-          <tr key={index}>
-            {Object.values(item).map((value, idx) => (
-              <td key={idx}>{value}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        var res = await assetService.getAsset(row[0]);
 
+        if(res?.status == C.status.common.ok){
+            setAsset(res.data);
+        }
 
+    };
 
-);
+    const columns = [
+        {
+            name: 'Codigo',
+            selector: row => row[0],
+            sortable: true,
+        },
+        {
+            name: 'Ubicacion',
+            selector: row => row[1],
+            sortable: true,
+        },
+        {
+            name: 'Descripcion',
+            selector: row => row[2],
+            sortable: true,
+        },
+        {
+            name: 'Fecha de Modificacion',
+            selector: row => row[3],
+            sortable: true,
+        },
+        {
+            name: 'Auditor',
+            selector: row => row[4],
+            sortable: true,
+        },
+    ];
+
+    return (
+        <div className="mx-4 sm:mx-auto h-auto">
+            <div className="h-auto text-3xl mb-6">Historical</div>
+
+            <div className="grid grid-cols-4 gap-4 md:auto-cols-min">
+                <div className="col-span-4 rounded-md shadow-md bg-white p-6 overflow-scroll h-[700px]" >
+                    <CustomTable
+                        title={'Lista Equipos'}
+                        columns={columns}
+                        styles={C.styles.dataTable}
+                        onSelectRow={getAssetInfo}
+                        onHook={async () => await assetService.getAssets({})}
+                        convertData={convertData}
+                    />
+                    
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default Historical;

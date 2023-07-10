@@ -1,0 +1,16 @@
+
+.rdt_TableCell {
+    font-size: 1em; /* Cambia el tamaño de fuente de las celdas */
+    cursor:pointer;
+    overflow: scroll;
+}
+.rdt_TableCell:hover {
+    background-color: rgb(152, 204, 248);
+    border-radius: 4px;
+}
+.rdt_TableHeader {
+    font-size:1em;
+}
+.rdt_Table{
+    overflow:scroll;
+}
