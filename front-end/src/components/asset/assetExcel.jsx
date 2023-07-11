@@ -5,7 +5,7 @@ import { C } from '../../constants/C';
 import { sha256 } from 'js-sha256';
 import { toast } from 'react-toastify';
 
-const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
+const AssetExcel = ({ asset, updateAssetCallback = () => {} }) => {
     const assetService = new AssetService();
     
     const [isEditable, setEditable] = useState(false);
@@ -83,22 +83,23 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
                 { isEditable && <FaSave onClick={async () => await updateAsset()} className="text-2xl mr-2 cursor-pointer hover:text-green-500" title="Guardar" /> }
-                { isEditable && <FaUserPlus onClick={clearForm} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Equipo" />}
+                {/* { isEditable && <FaUserPlus onClick={clearForm} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Usuario" />} */}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Codigo de Equipo</p>
+                    <p>Archivo .XLS</p>
                     <input
-                        type="text"
+                        type="file"
                         name="code"
                         placeholder="Codigo de Equipo"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         value={assetData.code}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
                 </div>
-
+{/* 
                 <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Ubicacion</p>
                     <input
@@ -175,10 +176,10 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
-                </div> */}
+                </div> */} 
             </div>
         </div>
     );
 };
 
-export default AssetForm;
+export default AssetExcel;
