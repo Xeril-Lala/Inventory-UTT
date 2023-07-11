@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { FaUserPlus, FaTrash, FaEdit, FaUserEdit, FaSave } from 'react-icons/fa';
+import { FaUserPlus, FaTrash, FaEdit, FaUserEdit, FaSave, FaLaptopMedical } from 'react-icons/fa';
 import AssetService from '../../services/Asset';
 import { C } from '../../constants/C';
 import { sha256 } from 'js-sha256';
 import { toast } from 'react-toastify';
 
-const InventoryExcel = ({ asset, updateAssetCallback = () => {} }) => {
+const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
     const assetService = new AssetService();
-    
+
     const [isEditable, setEditable] = useState(false);
     const [assetData, setAssetData] = useState({
         code: '',
@@ -83,23 +83,22 @@ const InventoryExcel = ({ asset, updateAssetCallback = () => {} }) => {
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
                 { isEditable && <FaSave onClick={async () => await updateAsset()} className="text-2xl mr-2 cursor-pointer hover:text-green-500" title="Guardar" /> }
-                {/* { isEditable && <FaUserPlus onClick={clearForm} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Usuario" />} */}
+                { isEditable && <FaLaptopMedical onClick={clearForm} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Equipo" />}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Archivo .XLS</p>
+                    <p>Codigo de Equipo</p>
                     <input
-                        type="file"
+                        type="text"
                         name="code"
                         placeholder="Codigo de Equipo"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         value={assetData.code}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
                 </div>
-{/* 
+
                 <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Ubicacion</p>
                     <input
@@ -176,10 +175,10 @@ const InventoryExcel = ({ asset, updateAssetCallback = () => {} }) => {
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
-                </div> */} 
+                </div> */}
             </div>
         </div>
     );
 };
 
-export default InventoryExcel;
+export default AssetForm;
