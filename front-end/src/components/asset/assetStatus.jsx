@@ -10,6 +10,7 @@ import AssetService from '../../services/Asset.js';
 import React, { useState } from 'react';
 import AssetExcel from './assetExcel.jsx';
 import '../customTable/customStyle.css';
+import DataTableExtensions from "react-data-table-component-extensions";
 
 const Assets = () => {
     const assetService = new AssetService();
@@ -71,7 +72,7 @@ const Assets = () => {
             <div className="h-auto text-3xl mb-6">Utilidades</div>
 
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
-                <div className="col-span-4 rounded-md shadow-md bg-white p-6 overflow-scroll h-[700px]" >
+                <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
                     {/* <CustomTable
                         title={'Lista Items'}
                         columns={columns}
@@ -80,6 +81,7 @@ const Assets = () => {
                         onHook={async () => await service({})}
                         convertData={convertData}
                     /> */}
+                    
                     <CustomTable
                         title={'Lista Utilidades'}
                         columns={columns}
@@ -88,6 +90,7 @@ const Assets = () => {
                         onHook={async () => await assetService.getAssets({})}
                         convertData={convertData}
                     />
+                    
 
                     
                 </div>

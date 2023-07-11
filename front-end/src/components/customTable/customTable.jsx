@@ -3,6 +3,7 @@ import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import HttpBase from '../../services/HttpBase.js';
 import { FaSync } from 'react-icons/fa';
+import DataTableExtensions from "react-data-table-component-extensions";
 
 const CustomTable = ({
     title,
@@ -11,6 +12,8 @@ const CustomTable = ({
     onHook = async () => {},
     convertData = () => {},
     onSelectRow = () => {},
+
+    
 }) => {
     
     const [data, setData] = useState([]);
@@ -24,6 +27,7 @@ const CustomTable = ({
         data = convertData(data);
         setData(data);
     }
+    const customDataTable = CustomTable;
 
     return (
         <div className="relative">
@@ -33,13 +37,25 @@ const CustomTable = ({
             >
                 <FaSync className="text-xl" />
             </button>
-            <DataTable
-                title={title}
-                columns={columns}
-                data={data}
-                onRowClicked={onSelectRow}
-                customStyles={styles}
-            />
+            
+            
+            <DataTableExtensions
+        columns={columns}
+        data={data}
+        exportHeaders={true}
+        print={false}
+        export={false}
+      >
+        <DataTable
+          title={title}
+          columns={columns}
+          data={data}
+          onRowClicked={onSelectRow}
+          customStyles={styles}
+          pagination
+        />
+      </DataTableExtensions>
+            
         </div>
     );
 
