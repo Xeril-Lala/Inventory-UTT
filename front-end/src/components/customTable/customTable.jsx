@@ -5,6 +5,7 @@ import HttpBase from '../../services/HttpBase.js';
 import { FaSync } from 'react-icons/fa';
 import DataTableExtensions from "react-data-table-component-extensions";
 
+
 const CustomTable = ({
     title,
     columns = [], 
@@ -27,7 +28,6 @@ const CustomTable = ({
         data = convertData(data);
         setData(data);
     }
-    const customDataTable = CustomTable;
 
     return (
         <div className="relative">
@@ -40,32 +40,29 @@ const CustomTable = ({
             
             
             <DataTableExtensions
-        columns={columns}
-        data={data}
-        exportHeaders={true}
-        print={false}
-        export={false}
-      >
-        <DataTable
-          title={title}
-          columns={columns}
-          data={data}
-          onRowClicked={onSelectRow}
-          customStyles={styles}
-          pagination
-        />
-      </DataTableExtensions>
+                columns={columns}
+                data={data}
+                exportHeaders={false}
+                print={false}
+                export={false}
+                filterPlaceholder={'Filtrado'}
+                filter={true}
+                
+            >
+            <DataTable
+                title={title}
+                columns={columns}
+                data={data}
+                onRowClicked={onSelectRow}
+                customStyles={styles}
+                pagination
+                highlightOnHover
+
+            />
+        </DataTableExtensions>
             
         </div>
     );
-
-    // <DataTable
-    //         title={title}
-    //         columns={columns}
-    //         data={data}
-    //         onRowClicked={onSelectRow}
-    //         customStyles={styles}
-    //     />
 }
 
 export default CustomTable;

@@ -61,7 +61,7 @@ const Historical = () => {
 
     return (
         <div className="mx-4 sm:mx-auto h-auto">
-            <div className="h-auto text-3xl mb-6">Historical</div>
+            <div className="h-auto text-3xl mb-6">Historicos</div>
 
             <div className="grid grid-cols-4 gap-4 md:auto-cols-min">
                 <div className="col-span-4 rounded-md shadow-md bg-white p-6" >

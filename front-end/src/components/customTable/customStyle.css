@@ -4,13 +4,22 @@
     cursor:pointer;
     overflow: scroll;
 }
-.rdt_TableCell:hover {
+/* .rdt_TableCell:hover {
     background-color: rgb(152, 204, 248);
     border-radius: 4px;
-}
+} */
 .rdt_TableHeader {
     font-size:1em;
 }
 /* .rdt_Table{
     overflow:scroll;
 } */
+.filter-text{
+    @apply
+        bg-gray-100
+        p-2
+        rounded-md
+        float-right
+        w-[30%]
+    
+}

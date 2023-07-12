@@ -34,7 +34,7 @@ const Sidebar = ({children}) => {
             icon:<FaRegChartBar/>
         },
         {
-            path:"/loanform",
+            path:"/form",
             name:"Prestamos",
             icon:<FaCommentAlt/>
         },
@@ -48,11 +48,11 @@ const Sidebar = ({children}) => {
             name:"Alta Usuarios",
             icon:<FaUserAlt/>
         },
-        {
-            path:"/user",
-            name:"usuario",
-            icon:<FaUserAlt/>
-        },
+        // {
+        //     path:"/user",
+        //     name:"usuario",
+        //     icon:<FaUserAlt/>
+        // },
         
     ]
     return (

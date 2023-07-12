@@ -1,8 +1,0 @@
-
-.rdt_TableCell {
-    font-size: 1.26em; /* Cambia el tamaño de fuente de las celdas */
-    cursor:pointer;
-}
-.rdt_TableCell:hover {
-    background-color: aliceblue;
-}

@@ -5,13 +5,10 @@ import ActiveLoans from './components/loans/activeLoans.jsx';
 import Form from './components/form/form.jsx';
 import Login from './components/login/login.jsx'
 import Asset from './components/asset/assetStatus.jsx';
-import Equipment from './components/equipment/equipment.jsx';
 import UserSingUp from './components/user/userSingUp.jsx';
 import './App.css';
 import { BrowserRouter, Outlet, Route, Routes, Switch } from 'react-router-dom';
 import { AuthProvider } from './providers/AuthProvider.js';
-import UserTable from './components/user/userShow.jsx';
-import LoanForm from './components/loans/loanForm.jsx';
 import ProtectedRoute from './components/protected-route/ProtectedRoute.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import HttpBase from './services/HttpBase.js';

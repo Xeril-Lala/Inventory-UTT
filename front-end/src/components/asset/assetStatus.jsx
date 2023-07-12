@@ -73,15 +73,6 @@ const Assets = () => {
 
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
                 <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
-                    {/* <CustomTable
-                        title={'Lista Items'}
-                        columns={columns}
-                        styles={C.styles.dataTable}
-                        onSelectRow={() =>{}}
-                        onHook={async () => await service({})}
-                        convertData={convertData}
-                    /> */}
-                    
                     <CustomTable
                         title={'Lista Utilidades'}
                         columns={columns}
@@ -90,19 +81,10 @@ const Assets = () => {
                         onHook={async () => await assetService.getAssets({})}
                         convertData={convertData}
                     />
-                    
-
-                    
                 </div>
 
                 <div className="col-span-2 rounded-md shadow-md bg-white p-6">
                     <div className="h-auto text-center text-xl">Equipo</div>
-
-                    {/* <InventoryForm 
-                        item={item}
-                        updateCallback={ item => {
-                        }}
-                    /> */}
                     <AssetForm
                         asset={asset}
                         updateAssetCallback={ asset => {

@@ -13,7 +13,7 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
         code: '',
         value: '',
         description: '',
-        lastModified: '',
+        //lastModified: '',
         auditUser: '',
     });
 
@@ -23,7 +23,7 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
                 code: asset?.code || '',
                 value: asset?.value || '',
                 description: asset?.description || '',
-                lastModified: asset?.lastModified || '',
+                //lastModified: asset?.lastModified || '',
                 auditUser: asset?.auditUser || '',
             });
         }
@@ -60,11 +60,10 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
         //setAssetData(temp => ({...temp, password: ''}))
     };
 
-    const handleInputChange = (e) => {
-        const { asset, value } = e.target;
+    const handleInputChange = (name, value) => {
         setAssetData((prevAssetData) => ({
             ...prevAssetData,
-            [asset]: value,
+            [name]: value,
         }));
     };
 
@@ -74,7 +73,7 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
         code: '',
         value: '',
         description: '',
-        lastModified: '',
+        //lastModified: '',
         auditUser: '',
     });
 
@@ -95,7 +94,7 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
                         value={assetData.code}
                         disabled={!isEditable}
-                        onChange={handleInputChange}
+                        onChange={(e) => handleInputChange('code', e.target.value)}
                     />
                 </div>
 
@@ -103,12 +102,12 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
                     <p>Ubicacion</p>
                     <input
                         type="text"
-                        name="name"
+                        name="value"
                         placeholder="Nombre"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
                         value={assetData.value}
                         disabled={!isEditable}
-                        onChange={handleInputChange}
+                        onChange={(e) => handleInputChange('value', e.target.value)}
                     />
                 </div>
 
@@ -116,12 +115,12 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
                     <p>Descipcion</p>
                     <input
                         type="text"
-                        name="lastname"
+                        name="description"
                         placeholder="Descipcion"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
                         value={assetData.description}
                         disabled={!isEditable}
-                        onChange={handleInputChange}
+                        onChange={(e) => handleInputChange('description', e.target.value)}
                     />
                 </div>
 
@@ -129,12 +128,12 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
                     <p>Auditor</p>
                     <input
                         type="text"
-                        name="group"
+                        name="auditUser"
                         placeholder="Rol"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.lastModified}
+                        value={assetData.auditUser}
                         disabled={!isEditable}
-                        onChange={handleInputChange}
+                        onChange={(e) => handleInputChange('auditUser', e.target.value)}
                     />
                 </div>
 {/*
