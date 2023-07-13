@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { getBadgeClass } from "../../constants/utils";
 import { FaPlus} from "react-icons/fa";
 
-const LoanForm = ({loan}) => {
+const LoanForm = ({loan, onTriggerRefresh}) => {
     const [id, setId] = useState('');
 
     const [loanedOn, setLoanedOn] = useState('');
@@ -79,7 +79,7 @@ const LoanForm = ({loan}) => {
 
 
     const getStatus = () => {
-        if(!loan?.id) {
+        if(!id) {
             return C.status.loan.PRESTADO;
         } else {
             return  C.status.loan.TERMINADO;
@@ -89,11 +89,17 @@ const LoanForm = ({loan}) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        let returned = null;
+
+        if(returnedOn || getStatus() == C.status.loan.TERMINADO) {
+            returned = returnedOn || new Date(Date.now());
+        }
+
         let res = await loanService.setLoan({
             id: id || null,
             comments: comments || null,
             loanedOn: loanedOn || null,
-            returnedOn: returnedOn || null,
+            returnedOn: returned || null,
             mode: {
                 code: loanMode?.value || null
             },
@@ -122,7 +128,8 @@ const LoanForm = ({loan}) => {
                 progress: undefined,
                 theme: "light",
             });
-
+            
+            await onTriggerRefresh();
             clearInputs();
         }
     };
@@ -138,6 +145,7 @@ const LoanForm = ({loan}) => {
         setLoanMode('');
         setStatus('');
         setComments('');
+        loan = null;
     };
 
     return (
@@ -257,7 +265,7 @@ const LoanForm = ({loan}) => {
                     />
                 </div>
                 { ( isEditable() ) && <button type="submit" className="bg-green-500 text-white rounded-md px-4 py-2 mt-4">
-                    Cerrar Préstamo
+                    Cerrar/Crear Préstamo
                 </button> }
             </form> 
         </>

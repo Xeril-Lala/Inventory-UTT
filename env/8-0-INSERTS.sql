@@ -148,7 +148,7 @@ CALL SET_USER(
 -- * Inserting Loan Modes
 
 CALL SET_LOAN_MODE(
-    'PROTECTIVE',
+    'RESGUARDO',
     'YYYY',
     1,
     'DBA',
@@ -157,7 +157,7 @@ CALL SET_LOAN_MODE(
 );
 
 CALL SET_LOAN_MODE(
-    'COMMON',
+    'PRESTAMO',
     NULL,
     NULL,
     'DBA',
@@ -166,7 +166,7 @@ CALL SET_LOAN_MODE(
 );
 
 CALL SET_LOAN_MODE(
-    'STATIC',
+    'MOBILIARIO',
     'YYYY',
     1,
     'DBA',

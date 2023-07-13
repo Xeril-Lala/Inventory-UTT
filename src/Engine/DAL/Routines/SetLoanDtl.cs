@@ -42,7 +42,15 @@ namespace Engine.DAL.Routines
 
         protected override Result OnResult(MySqlCommand cmd)
         {
-            Result result = BDAL.FetchResult(cmd, OutParameter, GetSPName(), result => result.Data = OutId.Value);
+            Result result = BDAL.FetchResult(cmd, OutParameter, GetSPName(), result =>
+            {
+                var value = OutId?.Value;
+
+                if (value != null)
+                {
+                    result.Data = Validate.Instance.getDefaultIntIfDBNull(value);
+                }
+            });
 
             if (result.Status == C.OK && result.Message == C.COMPLETE)
                 result.Data = InventoryDAL.GetInstance(OnException)

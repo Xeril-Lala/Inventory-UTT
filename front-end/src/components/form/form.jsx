@@ -14,17 +14,16 @@ const MyForm = () => {
     const loanService = new LoanService();
 
     useEffect(() => {
-        const fetchData = async () => {
-            let res = await loanService.getLoans({ isActive: true });
-            
-            if(res?.status == C.status.common.ok) {
-                setLoans(res.data);
-            }
-        }
-
         fetchData();
     }, []);
-
+    
+    const fetchData = async () => {
+        let res = await loanService.getLoans({ isActive: true });
+        
+        if(res?.status == C.status.common.ok) {
+            setLoans(res.data);
+        }
+    }
 
     const selectLoan = (loan) => {
         setLoan(loan);
@@ -40,7 +39,7 @@ const MyForm = () => {
 
             <div className="col-span-2 rounded-md shadow-md bg-white p-6">
                 <h2 className="text-2xl mb-4">Editar/Crear Préstamo</h2>
-               <LoanForm loan={selectedLoan} />
+               <LoanForm loan={selectedLoan} onTriggerRefresh={fetchData}/>
             </div>
 
         </div>

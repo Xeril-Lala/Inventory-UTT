@@ -24,9 +24,12 @@ const LoanList = ({ data, onItemClick }) => {
 
             <div className="w-full grid grid-cols-4 gap-4">
                 <h2 className="col-span-3 text-lg text-blue-500 font-medium">
-                    <b> Responsable: </b> {item?.responsible} <br/>
-                    <b> Historial: </b>  { formatDate(item?.loanedOn) } { item?.returnedOn && ( " hasta " +  formatDate(item?.returnedOn) )}
+                  <b> Responsable: </b> {item?.responsible} <br/>
+                  <b> Historial: </b>  { formatDate(item?.loanedOn) } { item?.returnedOn && ( " hasta " +  formatDate(item?.returnedOn) )}
                 </h2>
+                <div className="text-center p-2">
+                  <span className={getBadgeClass(item?.loanStatus)} > <b>{item?.loanStatus}</b> </span>
+                </div>
             </div>
 
             <svg className={`w-4 h-4 transition-transform ${expandedItems.includes(item.id) ? 'rotate-180' : ''}`}
