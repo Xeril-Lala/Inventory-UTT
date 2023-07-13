@@ -1,6 +1,6 @@
-
+/* 
 .rdt_TableCell {
-    font-size: 1em; /* Cambia el tamaño de fuente de las celdas */
+    font-size: 1em;
     cursor:pointer;
     overflow: scroll;
 }
@@ -13,4 +13,4 @@
 }
 .rdt_Table{
     overflow:scroll;
-}
+} */

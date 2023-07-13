@@ -47,7 +47,7 @@ const UserSignUp = () => {
     ];
 
     return (
-        <div className="mx-4 sm:mx-auto h-auto">
+        <div className="w-full mx-4 sm:mx-auto">
             <div className="h-auto text-3xl mb-6">Formulario usuario</div>
 
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
@@ -68,7 +68,6 @@ const UserSignUp = () => {
                     <UserForm 
                         user={user}
                         updateUserCallback={ user => {
-                            
                             setUser(user);
                         }}
                     />

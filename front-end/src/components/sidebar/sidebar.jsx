@@ -23,11 +23,6 @@ const Sidebar = ({children}) => {
             name:"Inventario",
             icon:<FaTh/>
         },
-        // {
-        //     path:"/",
-        //     name:"Prestamos Activos",
-        //     icon:<FaThList/>
-        // },
         {
             path:"/historical",
             name:"Historial",
@@ -35,14 +30,9 @@ const Sidebar = ({children}) => {
         },
         {
             path:"/form",
-            name:"Prestamos",
+            name:"Préstamos",
             icon:<FaCommentAlt/>
         },
-        // {
-        //     path:"/equipment",
-        //     name:"Alta Equipos",
-        //     icon:<FaCommentAlt/>
-        // },
         {
             path:"/userSingUp",
             name:"Alta Usuarios",

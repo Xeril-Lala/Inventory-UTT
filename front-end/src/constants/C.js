@@ -8,11 +8,21 @@ export const C = {
             no_auth: 'NO_AUTH'
         },
         loan: {
-            // TODO: Add your common status
+            PRESTADO: 'PRESTADO',
+            RESGUARDO: 'RESGUARDO',
+            VENCIDO: 'VENCIDO',
+            TERMINADO: 'TERMINADO',
+            PERDIDO: 'PERDIDO',
+            MOBILIARIO: 'MOBILIARIO'
         },
         loan_detail: {
             // TODO: Add your common detail status
         }
+    },
+    tipo: {
+        RESGUARDO: 'RESGUARDO',
+        PRESTAMO: 'PRESTAMO',
+        MOBILIARIO: 'MOBILIARIO'
     },
     media: {
         // TODO: Path to static images, logos, media, etc
@@ -52,7 +62,6 @@ export const C = {
                     fontSize: '1.5em',
                 },
             },
-            responsiveFont: 'sm:text-xs md:text-sm lg:text-base xl:text-lg',
         }
     }
 };

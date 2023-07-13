@@ -1,6 +1,6 @@
 import HttpBase from "./HttpBase";
 import { C } from "../constants/C";
-import { getAuthToken } from "../constants/Utils";
+import { getAuthToken } from "../constants/utils";
 
 class InventoryService extends HttpBase {
 

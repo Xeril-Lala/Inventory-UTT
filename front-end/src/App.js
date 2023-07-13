@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import Sidebar from './components/sidebar/sidebar.jsx';
 import Historical from './components/historical/historical.jsx';
-import ActiveLoans from './components/loans/activeLoans.jsx';
 import Form from './components/form/form.jsx';
 import Login from './components/login/login.jsx'
 import Inventory from './components/inventory/inventoryStatus.jsx';
-import Equipment from './components/equipment/equipment.jsx';
 import UserSingUp from './components/user/userSingUp.jsx';
 import './App.css';
 import { BrowserRouter, Outlet, Route, Routes, Switch } from 'react-router-dom';
@@ -48,12 +46,6 @@ const App = () => {
                 element={
                   <Inventory/>
                 }
-              />
-              <Route 
-                path="/activeloans" 
-                element={
-                  <ActiveLoans />
-                } 
               />
               <Route 
                 path="/historical" 
