@@ -1,32 +1,63 @@
-import react from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiFilter, FiAlertCircle } from 'react-icons/fi';
 import { MdLaptop } from "react-icons/md";
 import { RxCrossCircled } from "react-icons/rx";
 import { C } from '../../constants/C.js';
 import CustomTable from '../customTable/customTable.jsx';
 import AssetForm from './assetForm.jsx';
-import UserService from '../../services/User.js';
 import AssetService from '../../services/Asset.js';
-import React, { useState } from 'react';
 import AssetExcel from './assetExcel.jsx';
 import '../customTable/customStyle.css';
 import DataTableExtensions from "react-data-table-component-extensions";
+import Select from 'react-select';
+import { formatDate } from '../../constants/utils.js';
+
 
 const Assets = () => {
     const assetService = new AssetService();
+
     const [asset, setAsset] = useState(null);
+    const [groups, setGroups] = useState([]);
+    const [selectedGroup, setGroup] = useState(null);
+    const [trigger, setTrigger] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let res = await assetService.getAssets({ group: 'MODEL'});
+
+            if(res?.status == C.status.common.ok){
+                setGroups(
+                    res.data.map(x => ({value: x.code, label: `${x.value} - ${x.description}`, data:x })),
+                    console.log(res.data),
+                );
+                
+            }
+        }
+        fetchData();
+    }, []);
+
 
     const convertData = response => {
-        return response?.data.map(x => [
-            x.code,
-            x.value,
-            x.description,
-            x.lastModified,
-            //x.isActive,
-            x.auditUser,
-            x?.group?.value ?? 'NA'
-        ]);
+            if (response?.status == C.status.common.ok) {
+                let res = response?.data;
+                let filterData = res.filter(x => {
+                let flag1 = x?.group == 'MODEL';
+                let flag2 = !selectedGroup || x?.code == selectedGroup?.value;
+            
+                return flag1 && flag2;
+                });
+                return filterData.map(x => [
+                x.code,
+                x.value,
+                x.description,
+                formatDate(x?.lastModified),
+                x.auditUser,
+                x?.group?.value ?? 'NA'
+                ]);
+            } else return [];
+            
     }
+    console.log(convertData());
 
     const getAssetInfo = async (row) => {
         console.log(row);
@@ -36,9 +67,12 @@ const Assets = () => {
         if(res?.status == C.status.common.ok){
             setAsset(res.data);
         }
-
     };
 
+    const selectGroup = (value) => {
+        setGroup(value);
+        setTrigger(val => !val)
+    } 
     const columns = [
         {
             name: 'Codigo',
@@ -71,6 +105,18 @@ const Assets = () => {
         <div className="mx-4 sm:mx-auto h-auto">
             <div className="h-auto text-3xl mb-6">Utilidades</div>
 
+            <div className="grid grid-cols-6 ga rounded-md shadow-md bg-white p-2 my-2">
+                <Select 
+                    className="col-span-3" 
+                    value={selectedGroup}
+                    options={groups}
+                    onChange={selectGroup}
+                    isClearable
+                    isSearchable
+                    placeholder="Filtrar por Rol o Grupo"
+                />
+            </div>
+
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
                 <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
                     <CustomTable
@@ -80,6 +126,7 @@ const Assets = () => {
                         onSelectRow={getAssetInfo}
                         onHook={async () => await assetService.getAssets({})}
                         convertData={convertData}
+                        triggerRefresh={trigger}
                     />
                 </div>
 
@@ -89,6 +136,7 @@ const Assets = () => {
                         asset={asset}
                         updateAssetCallback={ asset => {
                             setAsset(asset);
+                            setTrigger(val => !val)
                         }}/>
                     <div>
                         <p>Subir Archivo de Inventario</p>
@@ -102,37 +150,3 @@ const Assets = () => {
 };
 
 export default Assets;
-
-/*
-        <div>
-            <div className="grid grid-cols-5 grid-rows-2 gap-4 w-full h-auto">
-                <div className="col-span-2 w-full h-auto text-3xl">Inventario</div>
-                <div className="col-span-2 col-start-5 bg-white border-r-2 rounded-md shadow-md w-72 h-auto flex flex-nowrap right-0 p-1">
-                    <FiFilter class="m-1 text-gray-400" />
-                    <input type="text" placeholder="Buscar" class="font-mono antialiased font-thin text-sm outline-none "></input>
-                </div>
-            </div>
-            <div className="col-span-5 row-span-2 row-start-2 bg-white rounded-md shadow-md w-full h-auto text-xl font-mono antialiased font-light tracking-normal break-normal">
-                <div className="grid grid-cols-5 grid-rows-4 gap-1 p-2 border-l-8 border-red-500 rounded-md">
-                    <div className="row-span-4 pl-4 border-r-2 border-slate-100">
-                        <MdLaptop className="text-6xl ml-24" />
-                        <div className="col-start-1 row-start-4 flex mt-5 ml-10">
-                            <RxCrossCircled class="text-3xl mr-2 text-red-600" />
-                            <a>No Disponible</a>
-                        </div>
-                    </div>
-                    <div className="col-start-2 row-start-1 row-span-4 ml-2">
-                        <div className="">ID</div>
-                        <div className="">RUBRO</div>
-                        <div className="">MARCA </div>
-                        <div className="">SERIAL</div>
-                    </div>
-                    <div className="row-span-4 col-start-5 row-start-1">
-                        <div className="">AREA RESGUARDO</div>
-                        <div className="">UBICACION</div>
-                    </div>
-                    <div className="row-span-4 col-start-3 col-span-2 row-start-1 text-xl font-mono antialiased font-light tracking-normal break-normal">DESCRIPCION</div>
-                </div>
-            </div>
-        </div>
-*/
