@@ -25,15 +25,7 @@ CALL SET_ASSET(
 CALL SET_ASSET(
     'LAB_ADMIN', 'LABORATORY', 'USER_GROUP',
     NULL, NULL,
-    'Laboratory ',
-    NULL, NULL, NULL,
-    'DBA', TRUE, @MSG
-);
-
-CALL SET_ASSET(
-    'LAB_ADMIN', 'LABORATORY', 'USER_GROUP',
-    NULL, NULL,
-    'Laboratory Users',
+    'Laboratoristas & Help Desk/Tech Support',
     NULL, NULL, NULL,
     'DBA', TRUE, @MSG
 );
@@ -41,7 +33,7 @@ CALL SET_ASSET(
 CALL SET_ASSET(
     'PROF', 'PROFESSOR', 'USER_GROUP',
     NULL, NULL,
-    'Professors & Others',
+    'Trabajadores & Profesores',
     NULL, NULL, NULL,
     'DBA', TRUE, @MSG
 );
@@ -49,7 +41,7 @@ CALL SET_ASSET(
 CALL SET_ASSET(
     'STU', 'STUDENT', 'USER_GROUP',
     NULL, NULL,
-    'Just Students',
+    'Catálogos de estudiante',
     NULL, NULL, NULL,
     'DBA', TRUE, @MSG
 );
@@ -57,7 +49,7 @@ CALL SET_ASSET(
 CALL SET_ASSET(
     'USER', 'USER', 'USER_GROUP',
     NULL, NULL,
-    'Common Users',
+    'Usuarios Comúnes',
     NULL, NULL, NULL,
     'DBA', TRUE, @MSG
 );

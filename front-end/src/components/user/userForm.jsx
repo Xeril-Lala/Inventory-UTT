@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { FaUserPlus, FaTrash, FaEdit, FaUserEdit, FaSave } from 'react-icons/fa';
-import UserService from '../../services/User';
-import { C } from '../../constants/C';
 import { sha256 } from 'js-sha256';
+import React, { useEffect, useState } from 'react';
+import { FaEdit, FaSave } from 'react-icons/fa';
+import Select from 'react-select';
 import { toast } from 'react-toastify';
+import { C } from '../../constants/C';
+import AssetService from '../../services/Asset';
+import UserService from '../../services/User';
 
 const UserForm = ({ user, updateUserCallback = () => {} }) => {
     const userService = new UserService();
+    const assetService = new AssetService();
     
+    const [groups, setGroups] = useState([]);
+    const [group, setGroup] = useState(null);
     const [isEditable, setEditable] = useState(false);
     const [userData, setUserData] = useState({
         username: '',
         name: '',
         lastname: '',
-        group: '',
         id: '',
         email: '',
         password: ''
@@ -25,13 +29,32 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 username: user?.username || '',
                 name: user?.name || '',
                 lastname: user?.lastname || '',
-                group: user?.group?.code || '',
                 id: user?.contact?.id || '',
                 email: user?.contact?.email || '',
                 password: ''
             });
+
+            setGroup(user?.group != null? {
+                value: user?.group?.code, 
+                label: `${user?.group?.value} - ${user?.group?.description}`, 
+                data: user?.group 
+            } : null)
         }
     }, [user]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let res = await assetService.getAssets({ group: 'USER_GROUP' });
+
+            if(res?.status == C.status.common.ok){
+                setGroups(
+                    res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
+                );
+            }
+        }
+
+        fetchData();
+    }, []);
 
     const updateUser = async (active = true) => {
         var data = {
@@ -45,10 +68,15 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
             data.password = sha256(userData.password);
         }
 
+        if(group) {
+            data.group = group.value;
+        }
+
         const response = await userService.setFullInfo(data);
 
         if (response?.status == C.status.common.ok) {
             updateUserCallback(response.data);
+            toggleEdit();
             toast.success('Usuario Actualizado', {
                 position: "top-right",
                 autoClose: 5000,
@@ -65,7 +93,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e?.target;
         setUserData((prevUserData) => ({
             ...prevUserData,
             [name]: value,
@@ -123,14 +151,16 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Rol</p>
-                    <input
-                        type="text"
+
+                    <Select
                         name="group"
-                        placeholder="Rol"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.group}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
+                        value={group}
+                        options={groups}
+                        onChange={setGroup}
+                        isClearable
+                        isSearchable
+                        placeholder="Selecciona un Rol"
+                        isDisabled={!isEditable}
                     />
                 </div>
 

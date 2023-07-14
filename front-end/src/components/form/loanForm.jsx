@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import LoanService from '../../services/Loan';
-import Select from 'react-select';
-import InventoryService from '../../services/Inventory';
-import { C } from '../../constants/C';
-import { toast } from 'react-toastify';
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FaPlus } from "react-icons/fa";
+import Select from 'react-select';
+import { toast } from 'react-toastify';
+import { C } from '../../constants/C';
 import { getBadgeClass } from "../../constants/utils";
-import { FaPlus} from "react-icons/fa";
+import InventoryService from '../../services/Inventory';
+import LoanService from '../../services/Loan';
 
 const LoanForm = ({loan, onTriggerRefresh}) => {
     const [id, setId] = useState('');
@@ -247,7 +247,7 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                         onChange={setLoanMode}
                         isClearable
                         isSearchable
-                        placeholder="Selecciona una opcion"
+                        placeholder="Selecciona un tipo de préstamo"
                         isDisabled={!isEditable()}
                     />
                 </div>

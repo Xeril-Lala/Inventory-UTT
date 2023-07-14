@@ -19,6 +19,14 @@ export const C = {
             // TODO: Add your common detail status
         }
     },
+    roles: {
+        ADMIN: "ADMIN",
+        DEV: "DEV",
+        LAB_ADMIN: "LAB_ADMIN",
+        PROF: "PROF",
+        STU: "STU",
+        USER: "USER"
+    },
     tipo: {
         RESGUARDO: 'RESGUARDO',
         PRESTAMO: 'PRESTAMO',
