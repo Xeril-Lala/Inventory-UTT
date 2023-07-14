@@ -4,14 +4,15 @@ import { MdLaptop } from "react-icons/md";
 import { RxCrossCircled } from "react-icons/rx";
 import { C } from '../../constants/C.js';
 import CustomTable from '../customTable/customTable.jsx';
-import InventoryForm from './inventoryForm.jsx';
+import AssetForm from './assetForm.jsx';
 import UserService from '../../services/User.js';
 import AssetService from '../../services/Asset.js';
 import React, { useState } from 'react';
-import InventoryExcel from './inventoryExcel.jsx';
+import AssetExcel from './assetExcel.jsx';
 import '../customTable/customStyle.css';
+import DataTableExtensions from "react-data-table-component-extensions";
 
-const Inventory = () => {
+const Assets = () => {
     const assetService = new AssetService();
     const [asset, setAsset] = useState(null);
 
@@ -45,7 +46,7 @@ const Inventory = () => {
             sortable: true,
         },
         {
-            name: 'Ubicacion',
+            name: 'Nombre',
             selector: row => row[1],
             sortable: true,
         },
@@ -68,10 +69,10 @@ const Inventory = () => {
 
     return (
         <div className="mx-4 sm:mx-auto h-auto">
-            <div className="h-auto text-3xl mb-6">Inventario</div>
+            <div className="h-auto text-3xl mb-6">Utilidades</div>
 
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
-                <div className="col-span-4 rounded-md shadow-md bg-white p-6 overflow-scroll h-[700px]" >
+                <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
                     {/* <CustomTable
                         title={'Lista Items'}
                         columns={columns}
@@ -80,14 +81,16 @@ const Inventory = () => {
                         onHook={async () => await service({})}
                         convertData={convertData}
                     /> */}
+                    
                     <CustomTable
-                        title={'Lista Equipos'}
+                        title={'Lista Utilidades'}
                         columns={columns}
                         styles={C.styles.dataTable}
                         onSelectRow={getAssetInfo}
                         onHook={async () => await assetService.getAssets({})}
                         convertData={convertData}
                     />
+                    
 
                     
                 </div>
@@ -100,14 +103,14 @@ const Inventory = () => {
                         updateCallback={ item => {
                         }}
                     /> */}
-                    <InventoryForm
+                    <AssetForm
                         asset={asset}
                         updateAssetCallback={ asset => {
                             setAsset(asset);
                         }}/>
                     <div>
                         <p>Subir Archivo de Inventario</p>
-                        <InventoryExcel/>
+                        <AssetExcel/>
                     </div>
                 </div>
 
@@ -116,7 +119,7 @@ const Inventory = () => {
     );
 };
 
-export default Inventory;
+export default Assets;
 
 /*
         <div>

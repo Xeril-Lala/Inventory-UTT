@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
+import DataTableExtensions from "react-data-table-component-extensions";
 import { FaSync } from 'react-icons/fa';
 
 const CustomTable = ({
@@ -23,6 +24,7 @@ const CustomTable = ({
         data = convertData(data);
         setData(data);
     }
+    const customDataTable = CustomTable;
 
     return (
         <div className="relative">
@@ -32,13 +34,25 @@ const CustomTable = ({
             >
                 <FaSync className="text-xl" />
             </button>
-            <DataTable
-                title={title}
-                columns={columns}
-                data={data}
-                onRowClicked={onSelectRow}
-                customStyles={styles}
-            />
+            
+            
+            <DataTableExtensions
+        columns={columns}
+        data={data}
+        exportHeaders={true}
+        print={false}
+        export={false}
+      >
+        <DataTable
+          title={title}
+          columns={columns}
+          data={data}
+          onRowClicked={onSelectRow}
+          customStyles={styles}
+          pagination
+        />
+      </DataTableExtensions>
+            
         </div>
     );
 }
