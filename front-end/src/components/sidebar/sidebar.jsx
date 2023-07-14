@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import {
-    FaTh,
     FaBars,
-    FaUserAlt,
-    FaRegChartBar,
     FaCommentAlt,
-    FaThList,
-    FaSignOutAlt
-}from "react-icons/fa";
-import './sidebar.css';
-import { NavLink} from 'react-router-dom';
+    FaRegChartBar,
+    FaSignOutAlt,
+    FaTh,
+    FaUserAlt
+} from "react-icons/fa";
+import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../../context/Context';
+import './sidebar.css';
 
 
 const Sidebar = ({children}) => {
@@ -23,11 +22,6 @@ const Sidebar = ({children}) => {
             name:"Assets",
             icon:<FaTh/>
         },
-        // {
-        //     path:"/",
-        //     name:"Prestamos Activos",
-        //     icon:<FaThList/>
-        // },
         {
             path:"/historical",
             name:"Historial",
@@ -35,25 +29,14 @@ const Sidebar = ({children}) => {
         },
         {
             path:"/form",
-            name:"Prestamos",
+            name:"Préstamos",
             icon:<FaCommentAlt/>
         },
-        // {
-        //     path:"/equipment",
-        //     name:"Alta Equipos",
-        //     icon:<FaCommentAlt/>
-        // },
         {
             path:"/userSingUp",
             name:"Alta Usuarios",
             icon:<FaUserAlt/>
-        },
-        // {
-        //     path:"/user",
-        //     name:"usuario",
-        //     icon:<FaUserAlt/>
-        // },
-        
+        }
     ]
     return (
             <div className="flex font-mono ">

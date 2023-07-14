@@ -26,14 +26,16 @@ class SecurityService extends HttpBase {
             callback: callback
         });
     }
-
-    // Check & Refresh token
-    async checkToken(token, callback = () => { }) {
+    
+    async checkToken(token, refreshToken, callback = () => { }) {
         return await this.request({
             endpoint: 'checkToken',
             token: token,
             options: {
-                method: 'get',
+                method: 'post',
+                data: {
+                    "refreshToken": refreshToken
+                }
             },
             callback: callback,
         })

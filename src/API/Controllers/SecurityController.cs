@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using InventoryAPI.DTOs;
+using System.Security.Cryptography;
 
 namespace InventoryAPI.Controllers
 {
@@ -38,12 +39,30 @@ namespace InventoryAPI.Controllers
             }
         });
 
-        [Authorize]
-        [HttpGet("checkToken")]
-        public Result CheckToken() => RequestResponse(() =>
+        [AllowAnonymous]
+        [HttpPost("checkToken")]
+        public Result CheckToken([FromBody] JsonElement data, [FromHeader(Name = "Authorization")] string token ) => RequestResponse(() =>
         {
-            Console.WriteLine(User);
-            return C.OK;
+            var jObj = JsonObject.Create(data);
+            var principal = GetPrincipalFromExpiredToken(token
+                .Replace("Bearer", "")
+                .Replace("\n", "")
+                .Trim()
+            );
+            var username = principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var refresh = principal?.FindFirst(C.REFRESH_TOKEN)?.Value;
+
+            var refreshToken = ParseProperty<string>.GetValue("refreshToken", jObj, onMissingProperty: ErrorManager.Subscription);
+
+            if(refresh == refreshToken)
+            {
+                var oUser = DAL.GetUsers(username)?.FirstOrDefault();
+
+                if(oUser != null)
+                    return GetJWT(oUser);
+            }
+
+            return C.NOT_AUTH;
         });
 
         private object? GetJWT(User user)
@@ -54,6 +73,7 @@ namespace InventoryAPI.Controllers
             var expiration = _configuration["Jwt:Expiration"];
             var username = user.Username;
             var group = user?.Group?.Code;
+            var refreshToken = GenerateRefreshToken();
 
             if (key != null && user?.Group != null && !string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(group))
             {
@@ -63,7 +83,8 @@ namespace InventoryAPI.Controllers
                 var claims = new[] {
                     new Claim(JwtRegisteredClaimNames.Sub, username),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(C.ROLE, group)
+                    new Claim(C.ROLE, group),
+                    new Claim(C.REFRESH_TOKEN, refreshToken)
                 };
 
                 var expirationDt = !string.IsNullOrEmpty(expiration)
@@ -78,24 +99,59 @@ namespace InventoryAPI.Controllers
                     signingCredentials: credentials
                 );
 
-                var groupDto = new AssetDTO();
-                groupDto.Map(user.Group);
+                var userDto = new UserDTO();
+                userDto.Map(user);
 
                 tokenResult = new {
                     token = new JwtSecurityTokenHandler().WriteToken(tokenOptions),
-                    expiration = expirationDt,
-                    group = groupDto
+                    expiration = tokenOptions.ValidTo,
+                    user = userDto,
+                    refreshToken
                 };
             }
 
             return tokenResult;
         }
 
-        private bool AuthCredentials(string? user, string? password, out User? group)
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
+        {
+            ClaimsPrincipal? principal = null;
+            var key = _configuration["Jwt:Key"];
+
+            if ( !string.IsNullOrEmpty(key))
+            {
+                var validationOptions = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = _configuration["Jwt:Issuer"],
+                    ValidAudience = _configuration["Jwt:Issuer"],
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))    
+                };
+
+                var handler = new JwtSecurityTokenHandler();
+                principal = handler.ValidateToken(token, validationOptions, out SecurityToken securityToken);
+                //var jwtToken = (JwtSecurityToken)securityToken;
+            }
+
+            return principal;
+        }
+
+        private bool AuthCredentials(string? user, string? password, out User? oUser)
         {
             var result = DAL.AuthUser(user, password);
 
-            group = DAL.GetUsers(username: user)?.FirstOrDefault();
+            oUser = DAL.GetUsers(username: user)?.FirstOrDefault();
 
             return result.Data != null && result?.Data?.ToString() == C.OK;
         }

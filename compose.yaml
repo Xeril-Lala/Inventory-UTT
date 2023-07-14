@@ -10,6 +10,8 @@ services:
       - 3306:3306
     networks:
       - utt-network
+    volumes:
+      - ./mysql_data:/var/lib/mysql
   api:
     container_name: net-api
     env_file: .env

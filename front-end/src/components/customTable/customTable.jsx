@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import axios from 'axios';
-import HttpBase from '../../services/HttpBase.js';
-import { FaSync } from 'react-icons/fa';
 import DataTableExtensions from "react-data-table-component-extensions";
+import { FaSync } from 'react-icons/fa';
 
 
 const CustomTable = ({
@@ -13,15 +11,14 @@ const CustomTable = ({
     onHook = async () => {},
     convertData = () => {},
     onSelectRow = () => {},
-
-    
+    triggerRefresh
 }) => {
     
     const [data, setData] = useState([]);
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [triggerRefresh]);
 
     const fetchData = async () => {
         var data = await onHook();

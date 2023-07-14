@@ -1,6 +1,6 @@
 import HttpBase from "./HttpBase";
 import { C } from "../constants/C";
-import { getAuthToken } from "../constants/Utils";
+import { getAuthToken } from "../constants/utils";
 
 class LoanService extends HttpBase {
 
@@ -32,6 +32,7 @@ class LoanService extends HttpBase {
 
   async getLoan(id, callback = () => { }) {
     return await this.request({
+      token: getAuthToken(),
       endpoint: `${id}`,
       options: {
         headers: {
@@ -44,6 +45,7 @@ class LoanService extends HttpBase {
 
   async getLoanModes(callback = () => { }) {
     return await this.request({
+      token: getAuthToken(),
       endpoint: 'mode',
       options: {
         headers: {
@@ -56,6 +58,7 @@ class LoanService extends HttpBase {
 
   async getLoanMode(mode, callback = () => { }) {
     return await this.request({
+      token: getAuthToken(),
       endpoint: `mode/${mode}`,
       options: {
         headers: {
@@ -98,6 +101,7 @@ class LoanService extends HttpBase {
 
   async getLoanDetail(id, callback = () => { }) {
     return await this.request({
+      token: getAuthToken(),
       endpoint: `detail/${id}`,
       options: {
         headers: {

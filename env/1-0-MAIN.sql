@@ -1,3 +1,6 @@
+SET GLOBAL time_zone = 'America/Tijuana';
+SET time_zone = 'America/Tijuana';
+
 DROP DATABASE IF EXISTS INVENTORY_UTT;
 CREATE DATABASE INVENTORY_UTT;
 USE INVENTORY_UTT;

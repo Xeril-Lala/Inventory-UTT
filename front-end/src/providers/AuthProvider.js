@@ -16,6 +16,9 @@ export const AuthProvider = ( {children} ) => {
             logout();
             navigate('/login');
         },
+        updateUserInfo: info => {
+            setLogin(info);
+        }
     };
 
     return (
