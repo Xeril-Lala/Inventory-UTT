@@ -138,10 +138,10 @@ const Assets = () => {
                             setAsset(asset);
                             setTrigger(val => !val)
                         }}/>
-                    <div>
+                    {/* <div>
                         <p>Subir Archivo de Inventario</p>
                         <AssetExcel/>
-                    </div>
+                    </div> */}
                 </div>
 
             </div>

@@ -1,15 +1,47 @@
 import { C } from '../../constants/C.js';
 import CustomTable from '../customTable/customTable.jsx';
 import InventoryService from '../../services/Inventory.js';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../customTable/customStyle.css';
+
 
 const Historical = () => {
     const itemService = new InventoryService();
     const [items, setItems] = useState(null);
 
+    const [selectedGroup, setGroup] = useState(null);
+    const [group, setGroups] = useState([]);
+    const [trigger, setTrigger] = useState(false);
+
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let res = await itemService.getItems({ group: 'USER_GROUP' });
+
+            if(res?.status == C.status.common.ok){
+                setGroups(
+                    res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
+                );
+            }
+        }
+
+    fetchData();
+}, []);
+
+
     const convertData = response => {
-        return response?.data.map(x => [
+
+        if(response?.status == C.status.common.ok) {
+            let res = response?.data;
+            let filterData = res.filter(x => {
+                let flag1 = x?.group?.group == 'USER_GROUP';
+                let flag2 = !selectedGroup || x?.group?.code == selectedGroup?.value;
+
+                return flag1 && flag2;
+            });
+        
+        return filterData.map(x => [
             x.name,
             x.about,
             x.acquisition,
@@ -17,15 +49,9 @@ const Historical = () => {
             x.conditionUse,
             x.lastModified,
         ]);
-    }
 
-    // const getItemInfo = async (row) => {
-    //     console.log(row);
-    //     var res = await itemService.getItem(row[0]);
-    //     if(res?.status == C.status.common.ok){
-    //         setItems(res.data);
-    //     }
-    // };
+        }else return[];
+    }    
 
     const columns = [
         {
