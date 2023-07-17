@@ -1,6 +1,9 @@
 .rdt_TableCell {
     font-size: 1em;
     cursor:pointer;
+    padding: 10px;    
+    word-break:break-word;
+    overflow-wrap: break-word;
 }
 /* .rdt_TableCell:hover {
     background-color: rgb(152, 204, 248);
@@ -11,3 +14,18 @@
 }
 .rdt_Table{
 }
+.filter-text{
+    @apply
+        bg-gray-200
+        rounded-md
+        p-2
+        m-1;
+    
+}
+
+/* .custom-table {
+    th, td {
+      overflow-wrap: break-word;
+      background-color: red;
+    }
+  } */

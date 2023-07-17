@@ -46,6 +46,7 @@ const CustomTable = ({
                 filter={true}
                 
             >
+                <div  className="custom-table">
             <DataTable
                 title={title}
                 columns={columns}
@@ -54,8 +55,7 @@ const CustomTable = ({
                 customStyles={styles}
                 pagination
                 highlightOnHover
-
-            />
+            /></div>
         </DataTableExtensions>
             
         </div>

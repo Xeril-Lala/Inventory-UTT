@@ -5,8 +5,10 @@ import {
     FaRegChartBar,
     FaSignOutAlt,
     FaTh,
-    FaUserAlt
+    FaUserAlt,
+    
 } from "react-icons/fa";
+import { FaComputer } from "react-icons/fa6";
 import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../../context/Context';
 import './sidebar.css';
@@ -36,6 +38,11 @@ const Sidebar = ({children}) => {
             path:"/userSingUp",
             name:"Alta Usuarios",
             icon:<FaUserAlt/>
+        },
+        {
+            path:"/inventory",
+            name:"Inventario",
+            icon:<FaComputer/>
         }
     ]
     return (

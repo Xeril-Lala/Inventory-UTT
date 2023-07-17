@@ -81,7 +81,7 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
         <div>
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
-                { isEditable && <FaSave onClick={async () => await updateAsset()} className="text-2xl mr-2 cursor-pointer hover:text-green-500" title="Guardar" /> }
+                
                 { isEditable && <FaLaptopMedical onClick={clearForm} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Equipo" />}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
@@ -136,45 +136,9 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
                         onChange={(e) => handleInputChange('auditUser', e.target.value)}
                     />
                 </div>
-{/*
-                { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Contraseña</p>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Contraseña"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.auditUser}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div> }
-
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Matricula/Numero de Empleado</p>
-                    <input
-                        type="text"
-                        name="id"
-                        placeholder="Matricula/Numero de Empleado"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.id}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div>
-
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Correo Electronico</p>
-                    <input
-                        type="text"
-                        name="email"
-                        placeholder="Correo Electronico"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.email}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div> */}
+                { isEditable && <button onClick={async () => await updateAsset()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar">
+                    Guardar
+                    </button>}
             </div>
         </div>
     );
