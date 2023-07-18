@@ -14,6 +14,7 @@ namespace InventoryAPI.DTOs
         public AssetDTO? Location { get; set; }
         public string? Serial { get; set; }
         public string? ConditionUse { get; set; }
+        public bool? IsUsed { get; set; }
 
         public ItemDTO() : base()
         {
@@ -37,6 +38,7 @@ namespace InventoryAPI.DTOs
                 Serial = Serial,
                 CustomId = CustomKey,
                 Description = About,
+                IsUsed = IsUsed
             };
 
             ConvertBaseBO(model, this);
@@ -65,6 +67,7 @@ namespace InventoryAPI.DTOs
             Model = assetDto;
             Location = locDto;
             Serial = obj.Serial;
+            IsUsed = obj.IsUsed;
 
             MapBaseBO(this, obj);
         }

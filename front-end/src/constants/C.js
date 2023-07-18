@@ -33,6 +33,8 @@ export const C = {
         MOBILIARIO: 'MOBILIARIO'
     },
     media: {
+        userTemplate: 'User-Upload-Template.xlsx',
+        
         // TODO: Path to static images, logos, media, etc
     },
     // TODO: Add Input Patterns!

@@ -43,23 +43,31 @@ namespace InventoryAPI.Controllers
         [HttpPost("checkToken")]
         public Result CheckToken([FromBody] JsonElement data, [FromHeader(Name = "Authorization")] string token ) => RequestResponse(() =>
         {
-            var jObj = JsonObject.Create(data);
-            var principal = GetPrincipalFromExpiredToken(token
-                .Replace("Bearer", "")
-                .Replace("\n", "")
-                .Trim()
-            );
-            var username = principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-            var refresh = principal?.FindFirst(C.REFRESH_TOKEN)?.Value;
 
-            var refreshToken = ParseProperty<string>.GetValue("refreshToken", jObj, onMissingProperty: ErrorManager.Subscription);
-
-            if(refresh == refreshToken)
+            try
             {
-                var oUser = DAL.GetUsers(username)?.FirstOrDefault();
+                var jObj = JsonObject.Create(data);
+                var principal = GetPrincipalFromExpiredToken(token
+                    .Replace("Bearer", "")
+                    .Replace("\n", "")
+                    .Trim()
+                );
+                var username = principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+                var refresh = principal?.FindFirst(C.REFRESH_TOKEN)?.Value;
 
-                if(oUser != null)
-                    return GetJWT(oUser);
+                var refreshToken = ParseProperty<string>.GetValue("refreshToken", jObj, onMissingProperty: ErrorManager.Subscription);
+
+                if (refresh == refreshToken)
+                {
+                    var oUser = DAL.GetUsers(username)?.FirstOrDefault();
+
+                    if (oUser != null)
+                        return GetJWT(oUser);
+                }
+
+            } catch
+            {
+                return C.NOT_AUTH;
             }
 
             return C.NOT_AUTH;
@@ -132,16 +140,17 @@ namespace InventoryAPI.Controllers
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     ValidIssuer = _configuration["Jwt:Issuer"],
                     ValidAudience = _configuration["Jwt:Issuer"],
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))    
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                    ClockSkew = TimeSpan.Zero
                 };
 
                 var handler = new JwtSecurityTokenHandler();
                 principal = handler.ValidateToken(token, validationOptions, out SecurityToken securityToken);
-                //var jwtToken = (JwtSecurityToken)securityToken;
+                // var jwtToken = (JwtSecurityToken)securityToken;
             }
 
             return principal;

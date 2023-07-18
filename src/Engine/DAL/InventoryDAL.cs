@@ -99,6 +99,7 @@ namespace Engine.DAL
             string? model = null,
             DateTime? fromDt = null,
             DateTime? toDt = null,
+            bool? isUsed = null,
             bool? status = null
         )
         {
@@ -110,6 +111,7 @@ namespace Engine.DAL
                 model,
                 fromDt,
                 toDt,
+                isUsed,
                 status
             );
 
@@ -179,12 +181,14 @@ namespace Engine.DAL
         public List<User>? GetUsers(
             string? username = null,
             string? search = null,
+            string? group = null,
             bool? status = null
         )
         {
             var entryData = GetUser.CreateObject(
                 username,
                 search,
+                group,
                 status
             );
 

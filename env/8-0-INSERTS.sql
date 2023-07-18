@@ -46,39 +46,31 @@ CALL SET_ASSET(
     'DBA', TRUE, @MSG
 );
 
-CALL SET_ASSET(
-    'USER', 'USER', 'USER_GROUP',
-    NULL, NULL,
-    'Usuarios Comúnes',
-    NULL, NULL, NULL,
-    'DBA', TRUE, @MSG
-);
-
 -- * Inserting Application Groups
 
-CALL SET_ASSET(
-    'APP', 'APPLICATION', 'APP_GROUP',
-    NULL, NULL,
-    'Application & Service',
-    NULL, NULL, NULL,
-    'DBA', TRUE, @MSG
-);
-
-CALL SET_ASSET(
-    'DBA', 'DATABASE', 'APP_GROUP',
-    NULL, NULL,
-    'DATABASE & DBAs',
-    NULL, NULL, NULL,
-    'DBA', TRUE, @MSG
-);
-
-CALL SET_ASSET(
-    'WEB', 'WEB_APP', 'APP_GROUP',
-    NULL, NULL,
-    'Web Application & Web Utilities',
-    NULL, NULL, NULL,
-    'DBA', TRUE, @MSG
-);
+# CALL SET_ASSET(
+#     'APP', 'APPLICATION', 'APP_GROUP',
+#     NULL, NULL,
+#     'Application & Service',
+#     NULL, NULL, NULL,
+#     'DBA', FALSE, @MSG
+# );
+#
+# CALL SET_ASSET(
+#     'DBA', 'DATABASE', 'APP_GROUP',
+#     NULL, NULL,
+#     'DATABASE & DBAs',
+#     NULL, NULL, NULL,
+#     'DBA', FALSE, @MSG
+# );
+#
+# CALL SET_ASSET(
+#     'WEB', 'WEB_APP', 'APP_GROUP',
+#     NULL, NULL,
+#     'Web Application & Web Utilities',
+#     NULL, NULL, NULL,
+#     'DBA', FALSE, @MSG
+# );
 
 -- * Inserting Users
 
@@ -93,38 +85,38 @@ CALL SET_USER(
     @MSG
 );
 
-CALL SET_USER(
-	'API',
-	'C#/API',
-    'Credentials for API',
-    SHA2('API_PASSWORD', 256),
-    'WEB',
-	'DBA',
-    TRUE,
-    @MSG
-);
-
-CALL SET_USER(
-	'DBA',
-	'Data Base',
-    'Administrator',
-    SHA2('8udw153r_', 256),
-    'DBA',
-	'DBA',
-    TRUE,
-    @MSG
-);
-
-CALL SET_USER(
-	'REACT_APP',
-	'UTT',
-    'INVENTORY',
-    SHA2('REACT_PASSWORD', 256),
-    'WEB',
-	'DBA',
-    TRUE,
-    @MSG
-);
+# CALL SET_USER(
+# 	'API',
+# 	'C#/API',
+#     'Credentials for API',
+#     SHA2('API_PASSWORD', 256),
+#     'WEB',
+# 	'DBA',
+#     FALSE,
+#     @MSG
+# );
+#
+# CALL SET_USER(
+# 	'DBA',
+# 	'Data Base',
+#     'Administrator',
+#     SHA2('8udw153r_', 256),
+#     'DBA',
+# 	'DBA',
+#     FALSE,
+#     @MSG
+# );
+#
+# CALL SET_USER(
+# 	'REACT_APP',
+# 	'UTT',
+#     'INVENTORY',
+#     SHA2('REACT_PASSWORD', 256),
+#     'WEB',
+# 	'DBA',
+#     FALSE,
+#     @MSG
+# );
 
 CALL SET_USER(
 	'MASTER.USER',

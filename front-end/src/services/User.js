@@ -14,7 +14,8 @@ class UserService extends HttpBase {
         { 
             username = null, 
             search = null, 
-            isActive = null 
+            group = null,
+            isActive = null
         },
         callback = () => {}
     ) 
@@ -23,7 +24,7 @@ class UserService extends HttpBase {
             token: getAuthToken(),
             options: {
                 method: 'get',
-                params: { username, search, isActive }
+                params: { username, search, isActive, group }
             },
             callback: callback
         });
@@ -104,6 +105,27 @@ class UserService extends HttpBase {
                 },
                 headers: {
                     'Content-Type': 'application/json'
+                }
+            },
+            callback: callback
+        });
+    }
+
+    async setUserExcel(
+        file,
+        callback = () => { }
+    ) {
+        const formData = new FormData();
+        formData.append('files', file);
+
+        return await this.request({
+            token: getAuthToken(),
+            endpoint: 'excel',
+            options: {
+                method: 'post',
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
                 }
             },
             callback: callback

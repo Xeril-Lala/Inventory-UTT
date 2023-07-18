@@ -66,6 +66,7 @@ namespace InventoryAPI.Controllers
             string? model = null,
             DateTime? fromDt = null,
             DateTime? toDt = null,
+            bool? isUsed = null,
             bool? isActive = null
         ) => RequestResponse(() =>
         {
@@ -77,6 +78,7 @@ namespace InventoryAPI.Controllers
                 model: model,
                 fromDt: fromDt,
                 toDt: toDt,
+                isUsed: isUsed,
                 status: isActive
             );
 

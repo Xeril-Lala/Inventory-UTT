@@ -32,6 +32,7 @@ namespace Engine.DAL.Routines
             {
                 BDAL.CreateParameter("IN_USERNAME", EntryData?.Username, MType.String),
                 BDAL.CreateParameter("IN_SEARCH", EntryData?.Search, MType.String),
+                BDAL.CreateParameter("IN_GROUP", EntryData?.Group, MType.String),
                 BDAL.CreateParameter("IN_STATUS", EntryData?.Status, MType.Bit),
                 OutParameter
             };
@@ -77,11 +78,13 @@ namespace Engine.DAL.Routines
         public static object CreateObject(
             string? username = null,
             string? search = null,
+            string? group = null,
             bool? status = null
         ) => new
         {
             Username = username,
             Search = search,
+            Group = group,
             Status = status
         };
     }

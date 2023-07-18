@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import DataTableExtensions from "react-data-table-component-extensions";
-import { FaSync } from 'react-icons/fa';
+import { FaFileExport, FaSync } from 'react-icons/fa';
+import 'react-data-table-component-extensions/dist/index.css';
 
 const CustomTable = ({
     title,
-    columns = [], 
-    styles = {}, 
-    onHook = async () => {},
-    convertData = () => {},
-    onSelectRow = () => {},
+    columns = [],
+    styles = {},
+    onHook = async () => { },
+    convertData = () => { },
+    onSelectRow = () => { },
     triggerRefresh
 }) => {
-    
+
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -20,11 +21,14 @@ const CustomTable = ({
     }, [triggerRefresh]);
 
     const fetchData = async () => {
+        setData([]);
         var data = await onHook();
         data = convertData(data);
         setData(data);
     }
-    const customDataTable = CustomTable;
+
+
+    const actionsMemo = React.useMemo(() => <FaFileExport onClick={() => console.log(data)} />, []);
 
     return (
         <div className="relative">
@@ -34,25 +38,27 @@ const CustomTable = ({
             >
                 <FaSync className="text-xl" />
             </button>
-            
-            
+
+
             <DataTableExtensions
-        columns={columns}
-        data={data}
-        exportHeaders={true}
-        print={false}
-        export={false}
-      >
-        <DataTable
-          title={title}
-          columns={columns}
-          data={data}
-          onRowClicked={onSelectRow}
-          customStyles={styles}
-          pagination
-        />
-      </DataTableExtensions>
-            
+                columns={columns}
+                data={data}
+                print={true}
+                export={true}
+            >
+                <DataTable
+                    title={title}
+                    columns={columns}
+                    data={data}
+                    onRowClicked={onSelectRow}
+                    customStyles={styles}
+                    actions={actionsMemo}
+                    noHeader
+                    pagination
+                    highlightOnHover
+                />
+            </DataTableExtensions>
+
         </div>
     );
 }

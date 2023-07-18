@@ -30,7 +30,7 @@ export const getAuthToken = () => {
     return user?.token ?? '';
 }
 
-export const formatDate = (dateStr) => {
+export const formatDate = (dateStr, fullDate = true) => {
 
     if (!dateStr) return '';
 
@@ -46,7 +46,9 @@ export const formatDate = (dateStr) => {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
-    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+    return fullDate ? 
+        `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}` : 
+        `${day}/${month}/${year}`;
 }
 
 export const getBadgeClass = (status) => {
@@ -58,4 +60,33 @@ export const getBadgeClass = (status) => {
         case C.status.loan.RESGUARDO: return "bg-gray-100 text-gray-800 font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300";
         default: return "bg-pink-100 text-pink-800 font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-pink-900 dark:text-pink-300";
     }
+}
+
+export const downloadFile = (href, fileName ) => 
+{    
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = href;
+    
+    // Set the download attribute to trigger the file download
+    link.download = fileName;
+    
+    // Append the anchor element to the document body
+    document.body.appendChild(link);
+    
+    // Click the link to initiate the download
+    link.click();
+    
+    // Clean up by removing the temporary anchor element
+    document.body.removeChild(link);
+}
+
+export const getFirstAndLastDayOfWeek = () => {
+    const firstDay = new Date(Date.now());
+    firstDay.setDate(firstDay.getDate() - firstDay.getDay());
+  
+    const lastDay = new Date(firstDay);
+    lastDay.setDate(firstDay.getDate() + (6 - firstDay.getDay()));
+  
+    return { firstDay, lastDay };
 }

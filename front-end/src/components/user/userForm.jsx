@@ -1,6 +1,6 @@
 import { sha256 } from 'js-sha256';
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaSave } from 'react-icons/fa';
+import { FaEdit, FaPlus, FaSave } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { C } from '../../constants/C';
@@ -102,12 +102,24 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
 
     const toggleEdit = () => setEditable((value) => !value);
 
+    const clearForm = () => {
+        setUserData({
+            username: '',
+            name: '',
+            lastname: '',
+            id: '',
+            email: '',
+            password: ''
+        });
+        setGroup(null);
+        user = null;
+    }
+
     return (
         <div>
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
-                { isEditable && <FaSave onClick={async () => await updateUser()} className="text-2xl mr-2 cursor-pointer hover:text-green-500" title="Guardar" /> }
-                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
+                <FaPlus onClick={() => {clearForm(); setEditable(true)}} className="text-2xl cursor-pointer hover:text-green-500" title="Añadir Usuario" />
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
@@ -120,6 +132,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.username}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -133,6 +146,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.name}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -146,6 +160,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.lastname}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -164,7 +179,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                     />
                 </div>
 
-                { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
+                { (isEditable && group?.value != "STU") && <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Contraseña</p>
                     <input
                         type="password"
@@ -174,6 +189,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.password}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div> }
 
@@ -187,6 +203,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.id}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -200,8 +217,22 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.email}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
+
+                { isEditable &&
+                    <>
+                        <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser()}>
+                            Guardar
+                        </button>
+                        {userData?.username && 
+                            <button className="bg-red-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser(false)}>
+                                Eliminar
+                            </button>
+                        }
+                    </>
+                }
             </div>
         </div>
     );

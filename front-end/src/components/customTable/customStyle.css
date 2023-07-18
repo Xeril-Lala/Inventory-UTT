@@ -2,10 +2,10 @@
     font-size: 1em;
     cursor:pointer;
 }
-.rdt_TableCell:hover {
+/* .rdt_TableCell:hover {
     background-color: rgb(152, 204, 248);
     border-radius: 4px;
-}
+} */
 .rdt_TableHeader {
     font-size:1em;
 }
