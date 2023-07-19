@@ -3,13 +3,14 @@ import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
-import Asset from './components/asset/assetStatus.jsx';
+import Assets from './components/asset/assetStatus.jsx';
 import Form from './components/form/form.jsx';
 import Historical from './components/historical/historical.jsx';
 import Login from './components/login/login.jsx';
 import ProtectedRoute from './components/protected-route/ProtectedRoute';
 import Sidebar from './components/sidebar/sidebar';
 import UserSingUp from './components/user/userSingUp.jsx';
+import Inventory from './components/inventory/inventory.jsx';
 import { AuthProvider } from './providers/AuthProvider.js';
 import HttpBase from './services/HttpBase.js';
 
@@ -39,12 +40,12 @@ const App = () => {
             >
               <Route 
                 index
-                element={<Asset/>}
+                element={<Assets/>}
               />
               <Route 
                 path="/assets" 
                 element={
-                  <Asset/>
+                  <Assets/>
                 }
               />
               <Route 
@@ -65,6 +66,11 @@ const App = () => {
                   <UserSingUp />
                 } 
               />
+              <Route
+                path="/inventory"
+                element={
+                  <Inventory/>
+                }/>
               <Route path="*" element={<> <h1>Not Founded</h1> </>} />
             </Route>
             <Route path="/login" element={<Login/>} />

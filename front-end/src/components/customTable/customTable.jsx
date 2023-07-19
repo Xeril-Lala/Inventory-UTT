@@ -4,6 +4,7 @@ import DataTableExtensions from "react-data-table-component-extensions";
 import { FaFileExport, FaSync } from 'react-icons/fa';
 import 'react-data-table-component-extensions/dist/index.css';
 
+
 const CustomTable = ({
     title,
     columns = [],
@@ -27,7 +28,6 @@ const CustomTable = ({
         setData(data);
     }
 
-
     const actionsMemo = React.useMemo(() => <FaFileExport onClick={() => console.log(data)} />, []);
 
     return (
@@ -45,6 +45,8 @@ const CustomTable = ({
                 data={data}
                 print={true}
                 export={true}
+                filterPlaceholder={'Buscar'}
+                filter={true}
             >
                 <DataTable
                     title={title}

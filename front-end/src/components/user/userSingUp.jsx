@@ -27,8 +27,9 @@ const UserSignUp = () => {
 
             if(res?.status == C.status.common.ok){
                 setGroups(
-                    res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
-                );
+                    res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x })),
+                        console.log(res.data),
+                    );
             }
         }
 

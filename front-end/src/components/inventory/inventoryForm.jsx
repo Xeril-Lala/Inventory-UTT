@@ -1,50 +1,46 @@
 import { sha256 } from 'js-sha256';
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaPlus, FaSave } from 'react-icons/fa';
+import { FaEdit, FaSave } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { C } from '../../constants/C';
-import AssetService from '../../services/Asset';
-import UserService from '../../services/User';
+import InventoryService from '../../services/Inventory.js';
 
-const UserForm = ({ user, updateUserCallback = () => {} }) => {
-    const userService = new UserService();
-    const assetService = new AssetService();
+const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
+    const inventoryService = new InventoryService();
     
     const [groups, setGroups] = useState([]);
     const [group, setGroup] = useState(null);
     const [isEditable, setEditable] = useState(false);
-    const [userData, setUserData] = useState({
-        username: '',
+    const [itemData, setItemData] = useState({
         name: '',
-        lastname: '',
-        id: '',
-        email: '',
-        password: ''
+        group: '',
+        value: '',
+        auditUser: '',
+        location: '',
     });
 
     useEffect(() => {
-        if (user) {
-            setUserData({
-                username: user?.username || '',
-                name: user?.name || '',
-                lastname: user?.lastname || '',
-                id: user?.contact?.id || '',
-                email: user?.contact?.email || '',
-                password: ''
+        if (item) {
+            setItemData({
+                name: item?.name || '',
+                group: item?.location?.value || '',
+                value: item?.model?.group || '',
+                auditUser: item?.auditUser || '',
+                location: item?.location?.description || '',
             });
 
-            setGroup(user?.group != null? {
-                value: user?.group?.code, 
-                label: `${user?.group?.value} - ${user?.group?.description}`, 
-                data: user?.group 
+            setGroup(item?.group != null? {
+                value: item?.group?.code, 
+                label: `${item?.group?.value} - ${item?.group?.description}`, 
+                data: item?.group 
             } : null)
         }
-    }, [user]);
+    }, [item]);
 
     useEffect(() => {
         const fetchData = async () => {
-            let res = await assetService.getAssets({ group: 'USER_GROUP' });
+            let res = await inventoryService.getItems({ group: '' });
 
             if(res?.status == C.status.common.ok){
                 setGroups(
@@ -56,28 +52,28 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         fetchData();
     }, []);
 
-    const updateUser = async (active = true) => {
+    const updateItem = async (active = true) => {
         var data = {
-            ...userData,
+            ...itemData,
             isActive: active
         }
 
-        if(!userData?.password) {
-            data.password = null;
-        } else {
-            data.password = sha256(userData.password);
-        }
+        // if(!itemData?.password) {
+        //     data.password = null;
+        // } else {
+        //     data.password = sha256(itemData.password);
+        // }
 
         if(group) {
             data.group = group.value;
         }
 
-        const response = await userService.setFullInfo(data);
+        const response = await inventoryService.setItem(data);
 
         if (response?.status == C.status.common.ok) {
-            updateUserCallback(response.data);
+            updateItemCallback(response.data);
             toggleEdit();
-            toast.success('Usuario Actualizado', {
+            toast.success('Equipo Actualizado', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -89,86 +85,71 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
             });
         }
 
-        setUserData(temp => ({...temp, password: ''}))
+        // setItemData(temp => ({...temp, password: ''}))
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e?.target;
-        setUserData((prevUserData) => ({
-            ...prevUserData,
-            [name]: value,
+        const { item, value } = e?.target;
+        setItemData((prevItemData) => ({
+            ...prevItemData,
+            [item]: value,
         }));
     };
 
     const toggleEdit = () => setEditable((value) => !value);
 
-    const clearForm = () => {
-        setUserData({
-            username: '',
-            name: '',
-            lastname: '',
-            id: '',
-            email: '',
-            password: ''
-        });
-        setGroup(null);
-        user = null;
-    }
-
     return (
         <div>
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
-                <FaPlus onClick={() => {clearForm(); setEditable(true)}} className="text-2xl cursor-pointer hover:text-green-500" title="Añadir Usuario" />
+                
+                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Usuario</p>
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="Usuario"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.username}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                        autoComplete="off"
-                    />
-                </div>
-
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Nombre(s)</p>
+                    <p>Nombre del equipo</p>
                     <input
                         type="text"
                         name="name"
-                        placeholder="Nombre"
+                        placeholder="Nombre del equipo"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.name}
+                        value={itemData.name}
                         disabled={!isEditable}
                         onChange={handleInputChange}
-                        autoComplete="off"
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Apellido(s)</p>
+                    <p>Modelo</p>
                     <input
                         type="text"
-                        name="lastname"
-                        placeholder="Apellido"
+                        name="value"
+                        placeholder="Modelo"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.lastname}
+                        value={itemData.value}
                         disabled={!isEditable}
                         onChange={handleInputChange}
-                        autoComplete="off"
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Rol</p>
+                    <p>Group</p>
+                    <input
+                        type="text"
+                        name="group"
+                        placeholder="Grupo"
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={itemData.group}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                    <p>Rol de Editor</p>
 
                     <Select
-                        name="group"
+                        name="Usuario que Edita"
                         value={group}
                         options={groups}
                         onChange={setGroup}
@@ -179,7 +160,21 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                     />
                 </div>
 
-                { (isEditable && group?.value != "STU") && <div className="col-span-2 flex flex-nowrap flex-col">
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                    <p>Localización</p>
+
+                    <input
+                        type="text"
+                        name="location"
+                        placeholder="Localización"
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={itemData.description}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                {/* { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Contraseña</p>
                     <input
                         type="password"
@@ -189,11 +184,10 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.password}
                         disabled={!isEditable}
                         onChange={handleInputChange}
-                        autoComplete="off"
                     />
-                </div> }
+                </div> } */}
 
-                <div className="col-span-2 flex flex-nowrap flex-col">
+                {/* <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Matricula/Numero de Empleado</p>
                     <input
                         type="text"
@@ -203,11 +197,10 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.id}
                         disabled={!isEditable}
                         onChange={handleInputChange}
-                        autoComplete="off"
                     />
-                </div>
+                </div> */}
 
-                <div className="col-span-2 flex flex-nowrap flex-col">
+                {/* <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Correo Electronico</p>
                     <input
                         type="text"
@@ -217,28 +210,14 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.email}
                         disabled={!isEditable}
                         onChange={handleInputChange}
-                        autoComplete="off"
                     />
-                </div>
-
-                { isEditable &&
-                    <>
-                        <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser()}>
-                            Guardar
-                        </button>
-                        {userData?.username && 
-                            <button className="bg-red-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser(false)}>
-                                Eliminar
-                            </button>
-                        }
-                    </>
-                }
+                </div> */}
             </div>
-            { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
+            { isEditable && <button onClick={async () => await updateItem()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar
             </button>}
         </div>
     );
 };
 
-export default UserForm;
+export default InventoryForm;
