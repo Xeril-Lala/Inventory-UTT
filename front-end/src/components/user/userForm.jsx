@@ -1,20 +1,22 @@
-import { sha256 } from 'js-sha256';
-import React, { useEffect, useState } from 'react';
-import { FaEdit, FaSave } from 'react-icons/fa';
-import Select from 'react-select';
-import { toast } from 'react-toastify';
-import { C } from '../../constants/C';
-import AssetService from '../../services/Asset';
-import UserService from '../../services/User';
+import { sha256 } from 'js-sha256'; // Importa la función de hash sha256 de la librería 'js-sha256'
+import React, { useEffect, useState } from 'react'; // Importa React, useEffect y useState desde la librería 'react'
+import { FaEdit, FaSave } from 'react-icons/fa'; // Importa los iconos FaEdit y FaSave desde la librería 'react-icons/fa'
+import Select from 'react-select'; // Importa el componente Select de la librería 'react-select'
+import { toast } from 'react-toastify'; // Importa la función toast de la librería 'react-toastify'
+import { C } from '../../constants/C'; // Importa la constante C desde el archivo '../../constants/C'
+import AssetService from '../../services/Asset'; // Importa el servicio AssetService desde el archivo '../../services/Asset'
+import UserService from '../../services/User'; // Importa el servicio UserService desde el archivo '../../services/User'
 
-const UserForm = ({ user, updateUserCallback = () => {} }) => {
-    const userService = new UserService();
-    const assetService = new AssetService();
+// Definición del componente AssetForm
+const AssetForm = ({ user, updateUserCallback = () => {} }) => {
+    const userService = new UserService(); // Instancia el servicio UserService
+    const assetService = new AssetService(); // Instancia el servicio AssetService
     
-    const [groups, setGroups] = useState([]);
-    const [group, setGroup] = useState(null);
-    const [isEditable, setEditable] = useState(false);
-    const [userData, setUserData] = useState({
+    // Declaración de los estados utilizando el hook useState
+    const [groups, setGroups] = useState([]); // Estado para almacenar los grupos
+    const [group, setGroup] = useState(null); // Estado para almacenar el grupo seleccionado
+    const [isEditable, setEditable] = useState(false); // Estado para controlar si el formulario es editable o no
+    const [userData, setUserData] = useState({ // Estado para almacenar los datos del usuario
         username: '',
         name: '',
         lastname: '',
@@ -23,8 +25,10 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         password: ''
     });
 
+    // Efecto que se ejecuta cuando cambia el usuario
     useEffect(() => {
         if (user) {
+            // Actualiza el estado de los datos del usuario basado en la información del usuario prop
             setUserData({
                 username: user?.username || '',
                 name: user?.name || '',
@@ -34,7 +38,8 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 password: ''
             });
 
-            setGroup(user?.group != null? {
+            // Establece el estado del grupo seleccionado basado en la información del usuario prop
+            setGroup(user?.group != null ? {
                 value: user?.group?.code, 
                 label: `${user?.group?.value} - ${user?.group?.description}`, 
                 data: user?.group 
@@ -42,8 +47,10 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         }
     }, [user]);
 
+    // Efecto que se ejecuta al cargar el componente
     useEffect(() => {
         const fetchData = async () => {
+            // Obtiene los activos usando el servicio AssetService y actualiza el estado de los grupos
             let res = await assetService.getAssets({ group: 'USER_GROUP' });
 
             if(res?.status == C.status.common.ok){
@@ -56,6 +63,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         fetchData();
     }, []);
 
+    // Función para actualizar el usuario
     const updateUser = async (active = true) => {
         var data = {
             ...userData,
@@ -72,9 +80,11 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
             data.group = group.value;
         }
 
+        // Llama al servicio UserService para actualizar la información del usuario
         const response = await userService.setFullInfo(data);
 
         if (response?.status == C.status.common.ok) {
+            // Llama a la función updateUserCallback con la respuesta del servidor y muestra una notificación
             updateUserCallback(response.data);
             toggleEdit();
             toast.success('Usuario Actualizado', {
@@ -92,6 +102,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         setUserData(temp => ({...temp, password: ''}))
     };
 
+    // Función para manejar el cambio de valor en los campos de entrada
     const handleInputChange = (e) => {
         const { name, value } = e?.target;
         setUserData((prevUserData) => ({
@@ -100,8 +111,10 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         }));
     };
 
+    // Función para alternar el modo de edición
     const toggleEdit = () => setEditable((value) => !value);
 
+    // Renderizado del componente
     return (
         <div>
             <div className="flex justify-end">
@@ -210,4 +223,4 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
     );
 };
 
-export default UserForm;
+export default AssetForm;

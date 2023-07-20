@@ -1,46 +1,93 @@
-import { sha256 } from 'js-sha256';
-import React, { useEffect, useState } from 'react';
-import { FaEdit, FaSave } from 'react-icons/fa';
-import Select from 'react-select';
-import { toast } from 'react-toastify';
-import { C } from '../../constants/C';
-import InventoryService from '../../services/Inventory.js';
+import { sha256 } from 'js-sha256'; // Importa la función de hash sha256 de la librería 'js-sha256'
+import React, { useEffect, useState } from 'react'; // Importa React, useEffect y useState desde la librería 'react'
+import { FaEdit, FaSave } from 'react-icons/fa'; // Importa los iconos FaEdit y FaSave desde la librería 'react-icons/fa'
+import Select from 'react-select'; // Importa el componente Select de la librería 'react-select'
+import { toast } from 'react-toastify'; // Importa la función toast de la librería 'react-toastify'
+import { C } from '../../constants/C'; // Importa la constante C desde el archivo '../../constants/C'
+import AssetService from '../../services/Asset'; // Importa el servicio AssetService desde el archivo '../../services/Asset'
+import UserService from '../../services/User'; // Importa el servicio UserService desde el archivo '../../services/User'
+import InventoryService from '../../services/Inventory';
 
-const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
-    const inventoryService = new InventoryService();
-    
-    const [groups, setGroups] = useState([]);
-    const [group, setGroup] = useState(null);
-    const [isEditable, setEditable] = useState(false);
-    const [itemData, setItemData] = useState({
+// Definición del componente AssetForm
+const InventoryForm = ({ user, updateUserCallback = () => {} }, { item, updateItemCallback = () => {} }) => {
+    const userService = new UserService(); // Instancia el servicio UserService
+    const assetService = new AssetService(); // Instancia el servicio AssetService
+    const inventoryService = new InventoryService(); // Instancia el servicio ItemService    
+
+    // Declaración de los estados utilizando el hook useState
+    const [groups, setGroups] = useState([]); // Estado para almacenar los grupos
+    const [group, setGroup] = useState(null); // Estado para almacenar el grupo seleccionado
+    const [isEditable, setEditable] = useState(false); // Estado para controlar si el formulario es editable o no
+    const [userData, setUserData] = useState({ // Estado para almacenar los datos del usuario
+        username: '',
         name: '',
-        group: '',
-        value: '',
-        auditUser: '',
+        lastname: '',
+        id: '',
+        email: '',
+        password: ''
+    });
+    const [itemData, setItemData] = useState({ // Estado para almacenar los datos del equipo
+        name: '',
+        customKey: '',
+        about: '',
+        acquisition: '',
+        model: '',
         location: '',
+        serial: '',
+        conditionUse: '',
     });
 
+    // Efecto que se ejecuta cuando cambia el usuario
     useEffect(() => {
-        if (item) {
-            setItemData({
-                name: item?.name || '',
-                group: item?.location?.value || '',
-                value: item?.model?.group || '',
-                auditUser: item?.auditUser || '',
-                location: item?.location?.description || '',
+        if (user) {
+            // Actualiza el estado de los datos del usuario basado en la información del usuario prop
+            setUserData({
+                username: user?.username || '',
+                name: user?.name || '',
+                lastname: user?.lastname || '',
+                id: user?.contact?.id || '',
+                email: user?.contact?.email || '',
+                password: ''
             });
 
-            setGroup(item?.group != null? {
-                value: item?.group?.code, 
-                label: `${item?.group?.value} - ${item?.group?.description}`, 
-                data: item?.group 
+            // Establece el estado del grupo seleccionado basado en la información del usuario prop
+            setGroup(user?.group != null ? {
+                value: user?.group?.code, 
+                label: `${user?.group?.value} - ${user?.group?.description}`, 
+                data: user?.group 
             } : null)
         }
-    }, [item]);
+    }, [user]);
 
+        // Efecto que se ejecuta cuando cambia el item
+        useEffect(() => {
+            if (item) {
+                // Actualiza el estado de los datos de los items basado en la información del item prop
+                setItemData({
+                    name: '',
+                    customKey: '',
+                    about: '',
+                    acquisition: '',
+                    model: '',
+                    location: '',
+                    serial: '',
+                    conditionUse: '',
+                });
+    
+                // Establece el estado del grupo seleccionado basado en la información del usuario prop
+                setGroup(user?.group != null ? {
+                    value: user?.group?.code, 
+                    label: `${user?.group?.value} - ${user?.group?.description}`, 
+                    data: user?.group 
+                } : null)
+            }
+        }, [user]);
+
+    // Efecto que se ejecuta al cargar el componente
     useEffect(() => {
         const fetchData = async () => {
-            let res = await inventoryService.getItems({ group: '' });
+            // Obtiene los activos usando el servicio AssetService y actualiza el estado de los grupos
+            let res = await assetService.getAssets({ group: 'USER_GROUP' });
 
             if(res?.status == C.status.common.ok){
                 setGroups(
@@ -52,6 +99,46 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
         fetchData();
     }, []);
 
+    // Función para actualizar el usuario
+    const updateUser = async (active = true) => {
+        var data = {
+            ...userData,
+            isActive: active
+        }
+
+        if(!userData?.password) {
+            data.password = null;
+        } else {
+            data.password = sha256(userData.password);
+        }
+
+        if(group) {
+            data.group = group.value;
+        }
+
+        // Llama al servicio UserService para actualizar la información del usuario
+        const response = await userService.setFullInfo(data);
+
+        if (response?.status == C.status.common.ok) {
+            // Llama a la función updateUserCallback con la respuesta del servidor y muestra una notificación
+            updateUserCallback(response.data);
+            toggleEdit();
+            toast.success('Usuario Actualizado', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+
+        setUserData(temp => ({...temp, password: ''}))
+    };
+
+    // Función para actualizar el usuario
     const updateItem = async (active = true) => {
         var data = {
             ...itemData,
@@ -61,16 +148,18 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
         // if(!itemData?.password) {
         //     data.password = null;
         // } else {
-        //     data.password = sha256(itemData.password);
+        //     data.password = sha256(userData.password);
         // }
 
         if(group) {
             data.group = group.value;
         }
 
+        // Llama al servicio ItemService para actualizar la información del item
         const response = await inventoryService.setItem(data);
 
         if (response?.status == C.status.common.ok) {
+            // Llama a la función updateUserCallback con la respuesta del servidor y muestra una notificación
             updateItemCallback(response.data);
             toggleEdit();
             toast.success('Equipo Actualizado', {
@@ -85,9 +174,10 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
             });
         }
 
-        // setItemData(temp => ({...temp, password: ''}))
+        // setUserData(temp => ({...temp, password: ''}))
     };
 
+    // Función para manejar el cambio de valor en los campos de entrada
     const handleInputChange = (e) => {
         const { item, value } = e?.target;
         setItemData((prevItemData) => ({
@@ -96,8 +186,10 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
         }));
     };
 
+    // Función para alternar el modo de edición
     const toggleEdit = () => setEditable((value) => !value);
 
+    // Renderizado del componente
     return (
         <div>
             <div className="flex justify-end">
@@ -107,49 +199,49 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Nombre del equipo</p>
+                    <p>Usuario</p>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Usuario"
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={userData.username}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                    <p>Nombre(s)</p>
                     <input
                         type="text"
                         name="name"
-                        placeholder="Nombre del equipo"
+                        placeholder="Nombre"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.name}
+                        value={userData.name}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Modelo</p>
+                    <p>Apellido(s)</p>
                     <input
                         type="text"
-                        name="value"
-                        placeholder="Modelo"
+                        name="lastname"
+                        placeholder="Apellido"
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.value}
+                        value={userData.lastname}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Group</p>
-                    <input
-                        type="text"
-                        name="group"
-                        placeholder="Grupo"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.group}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div>
-
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Rol de Editor</p>
+                    <p>Rol</p>
 
                     <Select
-                        name="Usuario que Edita"
+                        name="group"
                         value={group}
                         options={groups}
                         onChange={setGroup}
@@ -160,21 +252,7 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
                     />
                 </div>
 
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Localización</p>
-
-                    <input
-                        type="text"
-                        name="location"
-                        placeholder="Localización"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.description}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div>
-
-                {/* { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
+                { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Contraseña</p>
                     <input
                         type="password"
@@ -185,9 +263,9 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
-                </div> } */}
+                </div> }
 
-                {/* <div className="col-span-2 flex flex-nowrap flex-col">
+                <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Matricula/Numero de Empleado</p>
                     <input
                         type="text"
@@ -198,9 +276,9 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
-                </div> */}
+                </div>
 
-                {/* <div className="col-span-2 flex flex-nowrap flex-col">
+                <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Correo Electronico</p>
                     <input
                         type="text"
@@ -211,9 +289,9 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
-                </div> */}
+                </div>
             </div>
-            { isEditable && <button onClick={async () => await updateItem()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
+            { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar
             </button>}
         </div>
