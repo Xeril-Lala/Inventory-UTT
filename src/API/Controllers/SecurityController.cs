@@ -97,7 +97,7 @@ namespace InventoryAPI.Controllers
 
                 var expirationDt = !string.IsNullOrEmpty(expiration)
                     ? DateTime.Now.AddMinutes(int.Parse(expiration))
-                    : DateTime.Now.AddHours(1);
+                    : DateTime.Now.AddDays(1);
 
                 var tokenOptions = new JwtSecurityToken(
                     issuer: issuer,

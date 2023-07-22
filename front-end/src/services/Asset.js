@@ -90,6 +90,32 @@ class AssetService extends HttpBase {
     });
   }
 
+  async getImage(code, callback = () => {}) {
+    return await this.request({
+      token: getAuthToken(),
+      endpoint: `image/${code}`,
+      options: {
+        method: "get",
+      }
+    });
+  }
+
+  async setImage({ code = null, image = null, b64 = null }, callback = () => {}) {
+    return await this.request({
+      token: getAuthToken(),
+      endpoint: `image`,
+      options: {
+        method: "post",
+        data: {
+          code, image, b64
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    });
+  }
+
 }
 
 export default AssetService;

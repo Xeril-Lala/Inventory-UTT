@@ -1,0 +1,65 @@
+# 1. For build React app
+FROM node:lts AS development
+
+# Set working directory
+WORKDIR /app
+
+COPY ./front-end/package.json /app/package.json
+COPY ./front-end/package-lock.json /app/package-lock.json
+
+# Same as npm install
+RUN npm ci
+
+COPY ./front-end /app
+
+ENV CI=true
+ENV PORT=3000
+
+CMD [ "npm", "start" ]
+
+FROM development AS build
+
+RUN npm run build
+
+FROM development as dev-envs
+
+RUN <<EOF
+apt-get update
+apt-get install -y --no-install-recommends git
+EOF
+
+RUN <<EOF
+useradd -s /bin/bash -m vscode
+groupadd docker
+usermod -aG docker vscode
+EOF
+# install Docker tools (cli, buildx, compose)
+COPY --from=gloursdocker/docker / /
+CMD [ "npm", "start" ]
+
+# 2. For Nginx setup
+FROM nginx:alpine
+
+# Copy config nginx
+COPY --from=build /app/.nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR /usr/share/nginx/html
+
+# Remove default nginx static assets
+RUN rm -rf ./*
+
+# Copy static assets from builder stage
+COPY --from=build /app/build .
+
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
+
+# FROM node:18.16.1
+# RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+# RUN echo "America/Los_Angeles" > /etc/timezone
+# # WORKDIR /app
+# # COPY ./front-end/package*.json ./
+# # RUN npm install
+# # COPY ./front-end .
+# # RUN npm run build
+# CMD ["npm", "start"]

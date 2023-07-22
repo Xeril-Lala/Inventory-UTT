@@ -13,6 +13,7 @@ import UserSingUp from './components/user/userSingUp.jsx';
 import Inventory from './components/inventory/inventory.jsx';
 import { AuthProvider } from './providers/AuthProvider.js';
 import HttpBase from './services/HttpBase.js';
+import LoanHistory from './components/loans/loanHistory';
 
 const App = () => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -64,6 +65,12 @@ const App = () => {
                 path="/userSingUp" 
                 element={
                   <UserSingUp />
+                } 
+              />
+              <Route 
+                path="/loan-history" 
+                element={
+                  <LoanHistory/>
                 } 
               />
               <Route

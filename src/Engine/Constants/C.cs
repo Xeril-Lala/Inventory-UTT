@@ -11,6 +11,8 @@ namespace Engine.Constants {
         public const string NOT_MATCH = "NOT_MATCH";
         public const string NOT_AUTH = "NO_AUTH";
 
+        public const string IMAGE = "IMAGE";
+
         public const string INVENTORY_UTT_DB = "Inventory-utt";
 
         public const string URL = "URL";

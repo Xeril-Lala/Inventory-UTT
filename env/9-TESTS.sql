@@ -207,3 +207,5 @@
 # #
 # #
 # # SET FOREIGN_KEY_CHECKS = 1;
+
+select * from vw_loan_dtl;

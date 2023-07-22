@@ -11,9 +11,7 @@ import ReactDatePicker from 'react-datepicker';
 import { getFirstAndLastDayOfWeek } from '../../constants/utils';
 
 const statusList = [
-    // {value: C.status.loan.MOBILIARIO, label: C.status.loan.MOBILIARIO},
     {value: C.status.loan.PRESTADO, label: C.status.loan.PRESTADO},
-    // {value: C.status.loan.RESGUARDO, label: C.status.loan.RESGUARDO},
     {value: C.status.loan.TERMINADO, label: C.status.loan.TERMINADO},
     {value: C.status.loan.PERDIDO, label: C.status.loan.PERDIDO},
     {value: C.status.loan.VENCIDO, label: C.status.loan.VENCIDO}
@@ -32,6 +30,8 @@ const MyForm = () => {
     const [selectedMode, setMode] = useState(null);
 
     const [modes, setModes] = useState([]);
+
+    const [trigger, setTrigger] = useState(false);
 
     const loanService = new LoanService();
 
