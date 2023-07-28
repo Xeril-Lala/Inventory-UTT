@@ -51,7 +51,7 @@ namespace BaseAPI
 
         private static void SetApplication(string apiName, WebApplication app)
         {
-            app.MapGet("/", () => $"{apiName} API is working...");
+            app.MapGet("/", () => $"{apiName} API is working... {DateTime.Now:f}");
 
             app.UseStaticFiles();
             app.UseRouting();

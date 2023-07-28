@@ -18,5 +18,6 @@ namespace Engine.BO
         public Asset? Location { get; set; }
         public string? Serial { get; set; }
         public string? Condition { get; set; }
+        public bool? IsUsed { get; set; }
     }
 }

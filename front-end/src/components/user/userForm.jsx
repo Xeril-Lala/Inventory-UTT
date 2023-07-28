@@ -1,11 +1,11 @@
-import { sha256 } from 'js-sha256'; // Importa la función de hash sha256 de la librería 'js-sha256'
-import React, { useEffect, useState } from 'react'; // Importa React, useEffect y useState desde la librería 'react'
-import { FaEdit, FaSave } from 'react-icons/fa'; // Importa los iconos FaEdit y FaSave desde la librería 'react-icons/fa'
-import Select from 'react-select'; // Importa el componente Select de la librería 'react-select'
-import { toast } from 'react-toastify'; // Importa la función toast de la librería 'react-toastify'
-import { C } from '../../constants/C'; // Importa la constante C desde el archivo '../../constants/C'
-import AssetService from '../../services/Asset'; // Importa el servicio AssetService desde el archivo '../../services/Asset'
-import UserService from '../../services/User'; // Importa el servicio UserService desde el archivo '../../services/User'
+import { sha256 } from 'js-sha256';
+import React, { useEffect, useState } from 'react';
+import { FaEdit, FaPlus, FaSave } from 'react-icons/fa';
+import Select from 'react-select';
+import { toast } from 'react-toastify';
+import { C } from '../../constants/C';
+import AssetService from '../../services/Asset';
+import UserService from '../../services/User';
 
 // Definición del componente AssetForm
 const AssetForm = ({ user, updateUserCallback = () => {} }) => {
@@ -115,12 +115,24 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
     const toggleEdit = () => setEditable((value) => !value);
 
     // Renderizado del componente
+    const clearForm = () => {
+        setUserData({
+            username: '',
+            name: '',
+            lastname: '',
+            id: '',
+            email: '',
+            password: ''
+        });
+        setGroup(null);
+        user = null;
+    }
+
     return (
         <div>
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
-                
-                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
+                <FaPlus onClick={() => {clearForm(); setEditable(true)}} className="text-2xl cursor-pointer hover:text-green-500" title="Añadir Usuario" />
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
@@ -133,6 +145,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.username}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -146,6 +159,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.name}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -159,6 +173,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.lastname}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -177,7 +192,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                     />
                 </div>
 
-                { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
+                { (isEditable && group?.value != "STU") && <div className="col-span-2 flex flex-nowrap flex-col">
                     <p>Contraseña</p>
                     <input
                         type="password"
@@ -187,6 +202,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.password}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div> }
 
@@ -200,6 +216,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.id}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -213,8 +230,22 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                         value={userData.email}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
+
+                { isEditable &&
+                    <>
+                        <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser()}>
+                            Guardar
+                        </button>
+                        {userData?.username && 
+                            <button className="bg-red-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser(false)}>
+                                Eliminar
+                            </button>
+                        }
+                    </>
+                }
             </div>
             { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar

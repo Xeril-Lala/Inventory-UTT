@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
+import TextInput from 'react-autocomplete-input';
 import "react-datepicker/dist/react-datepicker.css";
-import { FaPlus } from "react-icons/fa";
+import { FaExclamation, FaPlus } from "react-icons/fa";
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { C } from '../../constants/C';
 import { getBadgeClass } from "../../constants/utils";
 import InventoryService from '../../services/Inventory';
 import LoanService from '../../services/Loan';
+import UserService from "../../services/User";
+import AssetService from "../../services/Asset";
 
 const LoanForm = ({loan, onTriggerRefresh}) => {
     const [id, setId] = useState('');
@@ -26,30 +29,48 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [itemList, setItemList] = useState([]);
 
+    const [location, setLocation] = useState(null);
+
     const [modes, setModes] = useState([]);
+    const [autoOptions, setAutoOptions] = useState([]);
+    const [locationList, setLocationList] = useState([]);
 
     const loanService = new LoanService();
     const inventoryService = new InventoryService();
+    const userService = new UserService();
+    const assetService = new AssetService();
 
     const isEditable = () => {
         return loanStatus !== C.status.loan.TERMINADO;
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            let res = await loanService.getLoanModes();
-            if (res?.data) {
-                let m = res.data.map(x => ({ value: x.code, label: x.code }));
-                setModes(m);
-            }
-
-            let res2 = await inventoryService.getItems({ isActive: true });
-            if (res2?.data) {
-                let m = res2.data.map(x => ({ value: x.id, label: `${x.customKey} - ${x.name}`, data: x }));
-                setItemList(m);
-            }
+    const fetchData = async () => {
+        let res = await loanService.getLoanModes();
+        if (res?.data) {
+            let m = res.data.map(x => ({ value: x.code, label: x.code }));
+            setModes(m);
         }
 
+        let res2 = await inventoryService.getItems({ isActive: true, isUsed: false });
+        if (res2?.data) {
+            let m = res2.data.map(x => ({ value: x.id, label: `${x.customKey} - ${x.name}`, data: x }));
+            setItemList(m);
+        }
+
+        // 
+        let res3 = await userService.getUsers({})
+        if(res3?.data) {
+            setAutoOptions(res3?.data.map(x => `${x?.username};${x?.contact?.id}`));
+        }
+
+        let res4 = await assetService.getAssets({ group: "LOCATION", isActive: true });
+        if(res4?.data) {
+            setLocationList(res4?.data.map(x => ({ value: x.code, label: x.value, data: x })));
+        }
+    }
+
+
+    useEffect(() => {
         fetchData();
     }, []);
 
@@ -74,6 +95,14 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
             setLoanMode( { value: loan?.mode?.code, label: loan?.mode?.code, data: loan?.mode } || '');
             setStatus(loan?.loanStatus || '');
             setComments(loan?.comments || '');
+
+            if(loan?.mode?.code == C.tipo.MOBILIARIO || loan?.mode?.code == C.tipo.RESGUARDO) {
+                var items = loan?.items;
+
+                if(items?.length > 0) {
+                    setLocation(({ value: items[0]?.item.location?.code, label: items[0]?.item.location?.value, data: items[0]?.item }));
+                }
+            }
         }
     }, [loan]);
 
@@ -86,13 +115,31 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
         }
     }
 
+    const isLoanedXExists = () => {
+        return loanStatus == C.status.loan.PRESTADO && id;
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        await setLoan();
+    };
 
+    const setLoan = async (customStatus = null) => {
         let returned = null;
+        let respId = null;
 
-        if(returnedOn || getStatus() == C.status.loan.TERMINADO) {
+        if(returnedOn || (customStatus ?? getStatus()) == C.status.loan.TERMINADO) {
             returned = returnedOn || new Date(Date.now());
+        }
+
+        if(responsableID) {
+            respId = responsableID.trim().replace("@", "");
+            
+            let split = respId.split(";");
+
+            if(split.length > 0) {
+                respId = split[1] ?? split[0];
+            }
         }
 
         let res = await loanService.setLoan({
@@ -105,13 +152,13 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
             },
             contact: [responsableContact],
             responsible: responsable || null,
-            responsibleId: responsableID || null,
-            loanStatus: getStatus(),
+            responsibleId: respId || null,
+            loanStatus: customStatus ?? getStatus(),
             items: selectedItems?.map(x => ({
                 item: {
                     id: x.data.id || null
                 },
-                detailStatus: getStatus(),
+                detailStatus: customStatus ?? getStatus(),
                 description: comments || null
             })),
             isActive: true,
@@ -128,11 +175,36 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                 progress: undefined,
                 theme: "light",
             });
+
+            if(loanMode?.value == C.tipo.MOBILIARIO || loanMode?.value == C.tipo.RESGUARDO) {
+                selectedItems?.forEach(async x => {
+                    let item = x.data;
+                    item.location.code = location.value || null;
+                    inventoryService.setItem(item);
+                });
+            }
             
             await onTriggerRefresh();
+            await fetchData();
             clearInputs();
         }
-    };
+    }
+
+    const setAutoCompleteID = async (value) => {
+        value = value.replace("@", "");
+        let split = value.split(";");
+
+        if(split.length > 0) {
+            value = split[0]
+            let res = await userService.getUser(value);
+
+            if(res?.status == C.status.common.ok && res?.data?.username) {
+                // setResponsableID(res?.data?.contact?.id);
+                setResponsable(`${res?.data?.name} ${res?.data?.lastname}`);
+                setResponsableContact(res?.data?.contact?.email || '');
+            }
+        }
+    }
 
     const clearInputs = () => {
         setId('');
@@ -145,13 +217,13 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
         setLoanMode('');
         setStatus('');
         setComments('');
-        loan = null;
     };
 
     return (
         <>
             <div className="flex justify-end">
                 <FaPlus onClick={clearInputs} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Préstamo" />
+                { isLoanedXExists()  && <FaExclamation onClick={ async () => setLoan(C.status.loan.PERDIDO)} className="text-2xl cursor-pointer hover:text-orange-500" title="Declarar Perdido" />}
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4 grid grid-cols-2">
@@ -185,7 +257,24 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                         />
                     </div>
                 </div>
-
+                <div className="mb-4">
+                    <label htmlFor="responsableID" className="block mb-1 font-bold">Responsable ID</label>
+                    <TextInput 
+                        id="responsableID"
+                        Component="input"
+                        maxOptions={10}
+                        className="w-full bg-gray-100 rounded-md p-2"
+                        onSelect={setAutoCompleteID}
+                        onChange={setResponsableID}
+                        value={responsableID}
+                        disabled={!isEditable()}
+                        options={autoOptions} 
+                        matchAny={true}
+                        autoComplete='off'
+                        spacer={""}
+                        spaceRemovers={[" ", "\n"]}
+                    />
+                </div>
                 <div className="mb-4">
                     <label htmlFor="responsable" className="block mb-1 font-bold">Responsable</label>
                     <input
@@ -194,18 +283,6 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                         className="w-full bg-gray-100 rounded-md p-2"
                         value={responsable}
                         onChange={(e) => setResponsable(e.target.value)}
-                        disabled={!isEditable()}
-                        autoComplete='off'
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="responsableID" className="block mb-1 font-bold">Responsable ID</label>
-                    <input
-                        type="text"
-                        id="responsableID"
-                        className="w-full bg-gray-100 rounded-md p-2"
-                        value={responsableID}
-                        onChange={(e) => setResponsableID(e.target.value)}
                         disabled={!isEditable()}
                         autoComplete='off'
                     />
@@ -236,7 +313,7 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                 </div>
                 { loanStatus && <div className="mb-4 text-center">
                     <label className="block mb-1 font-bold">
-                        <span className={getBadgeClass(loanStatus)}> {loanStatus} </span>
+                        <span className={getBadgeClass(loanStatus)}> <b> {loanStatus} </b> </span>
                     </label>
                 </div> }
                 <div className="mb-4">
@@ -249,8 +326,22 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                         isSearchable
                         placeholder="Selecciona un tipo de préstamo"
                         isDisabled={!isEditable()}
-                    />
+                    />    
                 </div>
+
+                { ( loanMode?.value == C.tipo.MOBILIARIO || loanMode?.value == C.tipo.RESGUARDO ) &&  <div className="mb-4">
+                    <label htmlFor="loanLocation" className="block mb-1 font-bold">Location</label>
+                    <Select
+                        value={location}
+                        options={locationList}
+                        onChange={setLocation}
+                        isClearable
+                        isSearchable
+                        placeholder="Selecciona una locacion"
+                        isDisabled={!isEditable()}
+                    />
+                </div>}
+
                 <div className="mb-4">
                     <label htmlFor="objectItem" className="block mb-1 font-bold">Añadir Inventario</label>
                     <Select

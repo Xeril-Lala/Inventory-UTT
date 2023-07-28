@@ -27,7 +27,7 @@ class SecurityService extends HttpBase {
         });
     }
     
-    async checkToken(token, refreshToken, callback = () => { }) {
+    async checkToken(token, refreshToken, callback = () => { }, error = () => { }) {
         return await this.request({
             endpoint: 'checkToken',
             token: token,
@@ -38,6 +38,7 @@ class SecurityService extends HttpBase {
                 }
             },
             callback: callback,
+            errorCallback: error
         })
     }
 

@@ -489,6 +489,7 @@ BEGIN
         WHERE
             USERNAME = IN_USER
         AND PASSWORD = IN_PASSWORD
+        AND GROUP_CODE NOT IN ('STU', 'USER')
         AND STATUS = 'ENABLED'
     );
 END //

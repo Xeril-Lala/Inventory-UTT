@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { C } from '../../constants/C.js';
-import { formatDate } from '../../constants/utils.js';
+import { downloadFile, formatDate } from '../../constants/utils.js';
 import AssetService from '../../services/Asset.js';
 import UserService from '../../services/User.js';
-import '../customTable/customStyle.css';
 import CustomTable from '../customTable/customTable.jsx';
 import UserForm from './userForm.jsx';
+import { FaDownload, FaFileExcel } from 'react-icons/fa';
+import InputFiles from 'react-input-files';
+import { toast } from 'react-toastify';
 
 const UserSignUp = () => {
     const userService = new UserService();
@@ -16,6 +18,8 @@ const UserSignUp = () => {
     const [selectedGroup, setGroup] = useState(null);
     const [groups, setGroups] = useState([]);
     const [trigger, setTrigger] = useState(false);
+
+    const [file, setFile] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,20 +47,21 @@ const UserSignUp = () => {
                 
                 return flag1 && flag2;
             });
-            return filteredData.map(x => [
-                x.username,
-                `${x.lastname} ${x.name}`,
-                x?.group?.description ?? 'NA',
-                formatDate(x?.lastModified),
-                x?.auditUser
-            ]);
+
+            return filteredData.map(x => ({
+                username: x.username,
+                name: `${x.lastname} ${x.name}`,
+                group: x?.group?.description?.length ? x?.group?.description[0] : 'NA',
+                id: x?.contact?.id,
+                email: x.contact?.email,
+                modified: formatDate(x?.lastModified, false),
+                audit: x?.auditUser
+            }));
         } else return [];
     }
 
     const getUserInfo = async (row) => {
-        console.log(row);
-
-        var res = await userService.getUser(row[0]);
+        var res = await userService.getUser(row.username);
 
         if(res?.status == C.status.common.ok){
             setUser(res.data);
@@ -66,34 +71,66 @@ const UserSignUp = () => {
 
     const selectGroup = (value) => {
         setGroup(value);
-        setTrigger(val => !val)
+        setTrigger(val => !val);
     } 
+
+    const onSelectExcel = async (files) => {
+
+        if(files?.length > 0) {
+            let file = files[0];
+
+            toast.promise(userService.setUserExcel(file), {
+                pending: 'Subiendo Excel...',
+                success: 'Excel cargado exitosamente',
+                error: 'Error Subiendo Excel - Favor de revisar el formato subido'
+            });
+
+            setTrigger(val => !val);
+        }
+    }
 
     const columns = [
         {
-            name: 'Usuario',
-            selector: row => row[0],
-            sortable: true,
+            name: "Usuario",
+            // selector: row => row.username,
+            selector: "username",
+            // sortable: true,
         },
         {
-            name: 'Nombre',
-            selector: row => row[1],
-            sortable: true,
+            name: "Nombre",
+            // selector: row => row.name,
+            selector: "name",
+            // sortable: true,
         },
         {
-            name: 'Rol',
-            selector: row => row[2],
-            sortable: true,
+            name: "ID",
+            // selector: row => row.id,
+            selector: "id",
+            // sortable: true,
         },
         {
-            name: 'Modificado',
-            selector: row => row[3],
-            sortable: true,
+            name: "Email",
+            // selector: row => row.email,
+            selector: "email",
+            // sortable: true,
         },
         {
-            name: 'Auditor',
-            selector: row => row[4],
-            sortable: true,
+            name: "Rol",
+            // selector: row => row.group,
+            selector: "group",
+            // sortable: true,
+        },
+        {
+            name: "Modificado",
+            // selector: row => row.modified,
+            selector: "modified",
+            // sortable: true,
+        },
+        {
+            name: "Auditor",
+            // selector: row => row.audit,
+            selector: "audit",
+            // sortable: true,
         },
     ];
 
@@ -101,7 +138,7 @@ const UserSignUp = () => {
         <div className="w-full mx-4 sm:mx-auto">
             {/* <div className="h-auto text-3xl mb-6">Formulario usuario</div> */}
 
-            <div className="grid grid-cols-6 ga rounded-md shadow-md bg-white p-2 my-2">
+            <div className="grid grid-cols-6 gap-4 rounded-md shadow-md bg-white p-2 my-2">
                 <Select 
                     className="col-span-3" 
                     value={selectedGroup}
@@ -111,6 +148,15 @@ const UserSignUp = () => {
                     isSearchable
                     placeholder="Filtrar por Rol o Grupo"
                 />
+
+                <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
+                    <FaDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                    <div className="my-auto mt-2 mr-2 cursor-pointer">
+                        <InputFiles accept=".xlsx" onChange={onSelectExcel} >
+                            <FaFileExcel className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
+                        </InputFiles>
+                    </div>
+                </div>
             </div>
 
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">

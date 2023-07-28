@@ -19,7 +19,8 @@ class InventoryService extends HttpBase {
             name = null,
             model = null,
             fromDt = null,
-            toDt = null
+            toDt = null,
+            isUsed = null
         },
         callback = () => { }
     ) {
@@ -27,7 +28,7 @@ class InventoryService extends HttpBase {
             token: getAuthToken(),
             options: {
                 params: {
-                    isActive, id, customId, serial, name, model, fromDt, toDt
+                    isActive, id, customId, serial, name, model, fromDt, toDt, isUsed
                 },
                 headers: {
                     'Content-Type': 'application/json'
@@ -73,7 +74,7 @@ class InventoryService extends HttpBase {
             token: getAuthToken(),
             options: {
                 method: 'post',
-                params: {
+                data: {
                     isActive, id, name, customKey,
                     about, acquisition, model,
                     location, serial, conditionUse

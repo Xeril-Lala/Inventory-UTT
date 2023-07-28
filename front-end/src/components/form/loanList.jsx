@@ -23,10 +23,15 @@ const LoanList = ({ data, onItemClick }) => {
           <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleItem(item.id)}>
 
             <div className="w-full grid grid-cols-4 gap-4">
-                <h2 className="col-span-3 text-lg text-blue-500 font-medium">
+                <h2 className="col-span-2 text-sm text-blue-500 font-medium">
                   <b> Responsable: </b> {item?.responsible} <br/>
                   <b> Historial: </b>  { formatDate(item?.loanedOn) } { item?.returnedOn && ( " hasta " +  formatDate(item?.returnedOn) )}
                 </h2>
+                <div className="text-center p-2">
+                  <span className="bg-gray-100 font-medium mr-2 px-2.5 py-0.5 rounded-full" > 
+                    <b>{item?.mode?.code}</b> 
+                  </span>
+                </div>
                 <div className="text-center p-2">
                   <span className={getBadgeClass(item?.loanStatus)} > <b>{item?.loanStatus}</b> </span>
                 </div>
@@ -57,7 +62,7 @@ const LoanList = ({ data, onItemClick }) => {
                 </div>
 
                 <div className="w-full m-2 col-span-2 ">
-                    <p> <b>Estado:</b> <span className={getBadgeClass(item?.loanStatus)} > {item?.loanStatus} </span> </p>
+                    <p> <b>Estado:</b> <span className={getBadgeClass(item?.loanStatus)} > <b>{item?.loanStatus}</b> </span> </p>
                     <p> <b>Auditor:</b> {item?.auditUser}</p>
                     <p> <b>Prestado:</b> { formatDate(item?.loanedOn) }</p>
                     {item?.returnedOn && <p> <b>Regresado:</b> { formatDate(item?.returnedOn) }</p> }

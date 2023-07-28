@@ -36,6 +36,7 @@ namespace Engine.DAL.Routines
                 BDAL.CreateParameter("IN_MODEL", EntryData?.Model, MType.String),
                 BDAL.CreateParameter("IN_FROM_DT", EntryData?.FromDt, MType.DateTime),
                 BDAL.CreateParameter("IN_TO_DT", EntryData?.ToDt, MType.DateTime),
+                BDAL.CreateParameter("IN_USED", EntryData?.IsUsed, MType.Bit),
                 BDAL.CreateParameter("IN_STATUS", EntryData?.Status, MType.Bit),
                 OutParameter
             };
@@ -72,7 +73,8 @@ namespace Engine.DAL.Routines
                         Data = Array.Empty<byte>()
                     },
                     Serial = V.Instance.getDefaultStringIfDBNull(rdr["SERIAL"]),
-                    Condition = V.Instance.getDefaultStringIfDBNull(rdr["CONDITION_USE"])
+                    Condition = V.Instance.getDefaultStringIfDBNull(rdr["CONDITION_USE"]),
+                    IsUsed = V.Instance.getDefaultBoolIfDBNull(rdr["IS_USED"])
                 };
 
                 return item;
@@ -87,6 +89,7 @@ namespace Engine.DAL.Routines
             string? model = null,
             DateTime? fromDt = null,
             DateTime? toDt = null,
+            bool? isUsed = null,
             bool? status = null
         ) => new
         {
@@ -97,6 +100,7 @@ namespace Engine.DAL.Routines
             Model = model,
             FromDt = fromDt,
             ToDt = toDt,
+            IsUsed = isUsed,
             Status = status
         };
     }

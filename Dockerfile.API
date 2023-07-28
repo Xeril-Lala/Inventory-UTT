@@ -18,6 +18,10 @@ RUN sed -i "s/\${API_KEY}/$API_KEY/g" ./appsettings.json
 RUN sed -i "s/\${DB_CONNECTION}/$DB_CONNECTION/g" ./appsettings.json
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+RUN echo "America/Los_Angeles" > /etc/timezone
+
 WORKDIR /app
 COPY --from=build /app/out/ .
 
