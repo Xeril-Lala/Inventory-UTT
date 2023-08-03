@@ -10,7 +10,7 @@ class AssetService extends HttpBase {
     });
   }
 
-  async getAssets({ code = null, group = null, subGroup = null, altGroup = null, desc = null, isActive = true }, callback = () => { }) {
+  async getAssets({ code = null, group = null, subGroup = null, altGroup = null, desc = null, auditUser = null, isActive = true }, callback = () => { }) {
     return await this.request({
       token: getAuthToken(),
       options: {
@@ -20,6 +20,7 @@ class AssetService extends HttpBase {
           subGroup,
           altGroup,
           desc,
+          auditUser,
           isActive
         },
         headers: {
@@ -66,7 +67,7 @@ class AssetService extends HttpBase {
     });
   }
 
-  async setAsset({ isActive = true, code = null, value = null, group = null, subGroup = null, alternativeGroup = null, description = [] }, callback = () => { }) {
+  async setAsset({ isActive = true, code = null, value = null, group = null, subGroup = null, alternativeGroup = null, auditUser = null, description = [] }, callback = () => { }) {
     const requestData = {
       isActive,
       code,
@@ -74,7 +75,9 @@ class AssetService extends HttpBase {
       group,
       subGroup,
       alternativeGroup,
-      description
+      auditUser,
+      description,
+
     };
 
     return await this.request({

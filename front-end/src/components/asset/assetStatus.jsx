@@ -43,26 +43,27 @@ const Assets = () => {
                 let filterData = res.filter(x => {
                 let flag1 = x?.group == 'MODEL';
                 let flag2 = !selectedGroup || x?.code == selectedGroup?.value;
-            
+                //let secondFilter = res.filter(flag1 && flag2);
                 return flag1 && flag2;
                 });
-                return filterData.map(x => [
-                x.code,
-                x.value,
-                x.description,
-                formatDate(x?.lastModified),
-                x.auditUser,
-                x?.group?.value ?? 'NA'
-                ]);
+                return filterData.map(x => ({
+                    code: x.code,
+                    value: x.value,
+                    group: x.group,
+                    subGroup: x.subGroup,
+                    alternativeGroup: x.alternativeGroup,
+                    description: x.description,
+                    auditUser: x.auditUser,
+                    lastModified: formatDate(x?.lastModified, false),
+                })
+                );
             } else return [];
             
     }
-    console.log(convertData());
+
 
     const getAssetInfo = async (row) => {
-        console.log(row);
-
-        var res = await assetService.getAsset(row[0]);
+        var res = await assetService.getAsset(row.code);
 
         if(res?.status == C.status.common.ok){
             setAsset(res.data);
@@ -76,36 +77,63 @@ const Assets = () => {
     const columns = [
         {
             name: 'Codigo',
-            selector: row => row[0],
-            sortable: true,
+            selector: "code",
+            width: '10%'
+            //selector: row => row[0],
+            //sortable: true,
+            
         },
         {
             name: 'Nombre',
-            selector: row => row[1],
-            sortable: true,
+            selector: "value",
+            width: '15%'
+            //selector: row => row[1],
+            //sortable: true,
+        },
+        {
+            name: 'Group',
+            selector: "group",
+            width: '7%'
+            //selector: row => row[2],
+            //sortable: true,
+        },
+        {
+            name: 'Sub Grupo',
+            selector: "subGroup",
+            width: '10%'
+            //selector: row => row[3],
+            //sortable: true,
+        },
+        {
+            name: 'Grupo Alternativo',
+            selector: "alternativeGroup",
+            width: '15%'
+            //selector: row => row[4],
+            //sortable: true,
         },
         {
             name: 'Descripcion',
-            selector: row => row[2],
-            sortable: true,
-        },
-        {
-            name: 'Fecha de Modificacion',
-            selector: row => row[3],
-            sortable: true,
+            selector: 'description',
+            width: '15%'
         },
         {
             name: 'Auditor',
-            selector: row => row[4],
-            sortable: true,
+            selector: "auditUser",
+            width: '8%'
         },
+        {
+            name: 'Ultima Actualizacion',
+            selector: "lastModified",
+            width: '17%'
+        }
+
     ];
 
     return (
         <div className="mx-4 sm:mx-auto h-auto">
-            <div className="h-auto text-3xl mb-6">Utilidades</div>
 
-            <div className="grid grid-cols-6 ga rounded-md shadow-md bg-white p-2 my-2">
+
+            {/* <div className="grid grid-cols-6 ga rounded-md shadow-md bg-white p-2 my-2">
                 <Select 
                     className="col-span-3" 
                     value={selectedGroup}
@@ -115,10 +143,11 @@ const Assets = () => {
                     isSearchable
                     placeholder="Filtrar por Rol o Grupo"
                 />
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
                 <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
+                    <h1 className="text-2xl">Utilidades</h1>
                     <CustomTable
                         title={'Lista Utilidades'}
                         columns={columns}
@@ -131,7 +160,7 @@ const Assets = () => {
                 </div>
 
                 <div className="col-span-2 rounded-md shadow-md bg-white p-6">
-                    <div className="h-auto text-center text-xl">Equipo</div>
+                    <div className="h-auto text-center text-xl">Añadir/Modificar un Elemento</div>
                     <AssetForm
                         asset={asset}
                         updateAssetCallback={ asset => {

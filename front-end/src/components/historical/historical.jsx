@@ -43,14 +43,14 @@ console.log(fetchData)
                 return flag1 && flag2;
             });
         
-        return filterData.map(x => [
-            x.name,
-            x.about,
-            x.acquisition,
-            x.serial,
-            x.conditionUse,
-            x.lastModified,
-        ]);
+        return filterData.map(x => ({
+            name: x.name,
+            value: x.about,
+            group: x.acquisition,
+            serial: x.serial,
+            conditionUse: x.conditionUse,
+            lastModified: x.lastModified,
+        }));
 
         }else return[];
     }    
@@ -71,41 +71,49 @@ console.log(fetchData)
     const columns = [
         {
             name: 'Name',
-            selector: row => row[0],
-            sortable: true,
+            selector: 'name',
+            width: '10%'
+            //sortable: true,
+
+
         },
         {
             name: 'About',
-            selector: row => row[1],
-            sortable: true,
+            selector: 'about',
+            width: '10%'
+            //sortable: true,
         },
         {
             name: 'Acquisition',
-            selector: row => row[2],
-            sortable: true,
+            selector: 'acquisition',
+            width: '10%'
+            //sortable: true,
         },
         {
             name: 'Serial',
-            selector: row => row[3],
-            sortable: true,
+            selector: 'serial',
+            width: '5%'
+            //sortable: true,
         },
         {
-            name: 'ConditionUse',
-            selector: row => row[4],
-            sortable: true,
+            name: 'Condicion de Uso',
+            selector: 'conditionUse',
+            width: '10%'
+            //sortable: true,
         },
         {
             name: 'LastModified',
-            selector: row => row[4],
-            sortable: true,
+            selector: 'lastModified',
+            width: '10%'
+            //sortable: true,
         },
     ];
 
     return (
         <div className="mx-4 sm:mx-auto h-auto">
-<div className="h-auto text-3xl mb-6">Utilidades</div>
+{/* <div className="h-auto text-3xl mb-6">Historicos</div> */}
 
-<div className="grid grid-cols-6 ga rounded-md shadow-md bg-white p-2 my-2">
+{/* <div className="grid grid-cols-6 ga rounded-md shadow-md bg-white p-2 my-2">
             <Select 
                     className="col-span-3" 
                     value={selectedGroup}
@@ -115,9 +123,10 @@ console.log(fetchData)
                     isSearchable
                     placeholder="Filtrar por Rol o Grupo"
                 />
-                </div>
+                </div> */}
             <div className="grid grid-cols-4 gap-4 md:auto-cols-min">
-                <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
+                <div className="col-span-4 rounded-md shadow-md bg-white p-6">
+                <h1 className="text-2xl">Historial</h1>
                     <CustomTable
                         title={'Lista Equipos'}
                         columns={columns}

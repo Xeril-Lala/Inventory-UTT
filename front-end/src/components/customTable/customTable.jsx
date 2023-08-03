@@ -3,6 +3,7 @@ import DataTable from 'react-data-table-component';
 import DataTableExtensions from "react-data-table-component-extensions";
 import { FaFileExport, FaSync } from 'react-icons/fa';
 import 'react-data-table-component-extensions/dist/index.css';
+import '../customTable/customStyle.css';
 
 
 const CustomTable = ({
@@ -30,6 +31,7 @@ const CustomTable = ({
 
     const actionsMemo = React.useMemo(() => <FaFileExport onClick={() => console.log(data)} />, []);
 
+
     return (
         <div className="relative">
             <button
@@ -49,15 +51,17 @@ const CustomTable = ({
                 filter={true}
             >
                 <DataTable
+                    responsive
+                    striped
                     title={title}
                     columns={columns}
                     data={data}
                     onRowClicked={onSelectRow}
-                    customStyles={styles}
                     actions={actionsMemo}
                     noHeader
                     pagination
                     highlightOnHover
+                    customStyles
                 />
             </DataTableExtensions>
 

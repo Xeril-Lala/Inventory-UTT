@@ -40,8 +40,8 @@ const UserSignUp = () => {
     const convertData = response => {
 
         if(response?.status == C.status.common.ok) {
-            let res = response?.data;
-            let filteredData = res.filter(x => {
+                let res = response?.data;
+                let filteredData = res.filter(x => {
                 let flag1 = x?.group?.group == 'USER_GROUP';
                 let flag2 = !selectedGroup || x?.group?.code == selectedGroup?.value;
                 

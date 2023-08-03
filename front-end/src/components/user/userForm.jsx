@@ -128,6 +128,9 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
         user = null;
     }
 
+
+
+    
     return (
         <div>
             <div className="flex justify-end">
@@ -136,7 +139,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Usuario</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Usuario</label>
                     <input
                         type="text"
                         name="username"
@@ -150,7 +153,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Nombre(s)</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Nombre(s)</label>
                     <input
                         type="text"
                         name="name"
@@ -164,7 +167,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Apellido(s)</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Apellido(s)</label>
                     <input
                         type="text"
                         name="lastname"
@@ -178,8 +181,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Rol</p>
-
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Rol</label>
                     <Select
                         name="group"
                         value={group}
@@ -193,7 +195,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 { (isEditable && group?.value != "STU") && <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Contraseña</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Contraseña</label>
                     <input
                         type="password"
                         name="password"
@@ -207,7 +209,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                 </div> }
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Matricula/Numero de Empleado</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Matricula/Numero de Empleado</label>
                     <input
                         type="text"
                         name="id"
@@ -221,7 +223,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Correo Electronico</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Correo Electronico</label>
                     <input
                         type="text"
                         name="email"
@@ -247,9 +249,9 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                     </>
                 }
             </div>
-            { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
+            {/* { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar
-            </button>}
+            </button>} */}
         </div>
     );
 };

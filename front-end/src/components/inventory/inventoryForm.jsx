@@ -1,94 +1,59 @@
-import { sha256 } from 'js-sha256'; // Importa la función de hash sha256 de la librería 'js-sha256'
-import React, { useEffect, useState } from 'react'; // Importa React, useEffect y useState desde la librería 'react'
-import { FaEdit, FaSave } from 'react-icons/fa'; // Importa los iconos FaEdit y FaSave desde la librería 'react-icons/fa'
-import Select from 'react-select'; // Importa el componente Select de la librería 'react-select'
-import { toast } from 'react-toastify'; // Importa la función toast de la librería 'react-toastify'
-import { C } from '../../constants/C'; // Importa la constante C desde el archivo '../../constants/C'
-import AssetService from '../../services/Asset'; // Importa el servicio AssetService desde el archivo '../../services/Asset'
-import UserService from '../../services/User'; // Importa el servicio UserService desde el archivo '../../services/User'
+import { sha256 } from 'js-sha256';
+import React, { useEffect, useState } from 'react';
+import { FaEdit, FaSave } from 'react-icons/fa';
+import { RiImageAddFill } from 'react-icons/ri'; 
+import Select from 'react-select';
+import { toast } from 'react-toastify';
+import { C } from '../../constants/C';
+import AssetService from '../../services/Asset';
+import UserService from '../../services/User';
 import InventoryService from '../../services/Inventory';
 
-// Definición del componente AssetForm
-const InventoryForm = ({ user, updateUserCallback = () => {} }, { item, updateItemCallback = () => {} }) => {
-    const userService = new UserService(); // Instancia el servicio UserService
-    const assetService = new AssetService(); // Instancia el servicio AssetService
-    const inventoryService = new InventoryService(); // Instancia el servicio ItemService    
 
-    // Declaración de los estados utilizando el hook useState
-    const [groups, setGroups] = useState([]); // Estado para almacenar los grupos
-    const [group, setGroup] = useState(null); // Estado para almacenar el grupo seleccionado
-    const [isEditable, setEditable] = useState(false); // Estado para controlar si el formulario es editable o no
-    const [userData, setUserData] = useState({ // Estado para almacenar los datos del usuario
-        username: '',
-        name: '',
-        lastname: '',
-        id: '',
-        email: '',
-        password: ''
-    });
-    const [itemData, setItemData] = useState({ // Estado para almacenar los datos del equipo
+const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, item, updateInventoryCallback = () => {} }) => {
+    const userService = new UserService();
+    const assetService = new AssetService();
+    const inventoryService = new InventoryService();
+    const [groups, setGroups] = useState([]);
+    const [group, setGroup] = useState(null);
+    const [isEditable, setEditable] = useState(false);
+    const [itemData, setItemData] = useState({
+
         name: '',
         customKey: '',
         about: '',
-        acquisition: '',
         model: '',
         location: '',
         serial: '',
         conditionUse: '',
     });
 
-    // Efecto que se ejecuta cuando cambia el usuario
     useEffect(() => {
-        if (user) {
-            // Actualiza el estado de los datos del usuario basado en la información del usuario prop
-            setUserData({
-                username: user?.username || '',
-                name: user?.name || '',
-                lastname: user?.lastname || '',
-                id: user?.contact?.id || '',
-                email: user?.contact?.email || '',
-                password: ''
+        if (item) {
+            setItemData({
+                name: item?.name || '',
+                customKey: item?.customKey || '',
+                about: item?.about || '',
+                model: item?.model?.code || '',
+                location: item?.location?.code || '',
+                serial: item?.serial || '',
+                conditionUse: item?.conditionUse || '',
             });
-
-            // Establece el estado del grupo seleccionado basado en la información del usuario prop
-            setGroup(user?.group != null ? {
-                value: user?.group?.code, 
-                label: `${user?.group?.value} - ${user?.group?.description}`, 
-                data: user?.group 
-            } : null)
         }
-    }, [user]);
+    }, [item]);
 
-        // Efecto que se ejecuta cuando cambia el item
-        useEffect(() => {
-            if (item) {
-                // Actualiza el estado de los datos de los items basado en la información del item prop
-                setItemData({
-                    name: '',
-                    customKey: '',
-                    about: '',
-                    acquisition: '',
-                    model: '',
-                    location: '',
-                    serial: '',
-                    conditionUse: '',
-                });
-    
-                // Establece el estado del grupo seleccionado basado en la información del usuario prop
-                setGroup(user?.group != null ? {
-                    value: user?.group?.code, 
-                    label: `${user?.group?.value} - ${user?.group?.description}`, 
-                    data: user?.group 
-                } : null)
-            }
-        }, [user]);
+//     setGroup(user?.group != null? {
+//         value: user?.group?.code, 
+//         label: `${user?.group?.value} - ${user?.group?.description}`, 
+//         data: user?.group 
+//     } : null)
+// }
+// }, [item]);
 
-    // Efecto que se ejecuta al cargar el componente
     useEffect(() => {
         const fetchData = async () => {
-            // Obtiene los activos usando el servicio AssetService y actualiza el estado de los grupos
-            let res = await assetService.getAssets({ group: 'USER_GROUP' });
-
+            // let res = await inventoryService.getItem({ group: 'USER_GROUP' });
+            let res = await inventoryService.getItems({});
             if(res?.status == C.status.common.ok){
                 setGroups(
                     res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
@@ -99,70 +64,30 @@ const InventoryForm = ({ user, updateUserCallback = () => {} }, { item, updateIt
         fetchData();
     }, []);
 
-    // Función para actualizar el usuario
-    const updateUser = async (active = true) => {
-        var data = {
-            ...userData,
-            isActive: active
-        }
-
-        if(!userData?.password) {
-            data.password = null;
-        } else {
-            data.password = sha256(userData.password);
-        }
-
-        if(group) {
-            data.group = group.value;
-        }
-
-        // Llama al servicio UserService para actualizar la información del usuario
-        const response = await userService.setFullInfo(data);
-
-        if (response?.status == C.status.common.ok) {
-            // Llama a la función updateUserCallback con la respuesta del servidor y muestra una notificación
-            updateUserCallback(response.data);
-            toggleEdit();
-            toast.success('Usuario Actualizado', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-
-        setUserData(temp => ({...temp, password: ''}))
-    };
-
-    // Función para actualizar el usuario
     const updateItem = async (active = true) => {
         var data = {
             ...itemData,
             isActive: active
         }
 
-        // if(!itemData?.password) {
+        // if(!userData?.password) {
         //     data.password = null;
         // } else {
         //     data.password = sha256(userData.password);
         // }
 
-        if(group) {
-            data.group = group.value;
-        }
+        // if(group) {
+        //     data.group = group.value;
+        // }
 
-        // Llama al servicio ItemService para actualizar la información del item
-        const response = await inventoryService.setItem(data);
+        //const response = await userService.setFullInfo(data);
+        const response = await InventoryService.setItem(data);
+
 
         if (response?.status == C.status.common.ok) {
-            // Llama a la función updateUserCallback con la respuesta del servidor y muestra una notificación
-            updateItemCallback(response.data);
+            updateInventoryCallback(response.data);
             toggleEdit();
-            toast.success('Equipo Actualizado', {
+            toast.success('Elemento Actualizado', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -174,22 +99,27 @@ const InventoryForm = ({ user, updateUserCallback = () => {} }, { item, updateIt
             });
         }
 
-        // setUserData(temp => ({...temp, password: ''}))
+        //setUserData(temp => ({...temp, password: ''}))
     };
 
-    // Función para manejar el cambio de valor en los campos de entrada
+    // const handleInputChange = (e) => {
+    //     const { name, value } = e?.target;
+    //     setUserData((prevUserData) => ({
+    //         ...prevUserData,
+    //         [name]: value,
+    //     }));
+    // };
+
     const handleInputChange = (e) => {
-        const { item, value } = e?.target;
+        const { name, value } = e?.target;
         setItemData((prevItemData) => ({
             ...prevItemData,
-            [item]: value,
+            [name]: value,
         }));
     };
 
-    // Función para alternar el modo de edición
     const toggleEdit = () => setEditable((value) => !value);
 
-    // Renderizado del componente
     return (
         <div>
             <div className="flex justify-end">
@@ -199,46 +129,49 @@ const InventoryForm = ({ user, updateUserCallback = () => {} }, { item, updateIt
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Usuario</p>
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="Usuario"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.username}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div>
-
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Nombre(s)</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Nombre</label>
                     <input
                         type="text"
                         name="name"
-                        placeholder="Nombre"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.name}
+                        value={itemData.name}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Apellido(s)</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Custom Key</label>
                     <input
                         type="text"
-                        name="lastname"
-                        placeholder="Apellido"
+                        name="customKey"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.lastname}
+                        value={itemData.customKey}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Rol</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Procedencia</label>
+                    <input
+                        type="text"
+                        name="about"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={itemData.about}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                        autoComplete="off"
+                    />
+                </div>
+
+                {/* <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Rol</label>
 
                     <Select
                         name="group"
@@ -250,48 +183,90 @@ const InventoryForm = ({ user, updateUserCallback = () => {} }, { item, updateIt
                         placeholder="Selecciona un Rol"
                         isDisabled={!isEditable}
                     />
-                </div>
+                </div> */}
 
-                { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Contraseña</p>
+                {/* { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
+                    <p>Sub Grupo</p>
                     <input
-                        type="password"
-                        name="password"
-                        placeholder="Contraseña"
+                        type="subGroup"
+                        name="subGroup"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.password}
+                        value={assetData.subGroup}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
-                </div> }
+                </div> } */}
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Matricula/Numero de Empleado</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Modelo</label>
                     <input
                         type="text"
-                        name="id"
-                        placeholder="Matricula/Numero de Empleado"
+                        name="model"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.id}
+                        value={itemData.model}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Correo Electronico</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Localizacion</label>
                     <input
                         type="text"
-                        name="email"
-                        placeholder="Correo Electronico"
+                        name="location"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.email}
+                        value={itemData.location}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
+                    />
+                </div>
+
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Serial</label>
+                    <input
+                        type="text"
+                        name="serial"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={itemData.serial}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                        autoComplete="off"
+                    />
+                </div>
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Condicion de Uso</label>
+                    <input
+                        type="text"
+                        name="conditionUse"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={itemData.conditionUse}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                        autoComplete="off"
+                    />
+                </div>
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Imagen Relacionada</label>
+                    <input
+                        type="file"
+                        name=""
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        //value={assetData.auditUser}
+                        //disabled={!isEditable}
+                        onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
             </div>
-            { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
+            { isEditable && <button onClick={async () => await updateItem()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar
             </button>}
         </div>

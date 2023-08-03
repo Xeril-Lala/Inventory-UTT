@@ -44,7 +44,7 @@ const App = () => {
                 element={<Assets/>}
               />
               <Route 
-                path="/assets" 
+                path="/utilidades" 
                 element={
                   <Assets/>
                 }
