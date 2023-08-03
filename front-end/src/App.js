@@ -49,12 +49,12 @@ const App = () => {
                   <Assets/>
                 }
               />
-              <Route 
+              {/* <Route 
                 path="/historical" 
                 element={
                   <Historical />
                 } 
-              />
+              /> */}
               <Route 
                 path="/form" 
                 element={

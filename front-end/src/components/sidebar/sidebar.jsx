@@ -32,11 +32,11 @@ const Sidebar = ({ children }) => {
             name: "Utilidades",
             icon: <FaTh />
         },
-        {
-            path: "/historical",
-            name: "Historial",
-            icon: <FaRegChartBar />
-        },
+        // {
+        //     path: "/historical",
+        //     name: "Historial",
+        //     icon: <FaRegChartBar />
+        // },
         {
             path: "/form",
             name: "Préstamos",

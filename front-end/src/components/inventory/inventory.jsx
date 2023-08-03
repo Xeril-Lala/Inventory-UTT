@@ -186,7 +186,7 @@ const Inventory = () => {
 
                 <div className="col-span-2 rounded-md shadow-md bg-white p-6">
                     <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
-                    <FaFileDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                    <FaFileDownload onClick={() => downloadFile(C.media.userTemplate, `Inventory-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
                     <div className="my-auto mt-2 mr-2 cursor-pointer">
                         <InputFiles accept=".xlsx" onChange={onSelectExcel} >
                             <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
