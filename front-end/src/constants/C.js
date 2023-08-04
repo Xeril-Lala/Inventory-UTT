@@ -34,7 +34,7 @@ export const C = {
     },
     media: {
         userTemplate: 'User-Upload-Template.xlsx',
-        itemTemplate: '',
+        itemTemplate: 'Inventory-Inventory-Template.xlsx',
         // TODO: Path to static images, logos, media, etc
     },
     // TODO: Add Input Patterns!

@@ -1,18 +1,12 @@
-import { sha256 } from 'js-sha256';
 import React, { useEffect, useState } from 'react';
 import { FaEdit, FaSave } from 'react-icons/fa';
-import { RiImageAddFill } from 'react-icons/ri'; 
-import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { C } from '../../constants/C';
-import AssetService from '../../services/Asset';
-import UserService from '../../services/User';
 import InventoryService from '../../services/Inventory';
 
 
-const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, item, updateInventoryCallback = () => {} }) => {
-    const userService = new UserService();
-    const assetService = new AssetService();
+const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
+
     const inventoryService = new InventoryService();
     const [groups, setGroups] = useState([]);
     const [group, setGroup] = useState(null);
@@ -42,27 +36,18 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
         }
     }, [item]);
 
-//     setGroup(user?.group != null? {
-//         value: user?.group?.code, 
-//         label: `${user?.group?.value} - ${user?.group?.description}`, 
-//         data: user?.group 
-//     } : null)
-// }
-// }, [item]);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         let res = await inventoryService.getItems({});
+    //         if(res?.status == C.status.common.ok){
+    //             setGroups(
+    //                 res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
+    //             );
+    //         }
+    //     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            // let res = await inventoryService.getItem({ group: 'USER_GROUP' });
-            let res = await inventoryService.getItems({});
-            if(res?.status == C.status.common.ok){
-                setGroups(
-                    res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
-                );
-            }
-        }
-
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
 
     const updateItem = async (active = true) => {
         var data = {
@@ -70,17 +55,6 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
             isActive: active
         }
 
-        // if(!userData?.password) {
-        //     data.password = null;
-        // } else {
-        //     data.password = sha256(userData.password);
-        // }
-
-        // if(group) {
-        //     data.group = group.value;
-        // }
-
-        //const response = await userService.setFullInfo(data);
         const response = await InventoryService.setItem(data);
 
 
@@ -99,16 +73,7 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
             });
         }
 
-        //setUserData(temp => ({...temp, password: ''}))
     };
-
-    // const handleInputChange = (e) => {
-    //     const { name, value } = e?.target;
-    //     setUserData((prevUserData) => ({
-    //         ...prevUserData,
-    //         [name]: value,
-    //     }));
-    // };
 
     const handleInputChange = (e) => {
         const { name, value } = e?.target;
@@ -125,7 +90,6 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
                 
-                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
@@ -141,7 +105,6 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
                         autoComplete="off"
                     />
                 </div>
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Custom Key</label>
                     <input
@@ -155,7 +118,6 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
                         autoComplete="off"
                     />
                 </div>
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Procedencia</label>
                     <input
@@ -169,35 +131,6 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
                         autoComplete="off"
                     />
                 </div>
-
-                {/* <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Rol</label>
-
-                    <Select
-                        name="group"
-                        value={group}
-                        options={groups}
-                        onChange={setGroup}
-                        isClearable
-                        isSearchable
-                        placeholder="Selecciona un Rol"
-                        isDisabled={!isEditable}
-                    />
-                </div> */}
-
-                {/* { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Sub Grupo</p>
-                    <input
-                        type="subGroup"
-                        name="subGroup"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.subGroup}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div> } */}
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Modelo</label>
                     <input
@@ -211,7 +144,6 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
                         autoComplete="off"
                     />
                 </div>
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Localizacion</label>
                     <input
@@ -225,7 +157,6 @@ const InventoryForm = ({ user, updateUserCallback, asset, updateAssetCallback, i
                         autoComplete="off"
                     />
                 </div>
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Serial</label>
                     <input
