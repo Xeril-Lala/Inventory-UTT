@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { FaUserPlus, FaTrash, FaEdit, FaUserEdit, FaSave, FaLaptopMedical } from 'react-icons/fa';
-import AssetService from '../../services/Asset';
-import { C } from '../../constants/C';
 import { sha256 } from 'js-sha256';
+import React, { useEffect, useState } from 'react';
+import { FaEdit, FaSave } from 'react-icons/fa';
+import { RiImageAddFill } from 'react-icons/ri'; 
+import Select from 'react-select';
 import { toast } from 'react-toastify';
+import { C } from '../../constants/C';
+import AssetService from '../../services/Asset';
+import UserService from '../../services/User';
 
-const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
+const AssetForm = ({ user, updateUserCallback, asset, updateAssetCallback = () => {} }) => {
+    const userService = new UserService();
     const assetService = new AssetService();
-
+    
+    const [groups, setGroups] = useState([]);
+    const [group, setGroup] = useState(null);
     const [isEditable, setEditable] = useState(false);
     const [assetData, setAssetData] = useState({
         code: '',
         value: '',
-        description: '',
-        //lastModified: '',
+        group: '',
+        subGroup: '',
+        alternativeGroup: '',
         auditUser: '',
+        //description: '',
     });
 
     useEffect(() => {
@@ -22,12 +30,34 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
             setAssetData({
                 code: asset?.code || '',
                 value: asset?.value || '',
-                description: asset?.description || '',
-                //lastModified: asset?.lastModified || '',
+                group: asset?.group || '',
+                subGroup: asset?.subGroup || '',
+                alternativeGroup: asset?.alternativeGroup || '',
+                //description: asset?.description || '',
                 auditUser: asset?.auditUser || '',
             });
+
+            setGroup(user?.group != null? {
+                value: user?.group?.code, 
+                label: `${user?.group?.value} - ${user?.group?.description}`, 
+                data: user?.group 
+            } : null)
         }
     }, [asset]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let res = await assetService.getAssets({ group: 'USER_GROUP' });
+
+            if(res?.status == C.status.common.ok){
+                setGroups(
+                    res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
+                );
+            }
+        }
+
+        fetchData();
+    }, []);
 
     const updateAsset = async (active = true) => {
         var data = {
@@ -35,17 +65,24 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
             isActive: active
         }
 
-        // if(!usertData?.password) {
+        // if(!userData?.password) {
         //     data.password = null;
         // } else {
         //     data.password = sha256(userData.password);
         // }
 
+        if(group) {
+            data.group = group.value;
+        }
+
+        //const response = await userService.setFullInfo(data);
         const response = await assetService.setAsset(data);
+
 
         if (response?.status == C.status.common.ok) {
             updateAssetCallback(response.data);
-            toast.success('Equipo Actualizado', {
+            toggleEdit();
+            toast.success('Elemento Actualizado', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -57,10 +94,19 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
             });
         }
 
-        //setAssetData(temp => ({...temp, password: ''}))
+        //setUserData(temp => ({...temp, password: ''}))
     };
 
-    const handleInputChange = (name, value) => {
+    // const handleInputChange = (e) => {
+    //     const { name, value } = e?.target;
+    //     setUserData((prevUserData) => ({
+    //         ...prevUserData,
+    //         [name]: value,
+    //     }));
+    // };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e?.target;
         setAssetData((prevAssetData) => ({
             ...prevAssetData,
             [name]: value,
@@ -69,77 +115,147 @@ const AssetForm = ({ asset, updateAssetCallback = () => {} }) => {
 
     const toggleEdit = () => setEditable((value) => !value);
 
-    const clearForm = () => setAssetData({
-        code: '',
-        value: '',
-        description: '',
-        //lastModified: '',
-        auditUser: '',
-    });
-
     return (
         <div>
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
                 
-                { isEditable && <FaLaptopMedical onClick={clearForm} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Equipo" />}
+                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Codigo de Equipo</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Codigo</label>
                     <input
                         type="text"
                         name="code"
-                        placeholder="Codigo de Equipo"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
                         value={assetData.code}
                         disabled={!isEditable}
-                        onChange={(e) => handleInputChange('code', e.target.value)}
+                        onChange={handleInputChange}
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Ubicacion</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Nombre</label>
                     <input
                         type="text"
                         name="value"
-                        placeholder="Nombre"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
                         value={assetData.value}
                         disabled={!isEditable}
-                        onChange={(e) => handleInputChange('value', e.target.value)}
+                        onChange={handleInputChange}
                     />
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Descipcion</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Grupo</label>
+                    <input
+                        type="text"
+                        name="group"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={assetData.group}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Rol</label>
+
+                    <Select
+                        name="group"
+                        value={group}
+                        options={groups}
+                        onChange={setGroup}
+                        isClearable
+                        isSearchable
+                        placeholder="Selecciona un Rol"
+                        isDisabled={!isEditable}
+                    />
+                </div>
+
+                {/* { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
+                    <p>Sub Grupo</p>
+                    <input
+                        type="subGroup"
+                        name="subGroup"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={assetData.subGroup}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                    />
+                </div> } */}
+
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Sub Grupo</label>
+                    <input
+                        type="subGroup"
+                        name="subGroup"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={assetData.subGroup}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Grupo Alternativo</label>
+                    <input
+                        type="text"
+                        name="alternativeGroup"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={assetData.alternativeGroup}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                {/* <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Descripcion</label>
                     <input
                         type="text"
                         name="description"
-                        placeholder="Descipcion"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
                         value={assetData.description}
                         disabled={!isEditable}
-                        onChange={(e) => handleInputChange('description', e.target.value)}
+                        onChange={handleInputChange}
                     />
-                </div>
-
+                </div> */}
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Auditor</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Auditor</label>
                     <input
                         type="text"
                         name="auditUser"
-                        placeholder="Rol"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
                         value={assetData.auditUser}
                         disabled={!isEditable}
-                        onChange={(e) => handleInputChange('auditUser', e.target.value)}
+                        onChange={handleInputChange}
                     />
                 </div>
-                { isEditable && <button onClick={async () => await updateAsset()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar">
-                    Guardar
-                    </button>}
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Imagen Relacionada</label>
+                    <input
+                        type="file"
+                        name=""
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        //value={assetData.auditUser}
+                        //disabled={!isEditable}
+                        onChange={handleInputChange}
+                    />
+                </div>
             </div>
+            { isEditable && <button onClick={async () => await updateAsset()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
+            Guardar
+            </button>}
         </div>
     );
 };

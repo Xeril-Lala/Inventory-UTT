@@ -1,56 +1,53 @@
-import { sha256 } from 'js-sha256';
 import React, { useEffect, useState } from 'react';
 import { FaEdit, FaSave } from 'react-icons/fa';
-import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { C } from '../../constants/C';
-import InventoryService from '../../services/Inventory.js';
+import InventoryService from '../../services/Inventory';
 
-const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
+
+const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
+
     const inventoryService = new InventoryService();
-    
     const [groups, setGroups] = useState([]);
     const [group, setGroup] = useState(null);
     const [isEditable, setEditable] = useState(false);
     const [itemData, setItemData] = useState({
+
         name: '',
-        group: '',
-        value: '',
-        auditUser: '',
+        customKey: '',
+        about: '',
+        model: '',
         location: '',
+        serial: '',
+        conditionUse: '',
     });
 
     useEffect(() => {
         if (item) {
             setItemData({
                 name: item?.name || '',
-                group: item?.location?.value || '',
-                value: item?.model?.group || '',
-                auditUser: item?.auditUser || '',
-                location: item?.location?.description || '',
+                customKey: item?.customKey || '',
+                about: item?.about || '',
+                model: item?.model?.code || '',
+                location: item?.location?.code || '',
+                serial: item?.serial || '',
+                conditionUse: item?.conditionUse || '',
             });
-
-            setGroup(item?.group != null? {
-                value: item?.group?.code, 
-                label: `${item?.group?.value} - ${item?.group?.description}`, 
-                data: item?.group 
-            } : null)
         }
     }, [item]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            let res = await inventoryService.getItems({ group: '' });
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         let res = await inventoryService.getItems({});
+    //         if(res?.status == C.status.common.ok){
+    //             setGroups(
+    //                 res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
+    //             );
+    //         }
+    //     }
 
-            if(res?.status == C.status.common.ok){
-                setGroups(
-                    res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
-                );
-            }
-        }
-
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
 
     const updateItem = async (active = true) => {
         var data = {
@@ -58,22 +55,13 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
             isActive: active
         }
 
-        // if(!itemData?.password) {
-        //     data.password = null;
-        // } else {
-        //     data.password = sha256(itemData.password);
-        // }
+        const response = await InventoryService.setItem(data);
 
-        if(group) {
-            data.group = group.value;
-        }
-
-        const response = await inventoryService.setItem(data);
 
         if (response?.status == C.status.common.ok) {
-            updateItemCallback(response.data);
+            updateInventoryCallback(response.data);
             toggleEdit();
-            toast.success('Equipo Actualizado', {
+            toast.success('Elemento Actualizado', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -85,14 +73,13 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
             });
         }
 
-        // setItemData(temp => ({...temp, password: ''}))
     };
 
     const handleInputChange = (e) => {
-        const { item, value } = e?.target;
+        const { name, value } = e?.target;
         setItemData((prevItemData) => ({
             ...prevItemData,
-            [item]: value,
+            [name]: value,
         }));
     };
 
@@ -103,115 +90,112 @@ const InventoryForm = ({ item, updateItemCallback = () => {} }) => {
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
                 
-                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Nombre del equipo</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Nombre</label>
                     <input
                         type="text"
                         name="name"
-                        placeholder="Nombre del equipo"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
                         value={itemData.name}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Modelo</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Custom Key</label>
                     <input
                         type="text"
-                        name="value"
-                        placeholder="Modelo"
+                        name="customKey"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.value}
+                        value={itemData.customKey}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Group</p>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Procedencia</label>
                     <input
                         type="text"
-                        name="group"
-                        placeholder="Grupo"
+                        name="about"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.group}
+                        value={itemData.about}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Rol de Editor</p>
-
-                    <Select
-                        name="Usuario que Edita"
-                        value={group}
-                        options={groups}
-                        onChange={setGroup}
-                        isClearable
-                        isSearchable
-                        placeholder="Selecciona un Rol"
-                        isDisabled={!isEditable}
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Modelo</label>
+                    <input
+                        type="text"
+                        name="model"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={itemData.model}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
-
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Localización</p>
-
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Localizacion</label>
                     <input
                         type="text"
                         name="location"
-                        placeholder="Localización"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.description}
+                        value={itemData.location}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
                 </div>
-
-                {/* { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Contraseña</p>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Contraseña"
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.password}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div> } */}
-
-                {/* <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Matricula/Numero de Empleado</p>
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Serial</label>
                     <input
                         type="text"
-                        name="id"
-                        placeholder="Matricula/Numero de Empleado"
+                        name="serial"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.id}
+                        value={itemData.serial}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
-                </div> */}
-
-                {/* <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Correo Electronico</p>
+                </div>
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Condicion de Uso</label>
                     <input
                         type="text"
-                        name="email"
-                        placeholder="Correo Electronico"
+                        name="conditionUse"
+                        placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={userData.email}
+                        value={itemData.conditionUse}
                         disabled={!isEditable}
                         onChange={handleInputChange}
+                        autoComplete="off"
                     />
-                </div> */}
+                </div>
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Imagen Relacionada</label>
+                    <input
+                        type="file"
+                        name=""
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        //value={assetData.auditUser}
+                        //disabled={!isEditable}
+                        onChange={handleInputChange}
+                        autoComplete="off"
+                    />
+                </div>
             </div>
             { isEditable && <button onClick={async () => await updateItem()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar

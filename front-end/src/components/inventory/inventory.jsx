@@ -3,17 +3,23 @@ import { FiFilter, FiAlertCircle } from 'react-icons/fi';
 import { MdLaptop } from "react-icons/md";
 import { RxCrossCircled } from "react-icons/rx";
 import { C } from '../../constants/C.js';
+import { downloadFile } from '../../constants/utils.js';
 import CustomTable from '../customTable/customTable.jsx';
 import '../customTable/customStyle.css';
 import Select from 'react-select';
 import { formatDate } from '../../constants/utils.js';
+import { FaDownload, FaFileExcel, FaFileDownload } from 'react-icons/fa';
+import InputFiles from 'react-input-files';
 import InventoryService from '../../services/Inventory.js';
 import InventoryForm from '../inventory/inventoryForm.jsx';
+import { toast } from 'react-toastify';
+import {RiFileExcel2Fill} from 'react-icons/ri';
 
 
 const Inventory = () => {
     const inventoryService = new InventoryService();
 
+    const [file, setFile] = useState(null);
     const [item, setItem] = useState(null);
     const [groups, setGroups] = useState([]);
     const [selectedGroup, setGroup] = useState(null);
@@ -21,7 +27,7 @@ const Inventory = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            let res = await inventoryService.getItems({ location: ''});
+            let res = await inventoryService.getItems({});
 
             if(res?.status == C.status.common.ok){
                 setGroups(
@@ -44,21 +50,26 @@ const Inventory = () => {
             
                 return flag1 && flag2;
                 });
-                return filterData.map(x => [
-                x.name,
-                x.about,
-                x.adquisition,
-                x?.group?.value ?? 'NA',
-                formatDate(x?.model?.lastModified),
-                x?.location?.value,
-                ]);
+                return filterData.map(x => ({
+                    name: x.name,
+                    id: x.id,
+                    isActive: x.isActive,
+                    group: x.model.group,
+                    subGroup: x.model.subGroup,
+                    value: x.location.value,
+                    customKey: x.customKey,
+                    about: x.about,
+                    acquisition: x.acquisition,
+                    auditUser: x.auditUser,
+                    conditionUse: x.conditionUse,
+            }));
             } else return [];
             
     }
     const getItemInfo = async (row) => {
         console.log(row);
 
-        var res = await inventoryService.getItem(row[0]);
+        var res = await inventoryService.getItem(row.id);
 
         if(res?.status == C.status.common.ok){
             setItem(res.data);
@@ -69,48 +80,79 @@ const Inventory = () => {
         setGroup(value);
         setTrigger(val => !val)
     } 
+
+    const onSelectExcel = async (files) => {
+
+        if(files?.length > 0) {
+            let file = files[0];
+
+            toast.promise(inventoryService.setItemExcel(file), {
+                pending: 'Subiendo Excel...',
+                success: 'Excel cargado exitosamente',
+                error: 'Error Subiendo Excel - Favor de revisar el formato subido'
+            });
+
+            setTrigger(val => !val);
+        }
+    }
+
     const columns = [
         {
+            name: 'Id',
+            selector: 'id',
+            width: '4%'
+        },
+        {
             name: 'Nombre',
-            selector: row => row[0],
-            sortable: true,
-            width: '40%',
-
+            selector: 'name',
+            width: '10%'
         },
         {
-            name: 'Relacionado',
-            selector: row => row[1],
-            sortable: true,
-            width: '15%',
+            name: 'Estado',
+            selector: 'loan',
+            width: '5%'
         },
-        // {
-        //     name: 'Adquisicion',
-        //     selector: row => row[2],
-        //     sortable: true,
-        // },
-        // {
-        //     name: 'Grupo',
-        //     selector: row => row[2],
-        //     sortable: true,
-        // },
         {
-            name: 'Fecha de Modificacion',
-            selector: row => row[4],
-            sortable: true,
-            width: '20%',
+            name: 'Grupo',
+            selector: 'group',
+            width: '5%'
+        },
+        {
+            name: 'Sub Grupo',
+            selector: 'subGroup',
+            width: '7%'
         },
         {
             name: 'Localizacion',
-            selector: row => row[5],
-            sortable: true,
+            selector: 'value',
+            width: '10%'
         },
+        {
+            name: 'Custom Key',
+            selector: 'customKey',
+            width: '7%'
+        },
+        {
+            name: 'About',
+            selector: 'about',
+            width: '10%'
+        },
+        {
+            name: 'Auditor',
+            selector: 'auditUser',
+            width: '6%'
+        },
+        {
+            name: 'Condicion',
+            selector: 'conditionUse',
+            width: '10%'
+        }
     ];
 
     return (
         <div className="mx-4 sm:mx-auto h-auto">
-            <div className="h-auto text-3xl mb-6">Equipos</div>
 
-            <div className="grid grid-cols-6 ga rounded-md shadow-md bg-white p-2 my-2">
+            {/* <div className="grid grid-cols-6  rounded-md shadow-md bg-white p-2 my-2">
                 <Select 
                     className="col-span-3" 
                     value={selectedGroup}
@@ -119,9 +161,16 @@ const Inventory = () => {
                     isClearable
                     isSearchable
                     placeholder="Filtrar por Rol o Grupo"
-                    
                 />
-            </div>
+                <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
+                    <FaFileDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                    <div className="my-auto mt-2 mr-2 cursor-pointer">
+                        <InputFiles accept=".xlsx" onChange={onSelectExcel} >
+                            <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
+                        </InputFiles>
+                    </div>
+                </div>
+            </div> */}
 
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
                 <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
@@ -137,10 +186,19 @@ const Inventory = () => {
                 </div>
 
                 <div className="col-span-2 rounded-md shadow-md bg-white p-6">
-                    <div className="h-auto text-center text-xl">Equipo</div>
+                    <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
+                    <FaFileDownload onClick={() => downloadFile(C.media.inventoryTemplate, `Inventory-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                    <div className="my-auto mt-2 mr-2 cursor-pointer">
+                        <InputFiles accept=".xlsx" onChange={onSelectExcel} >
+                            <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
+                        </InputFiles>
+                    </div>
+                </div>
+                <div className="h-auto text-center text-xl">Añadir/Modificar un Elemento</div>
+                
                     <InventoryForm
                         item={item}
-                        updateItemCallback={ item => {
+                        updateInventoryCallback={ item => {
                             setItem(item);
                             setTrigger(val => !val)
                         }}/>

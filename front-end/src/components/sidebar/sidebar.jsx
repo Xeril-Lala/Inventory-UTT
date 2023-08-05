@@ -7,6 +7,7 @@ import {
     FaSignOutAlt,
     FaTh,
     FaUserAlt,
+    FaFileSignature,
 
 } from "react-icons/fa";
 import { FaComputer } from "react-icons/fa6";
@@ -27,19 +28,19 @@ const Sidebar = ({ children }) => {
 
     const menuItem = [
         {
-            path: "/assets",
-            name: "Assets",
+            path: "/Utilidades",
+            name: "Utilidades",
             icon: <FaTh />
         },
-        {
-            path: "/historical",
-            name: "Historial",
-            icon: <FaRegChartBar />
-        },
+        // {
+        //     path: "/historical",
+        //     name: "Historial",
+        //     icon: <FaRegChartBar />
+        // },
         {
             path: "/form",
             name: "Préstamos",
-            icon: <FaCommentAlt />
+            icon: <FaFileSignature />
         },
         {
             path: "/loan-history",

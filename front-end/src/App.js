@@ -44,17 +44,17 @@ const App = () => {
                 element={<Assets/>}
               />
               <Route 
-                path="/assets" 
+                path="/utilidades" 
                 element={
                   <Assets/>
                 }
               />
-              <Route 
+              {/* <Route 
                 path="/historical" 
                 element={
                   <Historical />
                 } 
-              />
+              /> */}
               <Route 
                 path="/form" 
                 element={

@@ -7,14 +7,16 @@ import { C } from '../../constants/C';
 import AssetService from '../../services/Asset';
 import UserService from '../../services/User';
 
-const UserForm = ({ user, updateUserCallback = () => {} }) => {
-    const userService = new UserService();
-    const assetService = new AssetService();
+// Definición del componente AssetForm
+const AssetForm = ({ user, updateUserCallback = () => {} }) => {
+    const userService = new UserService(); // Instancia el servicio UserService
+    const assetService = new AssetService(); // Instancia el servicio AssetService
     
-    const [groups, setGroups] = useState([]);
-    const [group, setGroup] = useState(null);
-    const [isEditable, setEditable] = useState(false);
-    const [userData, setUserData] = useState({
+    // Declaración de los estados utilizando el hook useState
+    const [groups, setGroups] = useState([]); // Estado para almacenar los grupos
+    const [group, setGroup] = useState(null); // Estado para almacenar el grupo seleccionado
+    const [isEditable, setEditable] = useState(false); // Estado para controlar si el formulario es editable o no
+    const [userData, setUserData] = useState({ // Estado para almacenar los datos del usuario
         username: '',
         name: '',
         lastname: '',
@@ -23,8 +25,10 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         password: ''
     });
 
+    // Efecto que se ejecuta cuando cambia el usuario
     useEffect(() => {
         if (user) {
+            // Actualiza el estado de los datos del usuario basado en la información del usuario prop
             setUserData({
                 username: user?.username || '',
                 name: user?.name || '',
@@ -34,7 +38,8 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 password: ''
             });
 
-            setGroup(user?.group != null? {
+            // Establece el estado del grupo seleccionado basado en la información del usuario prop
+            setGroup(user?.group != null ? {
                 value: user?.group?.code, 
                 label: `${user?.group?.value} - ${user?.group?.description}`, 
                 data: user?.group 
@@ -42,8 +47,10 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         }
     }, [user]);
 
+    // Efecto que se ejecuta al cargar el componente
     useEffect(() => {
         const fetchData = async () => {
+            // Obtiene los activos usando el servicio AssetService y actualiza el estado de los grupos
             let res = await assetService.getAssets({ group: 'USER_GROUP' });
 
             if(res?.status == C.status.common.ok){
@@ -56,6 +63,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         fetchData();
     }, []);
 
+    // Función para actualizar el usuario
     const updateUser = async (active = true) => {
         var data = {
             ...userData,
@@ -72,9 +80,11 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
             data.group = group.value;
         }
 
+        // Llama al servicio UserService para actualizar la información del usuario
         const response = await userService.setFullInfo(data);
 
         if (response?.status == C.status.common.ok) {
+            // Llama a la función updateUserCallback con la respuesta del servidor y muestra una notificación
             updateUserCallback(response.data);
             toggleEdit();
             toast.success('Usuario Actualizado', {
@@ -92,6 +102,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         setUserData(temp => ({...temp, password: ''}))
     };
 
+    // Función para manejar el cambio de valor en los campos de entrada
     const handleInputChange = (e) => {
         const { name, value } = e?.target;
         setUserData((prevUserData) => ({
@@ -100,8 +111,10 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         }));
     };
 
+    // Función para alternar el modo de edición
     const toggleEdit = () => setEditable((value) => !value);
 
+    // Renderizado del componente
     const clearForm = () => {
         setUserData({
             username: '',
@@ -115,6 +128,9 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
         user = null;
     }
 
+
+
+    
     return (
         <div>
             <div className="flex justify-end">
@@ -123,7 +139,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Usuario</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Usuario</label>
                     <input
                         type="text"
                         name="username"
@@ -137,7 +153,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Nombre(s)</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Nombre(s)</label>
                     <input
                         type="text"
                         name="name"
@@ -151,7 +167,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Apellido(s)</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Apellido(s)</label>
                     <input
                         type="text"
                         name="lastname"
@@ -165,8 +181,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Rol</p>
-
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Rol</label>
                     <Select
                         name="group"
                         value={group}
@@ -180,7 +195,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 { (isEditable && group?.value != "STU") && <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Contraseña</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Contraseña</label>
                     <input
                         type="password"
                         name="password"
@@ -194,7 +209,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 </div> }
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Matricula/Numero de Empleado</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Matricula/Numero de Empleado</label>
                     <input
                         type="text"
                         name="id"
@@ -208,7 +223,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Correo Electronico</p>
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Correo Electronico</label>
                     <input
                         type="text"
                         name="email"
@@ -234,11 +249,11 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                     </>
                 }
             </div>
-            { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
+            {/* { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar
-            </button>}
+            </button>} */}
         </div>
     );
 };
 
-export default UserForm;
+export default AssetForm;
