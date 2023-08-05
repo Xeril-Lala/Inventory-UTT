@@ -208,4 +208,8 @@
 # #
 # # SET FOREIGN_KEY_CHECKS = 1;
 
-select * from vw_loan_dtl;
+DESCRIBE ASSET;
+
+select * from asset where KEY1 = 'IMAGE'
+
+UPDATE ASSET SET BIN = NULL WHERE KEY1 = 'IMAGE'
