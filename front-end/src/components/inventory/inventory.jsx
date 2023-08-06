@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { FiFilter, FiAlertCircle } from 'react-icons/fi';
-import { MdLaptop } from "react-icons/md";
-import { RxCrossCircled } from "react-icons/rx";
 import { C } from '../../constants/C.js';
 import { downloadFile } from '../../constants/utils.js';
 import CustomTable from '../customTable/customTable.jsx';
 import '../customTable/customStyle.css';
-import Select from 'react-select';
-import { formatDate } from '../../constants/utils.js';
-import { FaDownload, FaFileExcel, FaFileDownload } from 'react-icons/fa';
+import { FaFileDownload } from 'react-icons/fa';
 import InputFiles from 'react-input-files';
 import InventoryService from '../../services/Inventory.js';
 import InventoryForm from '../inventory/inventoryForm.jsx';
@@ -18,8 +13,6 @@ import {RiFileExcel2Fill} from 'react-icons/ri';
 
 const Inventory = () => {
     const inventoryService = new InventoryService();
-
-    const [file, setFile] = useState(null);
     const [item, setItem] = useState(null);
     const [groups, setGroups] = useState([]);
     const [selectedGroup, setGroup] = useState(null);
