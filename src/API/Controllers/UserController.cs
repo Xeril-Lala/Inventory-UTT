@@ -114,7 +114,7 @@ namespace InventoryAPI.Controllers
 
             string? hashedPassword = ParseProperty<string?>.GetValue("password", jObj);
 
-            if (hashedPassword == null || IsSHA256(hashedPassword))
+            if (hashedPassword == null || IsSHA256(hashedPassword) || hashedPassword == "NO_PASSWORD")
             {
                 var user = new UserDTO()
                 {

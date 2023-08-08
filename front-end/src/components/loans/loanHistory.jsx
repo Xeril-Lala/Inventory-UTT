@@ -9,7 +9,7 @@ import { FaDownload, FaFileExcel } from 'react-icons/fa';
 import InputFiles from 'react-input-files';
 import { toast } from 'react-toastify';
 import ReactDatePicker from 'react-datepicker';
-import { getFirstAndLastDayOfWeek } from '../../constants/utils';
+import { getFirstAndLastDayOfMonth } from '../../constants/utils';
 import LoanService from '../../services/Loan.js';
 
 const statusList = [
@@ -33,7 +33,7 @@ const LoanHistory = () => {
 
     useEffect(() => {
         const loadModes = async () => {
-            const {firstDay, lastDay } = getFirstAndLastDayOfWeek();
+            const {firstDay, lastDay } = getFirstAndLastDayOfMonth();
 
             setFrom(firstDay);
             setTo(lastDay);
@@ -61,6 +61,7 @@ const LoanHistory = () => {
                 var location = item.location.value;
                 var loan = x.loan;
                 var mode = loan.mode.code;
+                var contact = loan?.contact?.length > 0? loan?.contact[0] : "";
 
                 return ({
                     customKey: item?.customKey,
@@ -69,6 +70,8 @@ const LoanHistory = () => {
                     mode: mode,
                     description: x?.description,
                     status: x?.detailStatus,
+                    responsible: loan.responsible,
+                    contact: contact,
                     loanedOn: !loan?.loanedOn ? null : formatDate(new Date(loan?.loanedOn)),
                     returnedOn: !loan?.returnedOn ? null : formatDate(new Date(loan?.returnedOn)),
                     audit: x?.auditUser
@@ -96,6 +99,14 @@ const LoanHistory = () => {
             selector: "mode"
         },
         {
+            name: "Responsable",
+            selector: "responsible"
+        },
+        {
+            name: "Responsable Contacto",
+            selector: "contact"
+        },
+        {
             name: "Comentarios",
             selector: "description"
         },
@@ -111,10 +122,10 @@ const LoanHistory = () => {
             name: "Regresado",
             selector: "returnedOn",
         },
-        {
-            name: "Auditor",
-            selector: "audit",
-        }
+        // {
+        //     name: "Auditor",
+        //     selector: "audit",
+        // }
     ];
 
     return (

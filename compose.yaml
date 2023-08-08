@@ -29,22 +29,22 @@ services:
       - utt-network
     depends_on:
       - db
-  react-app:
-    container_name: react-app
-    env_file: .env
-    build:
-      context: ./
-      dockerfile: ./Dockerfile.client
-    # volumes:
-    #   - ./front-end/src:/usr/src/app/src
-    #   # - /project/node_modules
-    ports:
-      - 3000:3000
-    networks:
-      - utt-network
-    depends_on:
-      - api
-    restart: on-failure
+  # react-app:
+  #   container_name: react-app
+  #   env_file: .env
+  #   build:
+  #     context: ./
+  #     dockerfile: ./Dockerfile.client
+  #   # volumes:
+  #   #   - ./front-end/src:/usr/src/app/src
+  #   #   - /project/node_modules
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - utt-network
+  #   depends_on:
+  #     - api
+  #   restart: on-failure
 networks:
   utt-network:
     driver: bridge

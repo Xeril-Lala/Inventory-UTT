@@ -6,12 +6,16 @@ import { toast } from 'react-toastify';
 import { C } from '../../constants/C';
 import AssetService from '../../services/Asset';
 import UserService from '../../services/User';
+import { AuthContext } from '../../context/Context';
 
 // Definición del componente AssetForm
-const AssetForm = ({ user, updateUserCallback = () => {} }) => {
+const UserForm = ({ user, updateUserCallback = () => {} }) => {
+    const { group: authGroup  } = React.useContext(AuthContext);
     const userService = new UserService(); // Instancia el servicio UserService
     const assetService = new AssetService(); // Instancia el servicio AssetService
-    
+
+    const [formMsg, setMsg] = useState('');
+
     // Declaración de los estados utilizando el hook useState
     const [groups, setGroups] = useState([]); // Estado para almacenar los grupos
     const [group, setGroup] = useState(null); // Estado para almacenar el grupo seleccionado
@@ -43,7 +47,9 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                 value: user?.group?.code, 
                 label: `${user?.group?.value} - ${user?.group?.description}`, 
                 data: user?.group 
-            } : null)
+            } : null);
+            
+            setMsg('');
         }
     }, [user]);
 
@@ -70,6 +76,12 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
             isActive: active
         }
 
+        if(!data.username || !data.name || !group) {
+            setMsg('Favor de llenar todos los campos correspondientes!')
+            return;
+        }
+        
+
         if(!userData?.password) {
             data.password = null;
         } else {
@@ -78,6 +90,9 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
 
         if(group) {
             data.group = group.value;
+            if(data.group == C.roles.STU) {   
+                data.password = 'NO_PASSWORD';
+            }
         }
 
         // Llama al servicio UserService para actualizar la información del usuario
@@ -124,19 +139,21 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
             email: '',
             password: ''
         });
+        setMsg('')
         setGroup(null);
         user = null;
     }
 
-
-
     
     return (
         <div>
-            <div className="flex justify-end">
-                <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
-                <FaPlus onClick={() => {clearForm(); setEditable(true)}} className="text-2xl cursor-pointer hover:text-green-500" title="Añadir Usuario" />
-            </div>
+
+            { authGroup() == C.roles.ADMIN &&
+                <div className="flex justify-end">
+                    <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
+                    <FaPlus onClick={() => {clearForm(); setEditable(true)}} className="text-2xl cursor-pointer hover:text-green-500" title="Añadir Usuario" />
+                </div>
+            }
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
                     <label htmlFor="objectItem" className="block mb-1 font-bold">Usuario</label>
@@ -248,12 +265,13 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                         }
                     </>
                 }
+                
+                <p className={ `w-full text-red-500 text-xs italic  ${formMsg ? '' : 'hidden'} `}>
+                    {formMsg}
+                </p>
             </div>
-            {/* { isEditable && <button onClick={async () => await updateUser()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
-            Guardar
-            </button>} */}
         </div>
     );
 };
 
-export default AssetForm;
+export default UserForm ;

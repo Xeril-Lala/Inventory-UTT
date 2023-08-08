@@ -6,7 +6,6 @@ import { C } from '../../constants/C.js';
 import CustomTable from '../customTable/customTable.jsx';
 import AssetForm from './assetForm.jsx';
 import AssetService from '../../services/Asset.js';
-import AssetExcel from './assetExcel.jsx';
 import '../customTable/customStyle.css';
 import DataTableExtensions from "react-data-table-component-extensions";
 import Select from 'react-select';
@@ -79,37 +78,26 @@ const Assets = () => {
             name: 'Codigo',
             selector: "code",
             width: '10%'
-            //selector: row => row[0],
-            //sortable: true,
-            
         },
         {
             name: 'Nombre',
             selector: "value",
             width: '15%'
-            //selector: row => row[1],
-            //sortable: true,
         },
         {
             name: 'Group',
             selector: "group",
             width: '7%'
-            //selector: row => row[2],
-            //sortable: true,
         },
         {
             name: 'Sub Grupo',
             selector: "subGroup",
             width: '10%'
-            //selector: row => row[3],
-            //sortable: true,
         },
         {
             name: 'Grupo Alternativo',
             selector: "alternativeGroup",
             width: '15%'
-            //selector: row => row[4],
-            //sortable: true,
         },
         {
             name: 'Descripcion',
@@ -126,7 +114,6 @@ const Assets = () => {
             selector: "lastModified",
             width: '17%'
         }
-
     ];
 
     return (

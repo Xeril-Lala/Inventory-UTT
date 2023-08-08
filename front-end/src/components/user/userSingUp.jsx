@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { C } from '../../constants/C.js';
-import { downloadFile, formatDate } from '../../constants/utils.js';
+import { downloadFile, formatDate, getUserGroup } from '../../constants/utils.js';
 import AssetService from '../../services/Asset.js';
 import UserService from '../../services/User.js';
 import CustomTable from '../customTable/customTable.jsx';
@@ -9,10 +9,14 @@ import UserForm from './userForm.jsx';
 import { FaDownload, FaFileExcel } from 'react-icons/fa';
 import InputFiles from 'react-input-files';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../context/Context';
 
 const UserSignUp = () => {
+    const { group } = React.useContext(AuthContext);
     const userService = new UserService();
     const assetService = new AssetService();
+
+    const [grants, setGrants] = useState(null);
 
     const [user, setUser] = useState(null);
     const [selectedGroup, setGroup] = useState(null);
@@ -28,10 +32,12 @@ const UserSignUp = () => {
             if(res?.status == C.status.common.ok){
                 setGroups(
                     res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x })),
-                        console.log(res.data),
-                    );
+                    console.log(res.data),
+                );
             }
         }
+        
+        setGrants(group());
 
         fetchData();
     }, []);
@@ -150,12 +156,16 @@ const UserSignUp = () => {
                 />
 
                 <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
-                    <FaDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
-                    <div className="my-auto mt-2 mr-2 cursor-pointer">
-                        <InputFiles accept=".xlsx" onChange={onSelectExcel} >
-                            <FaFileExcel className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
-                        </InputFiles>
-                    </div>
+                    { grants == C.roles.ADMIN &&
+                        <>
+                            <FaDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                            <div className="my-auto mt-2 mr-2 cursor-pointer">
+                                <InputFiles accept=".xlsx" onChange={onSelectExcel} >
+                                    <FaFileExcel className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
+                                </InputFiles>
+                            </div>
+                        </>
+                    }
                 </div>
             </div>
 

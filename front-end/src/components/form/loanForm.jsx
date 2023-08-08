@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import TextInput from 'react-autocomplete-input';
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,8 +11,13 @@ import InventoryService from '../../services/Inventory';
 import LoanService from '../../services/Loan';
 import UserService from "../../services/User";
 import AssetService from "../../services/Asset";
+import { AuthContext } from "../../context/Context";
 
 const LoanForm = ({loan, onTriggerRefresh}) => {
+    const { group } = React.useContext(AuthContext);
+
+    const [formMsg, setMsg] = useState('');
+
     const [id, setId] = useState('');
 
     const [loanedOn, setLoanedOn] = useState('');
@@ -41,7 +46,11 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
     const assetService = new AssetService();
 
     const isEditable = () => {
-        return loanStatus !== C.status.loan.TERMINADO;
+        let userGroup = group();
+
+        let condition = userGroup == C.roles.ADMIN || userGroup == C.roles.LAB_ADMIN;
+
+        return loanStatus !== C.status.loan.TERMINADO && condition;
     };
 
     const fetchData = async () => {
@@ -95,6 +104,7 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
             setLoanMode( { value: loan?.mode?.code, label: loan?.mode?.code, data: loan?.mode } || '');
             setStatus(loan?.loanStatus || '');
             setComments(loan?.comments || '');
+            setMsg('');
 
             if(loan?.mode?.code == C.tipo.MOBILIARIO || loan?.mode?.code == C.tipo.RESGUARDO) {
                 var items = loan?.items;
@@ -119,14 +129,18 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
         return loanStatus == C.status.loan.PRESTADO && id;
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        await setLoan();
+    const handleSubmit = async (customStatus = null) => {
+        await setLoan(customStatus);
     };
 
     const setLoan = async (customStatus = null) => {
         let returned = null;
         let respId = null;
+
+        if(!responsable || !loanMode || selectedItems?.length == 0 || ( loanMode.value == C.status.loan.RESGUARDO && !location) ){
+            setMsg('Favor de llenar todos los campos correspondientes!');
+            return;
+        }
 
         if(returnedOn || (customStatus ?? getStatus()) == C.status.loan.TERMINADO) {
             returned = returnedOn || new Date(Date.now());
@@ -217,15 +231,18 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
         setLoanMode('');
         setStatus('');
         setComments('');
+        setMsg('');
     };
 
     return (
         <>
-            <div className="flex justify-end">
-                <FaPlus onClick={clearInputs} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Préstamo" />
-                { isLoanedXExists()  && <FaExclamation onClick={ async () => setLoan(C.status.loan.PERDIDO)} className="text-2xl cursor-pointer hover:text-orange-500" title="Declarar Perdido" />}
-            </div>
-            <form onSubmit={handleSubmit}>
+            { (group() == C.roles.ADMIN || group() == C.roles.LAB_ADMIN) &&
+                <div className="flex justify-end">
+                    <FaPlus onClick={clearInputs} className="text-2xl cursor-pointer hover:text-green-500" title="Crear Préstamo" />
+                    { isLoanedXExists()  && <FaExclamation onClick={ async () => setLoan(C.status.loan.PERDIDO)} className="text-2xl cursor-pointer hover:text-orange-500" title="Declarar Perdido" />}
+                </div>
+            }
+            <div>
                 <div className="mb-4 grid grid-cols-2">
                     <div>
                         <label className="block mb-1 font-bold">Prestado desde:</label>
@@ -311,11 +328,13 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                         disabled={!isEditable()}
                     />
                 </div>
-                { loanStatus && <div className="mb-4 text-center">
-                    <label className="block mb-1 font-bold">
-                        <span className={getBadgeClass(loanStatus)}> <b> {loanStatus} </b> </span>
-                    </label>
-                </div> }
+                { loanStatus && 
+                    <div className="mb-4 text-center">
+                        <label className="block mb-1 font-bold">
+                            <span className={getBadgeClass(loanStatus)}> <b> {loanStatus} </b> </span>
+                        </label>
+                    </div> 
+                }
                 <div className="mb-4">
                     <label htmlFor="loanType" className="block mb-1 font-bold">Tipo de Préstamo</label>
                     <Select
@@ -355,10 +374,23 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                         isDisabled={!isEditable()}
                     />
                 </div>
-                { ( isEditable() ) && <button type="submit" className="bg-green-500 text-white rounded-md px-4 py-2 mt-4">
-                    Cerrar/Crear Préstamo
-                </button> }
-            </form> 
+                <p className={ `w-full text-red-500 text-xs italic  ${formMsg ? '' : 'hidden'} `}>
+                    {formMsg}
+                </p>
+                { ( isEditable() ) && 
+                    <div>
+                        <button onClick={async () => handleSubmit()} className="bg-green-500 text-white rounded-md px-4 py-2 mt-4 mr-4">
+                            Cerrar/Crear Préstamo
+                        </button> 
+
+                        {id && 
+                            <button onClick={ async () => await handleSubmit( loanStatus == C.status.loan.PERDIDO? C.status.loan.PRESTADO : loanStatus)} className="bg-green-500 text-white rounded-md px-4 py-2 mt-4">
+                                Actualizar
+                            </button> 
+                        }
+                    </div>
+                }
+            </div> 
         </>
     );
 }

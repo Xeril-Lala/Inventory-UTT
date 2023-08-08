@@ -22,6 +22,14 @@ export const LoginLocalStorage = () => {
     return { setLogin, getLogin, logout };
 }
 
+export const getUserGroup = (userInfo) => {
+    if(userInfo) {
+        return userInfo.user.group.code;
+    } else {
+        return "";
+    }
+}
+
 export const getAuthToken = () => {
     var { getLogin } = LoginLocalStorage();
 
@@ -87,6 +95,14 @@ export const getFirstAndLastDayOfWeek = () => {
   
     const lastDay = new Date(firstDay);
     lastDay.setDate(firstDay.getDate() + (6 - firstDay.getDay()));
+  
+    return { firstDay, lastDay };
+}
+
+export const getFirstAndLastDayOfMonth = () => {
+    const currentDate = new Date(Date.now());
+    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
   
     return { firstDay, lastDay };
 }

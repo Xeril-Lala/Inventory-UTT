@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { LoginLocalStorage } from "../constants/utils"
+import { LoginLocalStorage, getUserGroup } from "../constants/utils"
 import { AuthContext } from "../context/Context";
 
 export const AuthProvider = ( {children} ) => {
@@ -13,11 +13,22 @@ export const AuthProvider = ( {children} ) => {
             navigate('/');
         },
         logout: () => {
-            logout();
-            navigate('/login');
+            try {
+                logout();
+                navigate('/login');
+            } catch {
+                navigate('/login');
+            }
         },
         updateUserInfo: info => {
             setLogin(info);
+        },
+        group: () => {
+            try {
+                return getUserGroup(getLogin())
+            }catch {
+                return "";
+            }
         }
     };
 

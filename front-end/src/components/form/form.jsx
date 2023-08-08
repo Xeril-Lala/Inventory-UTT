@@ -9,6 +9,7 @@ import LoanForm from './loanForm';
 import LoanList from './loanList';
 import ReactDatePicker from 'react-datepicker';
 import { getFirstAndLastDayOfWeek } from '../../constants/utils';
+import { AuthContext } from '../../context/Context';
 
 const statusList = [
     {value: C.status.loan.PRESTADO, label: C.status.loan.PRESTADO},
@@ -18,6 +19,7 @@ const statusList = [
 ];
 
 const MyForm = () => {
+    const {  group } = React.useContext(AuthContext);
     const [inventoryId, setInventory] = useState(null);
 
     const [selectedLoan, setLoan] = useState(null);

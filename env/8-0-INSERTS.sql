@@ -41,7 +41,7 @@ CALL SET_ASSET(
 CALL SET_ASSET(
     'STU', 'STUDENT', 'USER_GROUP',
     NULL, NULL,
-    'Catálogos de estudiante',
+    'Catalogos de estudiante',
     NULL, NULL, NULL,
     'DBA', TRUE, @MSG
 );
@@ -129,6 +129,28 @@ CALL SET_USER(
     @MSG
 );
 
+CALL SET_USER(
+	'JCRISTINA.FELIX',
+	'Judith Cristina',
+    'Felix Callejas',
+    SHA2('Welcome@2023', 256),
+    'ADMIN',
+	'DBA',
+    TRUE,
+    @MSG
+);
+
+CALL SET_USER(
+	'LAB1',
+	'Laboratorista',
+    '',
+    SHA2('Welcome@2023', 256),
+    'LAB_ADMIN',
+	'DBA',
+    TRUE,
+    @MSG
+);
+
 -- * Inserting Loan Modes
 
 CALL SET_LOAN_MODE(
@@ -149,11 +171,11 @@ CALL SET_LOAN_MODE(
     @MSG
 );
 
-CALL SET_LOAN_MODE(
-    'MOBILIARIO',
-    'YYYY',
-    1,
-    'DBA',
-    TRUE,
-    @MSG
-);
+# CALL SET_LOAN_MODE(
+#     'MOBILIARIO',
+#     'YYYY',
+#     1,
+#     'DBA',
+#     TRUE,
+#     @MSG
+# );
