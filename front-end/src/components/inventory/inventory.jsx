@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { C } from '../../constants/C.js';
-import { downloadFile } from '../../constants/utils.js';
+import { downloadFile, formatDate } from '../../constants/utils.js';
 import CustomTable from '../customTable/customTable.jsx';
 import '../customTable/customStyle.css';
 import { FaFileDownload } from 'react-icons/fa';
@@ -44,17 +44,13 @@ const Inventory = () => {
                 return flag1 && flag2;
                 });
                 return filterData.map(x => ({
-                    name: x.name,
                     id: x.id,
+                    name: x.name,
+                    acquisition: formatDate(x.acquisition, false),
+                    lastModified: formatDate(x?.model?.lastModified, false),
+                    location: x?.location?.value,
                     isActive: x.isActive,
-                    group: x.model.group,
-                    subGroup: x.model.subGroup,
-                    value: x.location.value,
-                    customKey: x.customKey,
-                    about: x.about,
-                    acquisition: x.acquisition,
-                    auditUser: x.auditUser,
-                    conditionUse: x.conditionUse,
+                    condition: x.conditionUse,
             }));
             } else return [];
             
@@ -90,81 +86,38 @@ const Inventory = () => {
     }
 
     const columns = [
-        {
-            name: 'Id',
-            selector: 'id',
-            width: '4%'
-        },
+
         {
             name: 'Nombre',
             selector: 'name',
-            width: '10%'
+            wrap: true,
+            //width: '10%'
         },
         {
-            name: 'Estado',
-            selector: 'loan',
-            width: '5%'
+            name: 'Ejercicio',
+            selector: 'acquisition',
+            width: '11%'
         },
         {
-            name: 'Grupo',
-            selector: 'group',
-            width: '5%'
-        },
-        {
-            name: 'Sub Grupo',
-            selector: 'subGroup',
-            width: '7%'
+            name: 'Ultima Modificacion',
+            selector: 'lastModified',
+            width: '15%'
         },
         {
             name: 'Localizacion',
-            selector: 'value',
-            width: '10%'
-        },
-        {
-            name: 'Custom Key',
-            selector: 'customKey',
-            width: '7%'
-        },
-        {
-            name: 'About',
-            selector: 'about',
-            width: '10%'
-        },
-        {
-            name: 'Auditor',
-            selector: 'auditUser',
-            width: '6%'
+            selector: 'location',
+            wrap: true,
+            //width: '10%'
         },
         {
             name: 'Condicion',
-            selector: 'conditionUse',
-            width: '10%'
-        }
+            selector: 'condition',
+            ///width: '7%'
+        },
     ];
 
     return (
         <div className="mx-4 sm:mx-auto h-auto">
-
-            {/* <div className="grid grid-cols-6  rounded-md shadow-md bg-white p-2 my-2">
-                <Select 
-                    className="col-span-3" 
-                    value={selectedGroup}
-                    options={groups}
-                    onChange={selectGroup}
-                    isClearable
-                    isSearchable
-                    placeholder="Filtrar por Rol o Grupo"
-                />
-                <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
-                    <FaFileDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
-                    <div className="my-auto mt-2 mr-2 cursor-pointer">
-                        <InputFiles accept=".xlsx" onChange={onSelectExcel} >
-                            <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
-                        </InputFiles>
-                    </div>
-                </div>
-            </div> */}
-
             <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
                 <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
                     <CustomTable

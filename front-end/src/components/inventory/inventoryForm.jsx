@@ -8,13 +8,12 @@ import InventoryService from '../../services/Inventory';
 const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
 
     const inventoryService = new InventoryService();
-    const [groups, setGroups] = useState([]);
     const [group, setGroup] = useState(null);
     const [isEditable, setEditable] = useState(false);
     const [itemData, setItemData] = useState({
-
         name: '',
         customKey: '',
+        id: '',
         about: '',
         model: '',
         location: '',
@@ -27,27 +26,23 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
             setItemData({
                 name: item?.name || '',
                 customKey: item?.customKey || '',
+                id: item?.id || '',
                 about: item?.about || '',
-                model: item?.model?.code || '',
-                location: item?.location?.code || '',
+                model: item?.model?.value || '',
+                location: item?.location?.value || '',
                 serial: item?.serial || '',
                 conditionUse: item?.conditionUse || '',
             });
         }
     }, [item]);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         let res = await inventoryService.getItems({});
-    //         if(res?.status == C.status.common.ok){
-    //             setGroups(
-    //                 res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x }))
-    //             );
-    //         }
-    //     }
 
-    //     fetchData();
-    // }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            let res = await inventoryService.getItems({ group: 'MODEL'});
+        }
+        fetchData();
+    }, []);
 
     const updateItem = async (active = true) => {
         var data = {
@@ -55,7 +50,7 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
             isActive: active
         }
 
-        const response = await InventoryService.setItem(data);
+        const response = await inventoryService.setItem(data);
 
 
         if (response?.status == C.status.common.ok) {
@@ -75,15 +70,28 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
 
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e?.target;
-        setItemData((prevItemData) => ({
-            ...prevItemData,
+    const handleInputChange = (event) => {
+        const { name, value } = event?.target;
+        setItemData((prevData) => ({
+            ...prevData,
             [name]: value,
         }));
     };
 
     const toggleEdit = () => setEditable((value) => !value);
+
+    const clearForm = () => {
+        setItemData({
+            name: '',
+            customKey: '',
+            about: '',
+            model: '',
+            location: '',
+            serial: '',
+            conditionUse: '',
+        })
+        item = null;
+    }
 
     return (
         <div>
@@ -106,7 +114,7 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                     />
                 </div>
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Custom Key</label>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Numero de Equipo</label>
                     <input
                         type="text"
                         name="customKey"
@@ -117,7 +125,21 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                         onChange={handleInputChange}
                         autoComplete="off"
                     />
-                </div>
+                </div> 
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">ID</label>
+                    <input
+                        type="text"
+                        name="id"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={itemData.id}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                        autoComplete="off"
+                    />
+                </div> 
+                
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Procedencia</label>
                     <input
@@ -183,7 +205,7 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                         autoComplete="off"
                     />
                 </div>
-                <div className="col-span-2 flex flex-nowrap flex-col">
+                {/* <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Imagen Relacionada</label>
                     <input
                         type="file"
@@ -195,7 +217,7 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                         onChange={handleInputChange}
                         autoComplete="off"
                     />
-                </div>
+                </div> */}
             </div>
             { isEditable && <button onClick={async () => await updateItem()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar
