@@ -15,9 +15,6 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
         customKey: '',
         id: '',
         about: '',
-        model: '',
-        location: '',
-        serial: '',
         conditionUse: '',
     });
 
@@ -28,9 +25,6 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                 customKey: item?.customKey || '',
                 id: item?.id || '',
                 about: item?.about || '',
-                model: item?.model?.value || '',
-                location: item?.location?.value || '',
-                serial: item?.serial || '',
                 conditionUse: item?.conditionUse || '',
             });
         }
@@ -84,9 +78,7 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
         setItemData({
             name: '',
             customKey: '',
-            about: '',
             model: '',
-            location: '',
             serial: '',
             conditionUse: '',
         })
@@ -139,59 +131,6 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                         autoComplete="off"
                     />
                 </div> 
-                
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Procedencia</label>
-                    <input
-                        type="text"
-                        name="about"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.about}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                        autoComplete="off"
-                    />
-                </div>
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Modelo</label>
-                    <input
-                        type="text"
-                        name="model"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.model}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                        autoComplete="off"
-                    />
-                </div>
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Localizacion</label>
-                    <input
-                        type="text"
-                        name="location"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.location}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                        autoComplete="off"
-                    />
-                </div>
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Serial</label>
-                    <input
-                        type="text"
-                        name="serial"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.serial}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                        autoComplete="off"
-                    />
-                </div>
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Condicion de Uso</label>
                     <input
@@ -205,23 +144,21 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                         autoComplete="off"
                     />
                 </div>
-                {/* <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Imagen Relacionada</label>
-                    <input
-                        type="file"
-                        name=""
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        //value={assetData.auditUser}
-                        //disabled={!isEditable}
-                        onChange={handleInputChange}
-                        autoComplete="off"
-                    />
-                </div> */}
+                
             </div>
-            { isEditable && <button onClick={async () => await updateItem()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
-            Guardar
-            </button>}
+
+            { isEditable &&
+                    <>
+                        <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4 w-1/3 mr-12" onClick={async () => await updateItem()}>
+                            Guardar
+                        </button>
+                        {itemData?.name && 
+                            <button className="bg-red-500 text-white rounded-md px-4 py-2 mt-4 w-1/3" onClick={async () => await updateItem(false)}>
+                                Eliminar
+                            </button>
+                        }
+                    </>
+                }
         </div>
     );
 };

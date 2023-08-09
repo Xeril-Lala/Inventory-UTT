@@ -6,7 +6,6 @@ import { C } from '../../constants/C.js';
 import CustomTable from '../customTable/customTable.jsx';
 import AssetForm from './assetForm.jsx';
 import AssetService from '../../services/Asset.js';
-import AssetExcel from './assetExcel.jsx';
 import '../customTable/customStyle.css';
 import DataTableExtensions from "react-data-table-component-extensions";
 import Select from 'react-select';
@@ -28,7 +27,6 @@ const Assets = () => {
             if(res?.status == C.status.common.ok){
                 setGroups(
                     res.data.map(x => ({value: x.code, label: `${x.value} - ${x.description}`, data:x })),
-                    console.log(res.data),
                 );
                 
             }
@@ -36,17 +34,16 @@ const Assets = () => {
         fetchData();
     }, []);
 
-
     const convertData = response => {
             if (response?.status == C.status.common.ok) {
                 let res = response?.data;
-                let filterData = res.filter(x => {
-                let flag1 = x?.group == 'MODEL';
-                let flag2 = !selectedGroup || x?.code == selectedGroup?.value;
-                //let secondFilter = res.filter(flag1 && flag2);
-                return flag1 && flag2;
-                });
-                return filterData.map(x => ({
+                // let filterData = res.filter(x => {
+                // let flag1 = x?.group == 'MODEL';
+                // let flag2 = !selectedGroup || x?.code == selectedGroup?.value;
+                // //let secondFilter = res.filter(flag1 && flag2);
+                // return flag1 && flag2;
+                // });
+                return res.map(x => ({
                     code: x.code,
                     value: x.value,
                     group: x.group,
@@ -78,54 +75,58 @@ const Assets = () => {
         {
             name: 'Codigo',
             selector: "code",
+            wrap: true,
             width: '10%'
             //selector: row => row[0],
             //sortable: true,
-            
         },
         {
             name: 'Nombre',
             selector: "value",
+            wrap: true,
             width: '15%'
             //selector: row => row[1],
             //sortable: true,
         },
+        // {
+        //     name: 'Group',
+        //     selector: "group",
+        //     width: '7%'
+        //     //selector: row => row[2],
+        //     //sortable: true,
+        // },
+        // {
+        //     name: 'Sub Grupo',
+        //     selector: "subGroup",
+        //     width: '10%'
+        //     //selector: row => row[3],
+        //     //sortable: true,
+        // },
+        // {
+        //     name: 'Grupo Alternativo',
+        //     selector: "alternativeGroup",
+        //     width: '15%'
+        //     //selector: row => row[4],
+        //     //sortable: true,
+        // },
         {
-            name: 'Group',
-            selector: "group",
-            width: '7%'
-            //selector: row => row[2],
-            //sortable: true,
-        },
-        {
-            name: 'Sub Grupo',
-            selector: "subGroup",
-            width: '10%'
-            //selector: row => row[3],
-            //sortable: true,
-        },
-        {
-            name: 'Grupo Alternativo',
-            selector: "alternativeGroup",
-            width: '15%'
-            //selector: row => row[4],
-            //sortable: true,
-        },
-        {
-            name: 'Descripcion',
-            selector: 'description',
-            width: '15%'
+            name: 'Ultima Actualizacion',
+            selector: "lastModified",
+            wrap: true,
+            width: '17%'
         },
         {
             name: 'Auditor',
             selector: "auditUser",
+            wrap: true,
             width: '8%'
         },
         {
-            name: 'Ultima Actualizacion',
-            selector: "lastModified",
-            width: '17%'
-        }
+            name: 'Descripcion',
+            selector: 'description',
+            wrap: true,
+            width: '25%'
+        },
 
     ];
 

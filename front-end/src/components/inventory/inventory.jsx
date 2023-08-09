@@ -96,11 +96,13 @@ const Inventory = () => {
         {
             name: 'Ejercicio',
             selector: 'acquisition',
+            wrap: true,
             width: '11%'
         },
         {
             name: 'Ultima Modificacion',
             selector: 'lastModified',
+            wrap: true,
             width: '15%'
         },
         {
@@ -112,6 +114,7 @@ const Inventory = () => {
         {
             name: 'Condicion',
             selector: 'condition',
+            wrap: true,
             ///width: '7%'
         },
     ];
