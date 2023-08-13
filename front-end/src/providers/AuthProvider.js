@@ -18,7 +18,11 @@ export const AuthProvider = ( {children} ) => {
         },
         updateUserInfo: info => {
             setLogin(info);
-        }
+        },
+        userRole:() => {
+            const userInfo = getLogin();
+            return userInfo ? userInfo.role : null;
+        },
     };
 
     return (

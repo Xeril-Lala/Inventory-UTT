@@ -2,18 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { FaEdit, FaSave } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { C } from '../../constants/C';
+import Select from 'react-select';
 import InventoryService from '../../services/Inventory';
+import AssetService from '../../services/Asset';
 
+const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallback = () => {} }) => {
 
-const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
-
+    const assetService = new AssetService();
     const inventoryService = new InventoryService();
     const [group, setGroup] = useState(null);
+    const [groups, setGroups] = useState([]); 
     const [isEditable, setEditable] = useState(false);
     const [itemData, setItemData] = useState({
-        name: '',
         customKey: '',
+        name: '',
         id: '',
+        model:'',
+        location:'', //combobox
         about: '',
         conditionUse: '',
     });
@@ -21,19 +26,42 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
     useEffect(() => {
         if (item) {
             setItemData({
-                name: item?.name || '',
                 customKey: item?.customKey || '',
+                name: item?.name || '',
                 id: item?.id || '',
-                about: item?.about || '',
+                //model: item?.model.value || '',
+                //location: item?.location?.value || '',
+                //about: item?.about || '',
                 conditionUse: item?.conditionUse || '',
             });
+            setGroup(item?.location?.value != null ? {
+                value: item?.location?.value, 
+                label: `${item?.location?.value}`, 
+                data: item?.location?.value 
+            } : null)
         }
     }, [item]);
-
 
     useEffect(() => {
         const fetchData = async () => {
             let res = await inventoryService.getItems({ group: 'MODEL'});
+            
+            if (res?.status == C.status.common.ok) {
+                // Filtrar elementos duplicados
+                const uniqueData = res.data.filter((value, index, self) => {
+                    return self.findIndex(item => item?.location?.value === value?.location?.value) === index;
+                });
+            
+                // Mapear los elementos únicos
+                const mappedData = uniqueData.map(x => ({
+                    value: x?.location?.value,
+                    label: `${x?.location?.value}`,
+                    data: x?.location?.value
+                }));
+            
+                setGroups(mappedData);
+            }
+            
         }
         fetchData();
     }, []);
@@ -43,7 +71,9 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
             ...itemData,
             isActive: active
         }
-
+        if(group) {
+            data.group = group?.location?.value;
+        }
         const response = await inventoryService.setItem(data);
 
 
@@ -91,7 +121,22 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
                 
             </div>
+            
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
+                <div className="col-span-2 flex flex-nowrap flex-col">
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Serial</label>
+                    <input
+                        type="text"
+                        name="customKey"
+                        placeholder=""
+                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                        value={itemData.customKey}
+                        disabled={!isEditable}
+                        onChange={handleInputChange}
+                        autoComplete="off"
+                        required
+                    />
+                </div> 
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Nombre</label>
                     <input
@@ -103,34 +148,37 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                         disabled={!isEditable}
                         onChange={handleInputChange}
                         autoComplete="off"
+                        required
                     />
                 </div>
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Numero de Equipo</label>
+                <label htmlFor="objectItem" className="block mb-1 font-bold">Modelo</label>
                     <input
                         type="text"
-                        name="customKey"
+                        name="model"
                         placeholder=""
                         className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.customKey}
+                        value={itemData.model}
                         disabled={!isEditable}
                         onChange={handleInputChange}
                         autoComplete="off"
+                        required
                     />
                 </div> 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">ID</label>
-                    <input
-                        type="text"
-                        name="id"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.id}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                        autoComplete="off"
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Localizacion</label>
+                    <Select
+                        name="group"
+                        value={group}
+                        options={groups}
+                        onChange={setGroup}
+                        isClearable
+                        isSearchable
+                        placeholder="Selecciona una Localizacion"
+                        isDisabled={!isEditable}
+                        required
                     />
-                </div> 
+                </div>
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Condicion de Uso</label>
                     <input
@@ -142,11 +190,11 @@ const InventoryForm = ({item, updateInventoryCallback = () => {} }) => {
                         disabled={!isEditable}
                         onChange={handleInputChange}
                         autoComplete="off"
+                        required
                     />
                 </div>
                 
             </div>
-
             { isEditable &&
                     <>
                         <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4 w-1/3 mr-12" onClick={async () => await updateItem()}>
