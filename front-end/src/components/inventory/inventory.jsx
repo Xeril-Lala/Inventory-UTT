@@ -21,7 +21,7 @@ const Inventory = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            let res = await inventoryService.getItems({ group: 'MODEL' });
+            let res = await inventoryService.getItems({});
 
             if (res?.status == C.status.common.ok) {
                 // Filtrar elementos duplicados
@@ -31,7 +31,7 @@ const Inventory = () => {
             
                 // Mapear los elementos únicos
                 const mappedData = uniqueData.map(x => ({
-                    value: x?.model?.value,
+                    value: x?.model?.code,
                     label: `${x?.model?.value}`,
                     data: x
                 }));
@@ -64,7 +64,7 @@ const Inventory = () => {
                     location: x?.location?.value,
                     acquisition: formatDate(x.acquisition, false),
                     condition: x.conditionUse,
-                    isActive: x.isActive,
+                    isUsed: x.isActive,
                     //image: 
             }));
             } else return [];
@@ -185,7 +185,7 @@ const Inventory = () => {
                         columns={columns}
                         styles={C.styles.dataTable}
                         onSelectRow={getItemInfo}
-                        onHook={async () => await inventoryService.getItems({})}
+                        onHook={async () => await inventoryService.getItems({model: selectedGroup?.value || null})}
                         convertData={convertData}
                         triggerRefresh={trigger}
                     />
