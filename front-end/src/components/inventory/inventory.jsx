@@ -17,6 +17,8 @@ const Inventory = () => {
     const [item, setItem] = useState(null);
     const [groups, setGroups] = useState([]);
     const [selectedGroup, setGroup] = useState(null);
+    const [groups2, setGroups2] = useState([]);
+    const [selectedGroup2, setGroup2] = useState(null);
     const [trigger, setTrigger] = useState(false);
 
     useEffect(() => {
@@ -24,27 +26,29 @@ const Inventory = () => {
             let res = await inventoryService.getItems({});
 
             if (res?.status == C.status.common.ok) {
-                // Filtrar elementos duplicados
                 const uniqueData = res.data.filter((value, index, self) => {
                     return self.findIndex(item => item?.model?.value === value?.model?.value) === index;
                 });
-            
-                // Mapear los elementos únicos
                 const mappedData = uniqueData.map(x => ({
                     value: x?.model?.code,
                     label: `${x?.model?.value}`,
                     data: x
                 }));
-            console.log(mappedData);
-
             setGroups(mappedData);
-            }
-            
-            
+
+                const uniqueData2 = res.data.filter((value, index, self) => {
+                    return self.findIndex(item => item?.location?.value === value?.location?.value) === index;
+                });
+                const mappedData2 = uniqueData2.map(x => ({
+                    value: x?.location?.code,
+                    label: `${x?.location?.value}`,
+                    data: x
+                }));
+            setGroups2(mappedData2);
+            }  
         }
         fetchData();
     }, []);
-
 
     const convertData = response => {
             if (response?.status == C.status.common.ok) {
@@ -71,7 +75,6 @@ const Inventory = () => {
             
     }
     const getItemInfo = async (row) => {
-        console.log(row);
 
         var res = await inventoryService.getItem(row.id);
 
@@ -82,6 +85,11 @@ const Inventory = () => {
 
     const selectGroup = (value) => {
         setGroup(value);
+        setTrigger(val => !val)
+    } 
+    
+    const selectGroup2 = (value) => {
+        setGroup2(value);
         setTrigger(val => !val)
     } 
 
@@ -126,7 +134,7 @@ const Inventory = () => {
             width: '11%'
         },
         {
-            name: 'Localizacion',
+            name: 'Ubicacion',
             selector: 'location',
             wrap: true,
             //width: '10%'
@@ -144,7 +152,7 @@ const Inventory = () => {
             width: '7%',
             conditionalCellStyles: [
                 {
-                    when: x => x.isActive = true,
+                    when: x => x.isUsed = true,
                     style: {
                         backgroundColor: 'rgba(63, 195, 128, 0.9)',
                         color: 'white',
@@ -154,7 +162,7 @@ const Inventory = () => {
                     },
                 },
                 {
-                    when: x => x.isActive = !true,
+                    when: x => x.isUsed = !true,
                     style: {
                         backgroundColor: 'rgba(248, 148, 6, 0.9)',
                         color: 'white',
@@ -168,39 +176,61 @@ const Inventory = () => {
     ];
 
     return (
-        <div className="mx-4 sm:mx-auto h-auto">
-            <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
-            <Select 
+        
+
+
+
+
+
+<div className="w-full mx-4 sm:mx-auto">
+            {/* <div className="h-auto text-3xl mb-6">Formulario usuario</div> */}
+
+            <div className="grid grid-cols-6 gap-4 rounded-md shadow-md bg-white p-2 my-2">
+                <Select 
                     className="col-span-3" 
                     value={selectedGroup}
                     options={groups}
                     onChange={selectGroup}
                     isClearable
                     isSearchable
-                    placeholder="Filtrar Grupo"
+                    placeholder="Filtrar Modelo"
                 />
-                <div className="col-span-4 rounded-md shadow-md bg-white p-6" >
-                    <CustomTable
-                        title={'Lista de Equipos'}
-                        columns={columns}
-                        styles={C.styles.dataTable}
-                        onSelectRow={getItemInfo}
-                        onHook={async () => await inventoryService.getItems({model: selectedGroup?.value || null})}
-                        convertData={convertData}
-                        triggerRefresh={trigger}
-                    />
-                </div>
+                <Select 
+                    className="col-span-3" 
+                    value={selectedGroup2}
+                    options={groups2}
+                    onChange={selectGroup2}
+                    isClearable
+                    isSearchable
+                    placeholder="Filtrar Ubicacion"
+                />
 
-                <div className="col-span-2 rounded-md shadow-md bg-white p-6">
-                    <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
-                    <FaFileDownload onClick={() => downloadFile(C.media.itemTemplate, `Inventory-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
+                <FaFileDownload onClick={() => downloadFile(C.media.itemTemplate, `Inventory-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
                     <div className="my-auto mt-2 mr-2 cursor-pointer">
                         <InputFiles accept=".xlsx" onChange={onSelectExcel} >
                             <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
                         </InputFiles>
                     </div>
                 </div>
-                <div className="h-auto text-center text-xl">Añadir/Modificar un Elemento</div>
+            </div>
+
+            <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
+                <div className="col-span-4 rounded-md shadow-md bg-white p-6">
+                <CustomTable
+                        title={'Lista de Equipos'}
+                        columns={columns}
+                        styles={C.styles.dataTable}
+                        onSelectRow={getItemInfo}
+                        onHook={async () => await inventoryService.getItems({location: selectedGroup2?.value || null})}
+                        convertData={convertData}
+                        triggerRefresh={trigger}
+                    />
+                </div>
+                        //model: selectedGroup?.value || null, 
+                <div className="col-span-2 rounded-md shadow-md bg-white p-6">
+                    <div className="h-auto text-center text-xl">Añadir/Modificar un Elemento</div>
+
                     <InventoryForm
                         item={item}
                         updateInventoryCallback={ item => {
@@ -208,6 +238,7 @@ const Inventory = () => {
                             setTrigger(val => !val)
                         }}/>
                 </div>
+
             </div>
         </div>
     );

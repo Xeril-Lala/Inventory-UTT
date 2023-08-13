@@ -61,11 +61,9 @@ class InventoryService extends HttpBase {
             acquisition = null,
             model = {
                 code: null,
-                value: null,
             },
             location = {
                 code: null,
-                value: null,
             },
             serial = null,
             conditionUse = null
