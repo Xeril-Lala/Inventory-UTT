@@ -94,7 +94,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 data.password = 'NO_PASSWORD';
             }
         }
-
+        console.log (group);
         // Llama al servicio UserService para actualizar la información del usuario
         const response = await userService.setFullInfo(data);
 
@@ -113,7 +113,7 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
                 theme: "light",
             });
         }
-
+console.log(data)
         setUserData(temp => ({...temp, password: ''}))
     };
 
@@ -255,9 +255,9 @@ const UserForm = ({ user, updateUserCallback = () => {} }) => {
 
                 { isEditable &&
                     <>
-                        <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser()}>
-                            Guardar
-                        </button>
+                            <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser()}>
+                                Guardar
+                            </button>
                         {userData?.username && 
                             <button className="bg-red-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser(false)}>
                                 Eliminar

@@ -21,8 +21,9 @@ const AssetForm = ({ user, updateUserCallback, asset, updateAssetCallback = () =
         group: '',
         subGroup: '',
         alternativeGroup: '',
+        description: '',
         auditUser: '',
-        //description: '',
+        
     });
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const AssetForm = ({ user, updateUserCallback, asset, updateAssetCallback = () =
                 group: asset?.group || '',
                 subGroup: asset?.subGroup || '',
                 alternativeGroup: asset?.alternativeGroup || '',
-                //description: asset?.description || '',
+                description: asset?.description || '',
                 auditUser: asset?.auditUser || '',
             });
 
@@ -65,17 +66,10 @@ const AssetForm = ({ user, updateUserCallback, asset, updateAssetCallback = () =
             isActive: active
         }
 
-        // if(!userData?.password) {
-        //     data.password = null;
-        // } else {
-        //     data.password = sha256(userData.password);
-        // }
-
         if(group) {
             data.group = group.value;
         }
 
-        //const response = await userService.setFullInfo(data);
         const response = await assetService.setAsset(data);
 
 
@@ -93,17 +87,7 @@ const AssetForm = ({ user, updateUserCallback, asset, updateAssetCallback = () =
                 theme: "light",
             });
         }
-
-        //setUserData(temp => ({...temp, password: ''}))
     };
-
-    // const handleInputChange = (e) => {
-    //     const { name, value } = e?.target;
-    //     setUserData((prevUserData) => ({
-    //         ...prevUserData,
-    //         [name]: value,
-    //     }));
-    // };
 
     const handleInputChange = (e) => {
         const { name, value } = e?.target;
@@ -120,7 +104,6 @@ const AssetForm = ({ user, updateUserCallback, asset, updateAssetCallback = () =
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
                 
-                {/* { isEditable && <FaTrash className="text-2xl cursor-pointer hover:text-red-500" title="Desactivar" />} */}
             </div>
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
@@ -150,73 +133,6 @@ const AssetForm = ({ user, updateUserCallback, asset, updateAssetCallback = () =
                 </div>
 
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Grupo</label>
-                    <input
-                        type="text"
-                        name="group"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.group}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div>
-
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Rol</label>
-
-                    <Select
-                        name="group"
-                        value={group}
-                        options={groups}
-                        onChange={setGroup}
-                        isClearable
-                        isSearchable
-                        placeholder="Selecciona un Rol"
-                        isDisabled={!isEditable}
-                    />
-                </div>
-
-                {/* { isEditable && <div className="col-span-2 flex flex-nowrap flex-col">
-                    <p>Sub Grupo</p>
-                    <input
-                        type="subGroup"
-                        name="subGroup"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.subGroup}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div> } */}
-
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Sub Grupo</label>
-                    <input
-                        type="subGroup"
-                        name="subGroup"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.subGroup}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div>
-
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Grupo Alternativo</label>
-                    <input
-                        type="text"
-                        name="alternativeGroup"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.alternativeGroup}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div>
-
-                {/* <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Descripcion</label>
                     <input
                         type="text"
@@ -227,31 +143,8 @@ const AssetForm = ({ user, updateUserCallback, asset, updateAssetCallback = () =
                         disabled={!isEditable}
                         onChange={handleInputChange}
                     />
-                </div> */}
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Auditor</label>
-                    <input
-                        type="text"
-                        name="auditUser"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={assetData.auditUser}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
                 </div>
-                <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Imagen Relacionada</label>
-                    <input
-                        type="file"
-                        name=""
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        //value={assetData.auditUser}
-                        //disabled={!isEditable}
-                        onChange={handleInputChange}
-                    />
-                </div>
+
             </div>
             { isEditable && <button onClick={async () => await updateAsset()} className="text-md mr-2 cursor-pointer hover:text-gray-700 hover:bg-green-300 bg-green-500 text-white rounded-md px-4 py-2 mt-4" title="Guardar"> 
             Guardar

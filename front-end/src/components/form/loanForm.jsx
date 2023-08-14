@@ -345,7 +345,7 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                         isSearchable
                         placeholder="Selecciona un tipo de préstamo"
                         isDisabled={!isEditable()}
-                    />    
+                    />
                 </div>
 
                 { ( loanMode?.value == C.tipo.MOBILIARIO || loanMode?.value == C.tipo.RESGUARDO ) &&  <div className="mb-4">

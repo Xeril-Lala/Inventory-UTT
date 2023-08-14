@@ -60,10 +60,10 @@ class InventoryService extends HttpBase {
             about = null,
             acquisition = null,
             model = {
-                code: null
+                code: null,
             },
             location = {
-                code: null
+                code: null,
             },
             serial = null,
             conditionUse = null
@@ -75,9 +75,16 @@ class InventoryService extends HttpBase {
             options: {
                 method: 'post',
                 data: {
-                    isActive, id, name, customKey,
-                    about, acquisition, model,
-                    location, serial, conditionUse
+                    isActive, 
+                    id, 
+                    name, 
+                    customKey,
+                    about, 
+                    acquisition, 
+                    model,
+                    location, 
+                    serial, 
+                    conditionUse
                 },
                 headers: {
                     'Content-Type': 'application/json'

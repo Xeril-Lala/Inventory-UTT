@@ -6,7 +6,8 @@ import AssetService from '../../services/Asset.js';
 import UserService from '../../services/User.js';
 import CustomTable from '../customTable/customTable.jsx';
 import UserForm from './userForm.jsx';
-import { FaDownload, FaFileExcel } from 'react-icons/fa';
+import { FaDownload,FaFileDownload, FaFileExcel } from 'react-icons/fa';
+import { RiFileExcel2Fill } from 'react-icons/ri';
 import InputFiles from 'react-input-files';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../context/Context';
@@ -98,42 +99,49 @@ const UserSignUp = () => {
     const columns = [
         {
             name: "Usuario",
+            wrap: true,
             // selector: row => row.username,
             selector: "username",
             // sortable: true,
         },
         {
             name: "Nombre",
+            wrap: true,
             // selector: row => row.name,
             selector: "name",
             // sortable: true,
         },
         {
             name: "ID",
+            wrap: true,
             // selector: row => row.id,
             selector: "id",
             // sortable: true,
         },
         {
             name: "Email",
+            wrap: true,
             // selector: row => row.email,
             selector: "email",
             // sortable: true,
         },
         {
             name: "Rol",
+            wrap: true,
             // selector: row => row.group,
             selector: "group",
             // sortable: true,
         },
         {
             name: "Modificado",
+            wrap: true,
             // selector: row => row.modified,
             selector: "modified",
             // sortable: true,
         },
         {
             name: "Auditor",
+            wrap: true,
             // selector: row => row.audit,
             selector: "audit",
             // sortable: true,
@@ -156,16 +164,12 @@ const UserSignUp = () => {
                 />
 
                 <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
-                    { grants == C.roles.ADMIN &&
-                        <>
-                            <FaDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
-                            <div className="my-auto mt-2 mr-2 cursor-pointer">
-                                <InputFiles accept=".xlsx" onChange={onSelectExcel} >
-                                    <FaFileExcel className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
-                                </InputFiles>
-                            </div>
-                        </>
-                    }
+                    <FaFileDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                    <div className="my-auto mt-2 mr-2 cursor-pointer">
+                        <InputFiles accept=".xlsx" onChange={onSelectExcel} >
+                            <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
+                        </InputFiles>
+                    </div>
                 </div>
             </div>
 
