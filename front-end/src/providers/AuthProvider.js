@@ -23,10 +23,13 @@ export const AuthProvider = ( {children} ) => {
         updateUserInfo: info => {
             setLogin(info);
         },
-        userRole:() => {
-            const userInfo = getLogin();
-            return userInfo ? userInfo.role : null;
-        },
+        group: () => {
+            try {
+                return getUserGroup(getLogin())
+            }catch {
+                return "";
+            }
+        }
     };
 
     return (

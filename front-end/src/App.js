@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,11 +14,9 @@ import Inventory from './components/inventory/inventory.jsx';
 import { AuthProvider } from './providers/AuthProvider.js';
 import HttpBase from './services/HttpBase.js';
 import LoanHistory from './components/loans/loanHistory';
-import { C } from './constants/C';
 
 const App = () => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
-
 
 
   HttpBase.onError = (error) => toast.error(error, {
@@ -41,25 +39,14 @@ const App = () => {
             <Route 
               element={<SidebarLayout/>}
             >
-              {/* <ProtectedRoute allowedRoles={[C.roles.ADMIN, C.roles.DEV]}>
-                <Route 
-                  index
-                  element={<Assets/>}
-                />
-                
-              </ProtectedRoute> */}
               <Route 
                 index
-                element={
-                <Login/>
-                }
+                element={<Assets/>}
               />
               <Route 
                 path="/utilidades" 
                 element={
-                  //<ProtectedRoute roles ={[C.roles.ADMIN, C.roles.DEV]}>
                   <Assets/>
-                  //</ProtectedRoute>
                 }
               />
               {/* <Route 
@@ -77,17 +64,13 @@ const App = () => {
               <Route 
                 path="/userSingUp" 
                 element={
-                  <ProtectedRoute roles ={[C.roles.ADMIN, C.roles.DEV]}>
                   <UserSingUp />
-                  </ProtectedRoute>
                 } 
               />
               <Route 
                 path="/loan-history" 
                 element={
-                  <ProtectedRoute roles ={[C.roles.LAB_ADMIN]}>
                   <LoanHistory/>
-                  </ProtectedRoute>
                 } 
               />
               <Route
