@@ -10,16 +10,23 @@ import InventoryService from '../../services/Inventory.js';
 import InventoryForm from '../inventory/inventoryForm.jsx';
 import { toast } from 'react-toastify';
 import {RiFileExcel2Fill} from 'react-icons/ri';
+import AssetService from '../../services/Asset.js';
 
 
 const Inventory = () => {
     const inventoryService = new InventoryService();
+    const assetService = new AssetService();
     const [item, setItem] = useState(null);
     const [groups, setGroups] = useState([]);
     const [selectedGroup, setGroup] = useState(null);
     const [groups2, setGroups2] = useState([]);
     const [selectedGroup2, setGroup2] = useState(null);
+    const [groups3, setGroups3] = useState([]);
+    const [selectedGroup3, setGroup3] = useState(null);
     const [trigger, setTrigger] = useState(false);
+
+    const [from, setFrom] = useState('');
+    const [to, setTo] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,14 +44,40 @@ const Inventory = () => {
             setGroups(mappedData);
 
                 const uniqueData2 = res.data.filter((value, index, self) => {
-                    return self.findIndex(item => item?.location?.value === value?.location?.value) === index;
+                    return self.findIndex(item => item?.isUsed === value?.isUsed) === index;
                 });
                 const mappedData2 = uniqueData2.map(x => ({
-                    value: x?.location?.code,
-                    label: `${x?.location?.value}`,
+                    value: x?.isUsed,
+                    label: x?.isUsed ? "En Uso" : "Disponible",
                     data: x
                 }));
             setGroups2(mappedData2);
+
+
+
+            const uniqueData3 = res.data.filter((value, index, self) => {
+                return self.findIndex(item => item?.location?.value === value?.location?.value) === index;
+            });
+            const mappedData3 = uniqueData3.map(x => ({
+                value: x?.location,
+                label: `${x?.location?.value}`,
+                data: x
+            }));
+        setGroups3(mappedData3);
+        
+
+        // const exerciseDate = async () => {
+        //     const {firstDay, lastDay } = getFirstAndLastDayOfWeek();
+
+        //     setFrom(firstDay);
+        //     setTo(lastDay);
+
+        //     let res = await loanService.getLoanModes();
+        //     if (res?.data) {
+        //         let m = res.data.map(x => ({ value: x.code, label: x.code }));
+        //         setModes(m);
+        //     }
+        // }
             }  
         }
         fetchData();
@@ -68,7 +101,7 @@ const Inventory = () => {
                     location: x?.location?.value,
                     acquisition: formatDate(x.acquisition, false),
                     condition: x.conditionUse,
-                    isUsed: x.isActive,
+                    isUsed: x.isUsed,
                     //image: 
             }));
             } else return [];
@@ -90,6 +123,11 @@ const Inventory = () => {
     
     const selectGroup2 = (value) => {
         setGroup2(value);
+        setTrigger(val => !val)
+    } 
+
+    const selectGroup3 = (value) => {
+        setGroup3(value);
         setTrigger(val => !val)
     } 
 
@@ -145,34 +183,34 @@ const Inventory = () => {
             wrap: true,
             ///width: '7%'
         },
-        {
-            name: 'Estado',
-            selector: 'isActive',
-            wrap: true,
-            width: '7%',
-            conditionalCellStyles: [
-                {
-                    when: x => x.isUsed = true,
-                    style: {
-                        backgroundColor: 'rgba(63, 195, 128, 0.9)',
-                        color: 'white',
-                        '&:hover': {
-                            cursor: 'pointer',
-                        },
-                    },
-                },
-                {
-                    when: x => x.isUsed = !true,
-                    style: {
-                        backgroundColor: 'rgba(248, 148, 6, 0.9)',
-                        color: 'white',
-                        '&:hover': {
-                            cursor: 'pointer',
-                        },
-                    },
-                },
-            ],
-        },
+        // {
+        //     name: 'Estado',
+        //     selector: 'isUsed',
+        //     wrap: true,
+        //     width: '7%',
+        //     conditionalCellStyles: [
+        //         {
+        //             when: x => x.isUsed = true,
+        //             style: {
+        //                 backgroundColor: 'rgba(63, 195, 128, 0.9)',
+        //                 color: 'white',
+        //                 '&:hover': {
+        //                     cursor: 'pointer',
+        //                 },
+        //             },
+        //         },
+        //         {
+        //             when: x => x.isUsed = !true,
+        //             style: {
+        //                 backgroundColor: 'rgba(248, 148, 6, 0.9)',
+        //                 color: 'white',
+        //                 '&:hover': {
+        //                     cursor: 'pointer',
+        //                 },
+        //             },
+        //         },
+        //     ],
+        // },
     ];
 
     return (
@@ -202,6 +240,15 @@ const Inventory = () => {
                     onChange={selectGroup2}
                     isClearable
                     isSearchable
+                    placeholder="Filtrar por Dispoinibilidad"
+                />
+                <Select 
+                    className="col-span-3" 
+                    value={selectedGroup3}
+                    options={groups3}
+                    onChange={selectGroup3}
+                    isClearable
+                    isSearchable
                     placeholder="Filtrar Ubicacion"
                 />
 
@@ -222,12 +269,16 @@ const Inventory = () => {
                         columns={columns}
                         styles={C.styles.dataTable}
                         onSelectRow={getItemInfo}
-                        onHook={async () => await inventoryService.getItems({location: selectedGroup2?.value || null})}
+                        onHook={async () => await inventoryService.getItems({
+                            model: selectedGroup?.value || null, 
+                            isUsed: selectedGroup2?.value || null, 
+                            location: selectedGroup3?.value || null
+                        })}
                         convertData={convertData}
                         triggerRefresh={trigger}
                     />
                 </div>
-                        //model: selectedGroup?.value || null, 
+                        
                 <div className="col-span-2 rounded-md shadow-md bg-white p-6">
                     <div className="h-auto text-center text-xl">Añadir/Modificar un Elemento</div>
 

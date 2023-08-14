@@ -21,7 +21,7 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
         customKey: '',
         name: '',
         id: '',
-        model:'', //combobox
+        //model:'', //combobox
         //location:'', //combobox
         //about: '',
         //conditionUse: '',
@@ -33,7 +33,7 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
                 customKey: item?.customKey || '',
                 name: item?.name || '',
                 id: item?.id || '',
-                model: item?.model?.code || '',
+                //model: item?.model?.code || '',
                 //location: item?.location?.code || '',
                 //about: item?.about || '',
                 conditionUse: item?.conditionUse || '',
