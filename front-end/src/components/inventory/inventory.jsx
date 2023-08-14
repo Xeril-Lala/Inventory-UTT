@@ -221,11 +221,9 @@ const Inventory = () => {
 
 
 <div className="w-full mx-4 sm:mx-auto">
-            {/* <div className="h-auto text-3xl mb-6">Formulario usuario</div> */}
-
             <div className="grid grid-cols-6 gap-4 rounded-md shadow-md bg-white p-2 my-2">
                 <Select 
-                    className="col-span-3" 
+                    className="col-span-1 w-[100%]" 
                     value={selectedGroup}
                     options={groups}
                     onChange={selectGroup}
@@ -234,16 +232,16 @@ const Inventory = () => {
                     placeholder="Filtrar Modelo"
                 />
                 <Select 
-                    className="col-span-3" 
+                    className="col-span-1 w-[100%]" 
                     value={selectedGroup2}
                     options={groups2}
                     onChange={selectGroup2}
                     isClearable
                     isSearchable
-                    placeholder="Filtrar por Dispoinibilidad"
+                    placeholder="Filtrar Dispoinibilidad"
                 />
                 <Select 
-                    className="col-span-3" 
+                    className="col-span-2 w-[100%]" 
                     value={selectedGroup3}
                     options={groups3}
                     onChange={selectGroup3}

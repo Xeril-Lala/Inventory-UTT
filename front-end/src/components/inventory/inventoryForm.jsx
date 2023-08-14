@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaSave } from 'react-icons/fa';
+import { FaEdit, FaSave, FaPlus } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { C } from '../../constants/C';
 import Select from 'react-select';
@@ -12,19 +12,14 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
     const inventoryService = new InventoryService();
     const [group, setGroup] = useState(null);
     const [groups, setGroups] = useState([]); 
-    // const [groupModel, setGroupModel] = useState(null);
-    // const [groupsModel, setGroupsModel] = useState([]); 
-    const [groupModel, setGroupModel] = useState(null);
-    const [groupsModel, setGroupsModel] = useState([]); 
+    const [groupLocation, setGroupLocation] = useState(null);
+    const [groupsLocation, setGroupsLocation] = useState([]); 
     const [isEditable, setEditable] = useState(false);
     const [itemData, setItemData] = useState({
         customKey: '',
         name: '',
         id: '',
-        //model:'', //combobox
-        //location:'', //combobox
-        //about: '',
-        //conditionUse: '',
+        conditionUse: '',
     });
 
     useEffect(() => {
@@ -33,20 +28,19 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
                 customKey: item?.customKey || '',
                 name: item?.name || '',
                 id: item?.id || '',
-                //model: item?.model?.code || '',
-                //location: item?.location?.code || '',
-                //about: item?.about || '',
                 conditionUse: item?.conditionUse || '',
             });
-            setGroup(item?.location?.code != null ? {
-                value: item?.location?.code, 
-                label: `${item?.location?.value}`, 
-                data: item?.location?.value 
-            } : null)
-            setGroupModel(item?.model?.code != null ? {
+
+            setGroup(item?.model != null ? {
                 value: item?.model?.code, 
                 label: `${item?.model?.value}`, 
-                data: item?.model?.value 
+                data: item?.model 
+            } : null)
+
+            setGroupLocation(item?.location != null ? {
+                value: item?.location?.code, 
+                label: `${item?.location?.value}`,
+                data: item?.location
             } : null)
         }
     }, [item]);
@@ -58,40 +52,36 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
             if (res?.status == C.status.common.ok) {
                 // Filtrar elementos duplicados
                 const uniqueData = res.data.filter((value, index, self) => {
-                    return self.findIndex(item => item?.location?.code === value?.location?.code) === index;
-                });
-            
-                // Mapear los elementos únicos
-                const mappedData = uniqueData.map(x => ({
-                    value: x?.location?.code,
-                    label: `${x?.location?.value}`,
-                    data: x?.location?.code
-                }));
-            
-                setGroups(mappedData);
-            }
-
-            let res2 = await inventoryService.getItems({});
-            
-            if (res2?.status == C.status.common.ok) {
-                // Filtrar elementos duplicados
-                const uniqueData = res2.data.filter((value, index, self) => {
                     return self.findIndex(item => item?.model?.code === value?.model?.code) === index;
                 });
-            
                 // Mapear los elementos únicos
-                const mappedData2 = uniqueData.map(x => ({
+                const mappedData = uniqueData.map(x => ({
                     value: x?.model?.code,
                     label: `${x?.model?.value}`,
                     data: x?.model?.code
                 }));
             
-                setGroupsModel(mappedData2);
+                setGroups(mappedData);
+            }
+
+            
+            if (res?.status == C.status.common.ok) {
+                // Filtrar elementos duplicados
+                const uniqueData = res.data.filter((value, index, self) => {
+                    return self.findIndex(item => item?.model?.code === value?.model?.code) === index;
+                });
+                // Mapear los elementos únicos
+                const mappedData2 = uniqueData.map(x => ({
+                    value: x?.location?.code,
+                    label: `${x?.location?.value}`,
+                    data: x?.location?.code
+                }));
+            
+                setGroupsLocation(mappedData2);
             }
         }
         fetchData();
     }, []);
-
 
     const updateItem = async (active = true) => {
         var data = {
@@ -99,10 +89,12 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
             isActive: active
         }
         if(group) {
-            data.group = group?.location?.code;
+            data.group = group.value;
+            console.log(data.group)
         }
-        if(groupModel) {
-            data.groupModel = group?.model?.code;
+        if(groupLocation) {
+            data.groupLocation = groupLocation.value
+            console.log(groupLocation);
         }
         const response = await inventoryService.setItem(data);
 
@@ -121,11 +113,11 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
                 theme: "light",
             });
         }
-
+        console.log(data);
     };
 
-    const handleInputChange = (event) => {
-        const { name, value } = event?.target;
+    const handleInputChange = (e) => {
+        const { name, value } = e?.target;
         setItemData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -136,12 +128,13 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
 
     const clearForm = () => {
         setItemData({
-            name: '',
             customKey: '',
-            model: '',
-            serial: '',
+            name: '',
+            id: '',
             conditionUse: '',
         })
+        setGroup(null);
+        setGroupLocation(null);
         item = null;
     }
 
@@ -149,23 +142,23 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
         <div>
             <div className="flex justify-end">
                 <FaEdit onClick={toggleEdit} className="text-2xl mr-2 cursor-pointer hover:text-blue-500" title="Editar" />
-                
+                <FaPlus onClick={() => {clearForm(); setEditable(true)}} className="text-2xl cursor-pointer hover:text-green-500" title="Añadir Equipo" />
             </div>
             
             <div className="grid grid-cols-2 gap-4 p-6 text-base font-mono">
                 <div className="col-span-2 flex flex-nowrap flex-col">
-                <label htmlFor="objectItem" className="block mb-1 font-bold">Serial</label>
-                    <input
-                        type="text"
-                        name="customKey"
-                        placeholder=""
-                        className="bg-gray-100 rounded-md p-2 appearance-textfield"
-                        value={itemData.customKey}
-                        disabled={!isEditable}
-                        onChange={handleInputChange}
-                        autoComplete="off"
-                        required
-                    />
+                    <label htmlFor="objectItem" className="block mb-1 font-bold">Serial</label>
+                        <input
+                            type="text"
+                            name="customKey"
+                            placeholder=""
+                            className="bg-gray-100 rounded-md p-2 appearance-textfield"
+                            value={itemData.customKey}
+                            disabled={!isEditable}
+                            onChange={handleInputChange}
+                            autoComplete="off"
+                            required
+                        />
                 </div> 
                 <div className="col-span-2 flex flex-nowrap flex-col">
                 <label htmlFor="objectItem" className="block mb-1 font-bold">Nombre</label>
@@ -185,24 +178,25 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
                 <div className="col-span-2 flex flex-nowrap flex-col">
                     <label htmlFor="objectItem" className="block mb-1 font-bold">Modelo</label>
                     <Select
-                        name="model"
-                        value={groupModel}
-                        options={groupsModel}
-                        onChange={setGroupModel}
+                        name="group"
+                        value={group}
+                        options={groups}
+                        onChange={setGroup}
                         isClearable
                         isSearchable
                         placeholder="Selecciona un Modelo"
                         isDisabled={!isEditable}
                         required
+                        
                     />
                 </div>
                 <div className="col-span-2 flex flex-nowrap flex-col">
                     <label htmlFor="objectItem" className="block mb-1 font-bold">Ubicacion</label>
                     <Select
-                        name="group"
-                        value={group}
-                        options={groups}
-                        onChange={setGroup}
+                        name="groupLocation"
+                        value={groupLocation}
+                        options={groupsLocation}
+                        onChange={setGroupLocation}
                         isClearable
                         isSearchable
                         placeholder="Selecciona una Ubicacion"
@@ -225,19 +219,21 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
                     />
                 </div>
                 
-            </div>
+            
             { isEditable &&
                     <>
-                        <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4 w-1/3 mr-12" onClick={async () => await updateItem()}>
-                            Guardar
-                        </button>
+                            <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateItem()}>
+                                Guardar
+                            </button>
+                        
                         {itemData?.name && 
-                            <button className="bg-red-500 text-white rounded-md px-4 py-2 mt-4 w-1/3" onClick={async () => await updateItem(false)}>
+                            <button className="bg-red-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateItem(false)}>
                                 Eliminar
                             </button>
                         }
                     </>
                 }
+                </div>
         </div>
     );
 };

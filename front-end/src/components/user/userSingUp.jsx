@@ -6,7 +6,8 @@ import AssetService from '../../services/Asset.js';
 import UserService from '../../services/User.js';
 import CustomTable from '../customTable/customTable.jsx';
 import UserForm from './userForm.jsx';
-import { FaDownload, FaFileExcel } from 'react-icons/fa';
+import { FaDownload,FaFileDownload, FaFileExcel } from 'react-icons/fa';
+import { RiFileExcel2Fill } from 'react-icons/ri';
 import InputFiles from 'react-input-files';
 import { toast } from 'react-toastify';
 
@@ -157,10 +158,10 @@ const UserSignUp = () => {
                 />
 
                 <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
-                    <FaDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                    <FaFileDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
                     <div className="my-auto mt-2 mr-2 cursor-pointer">
                         <InputFiles accept=".xlsx" onChange={onSelectExcel} >
-                            <FaFileExcel className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
+                            <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
                         </InputFiles>
                     </div>
                 </div>

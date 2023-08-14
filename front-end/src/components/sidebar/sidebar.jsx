@@ -31,7 +31,7 @@ const Sidebar = ({ children }) => {
             path: "/Utilidades",
             name: "Utilidades",
             icon: <FaTh />,
-            roles: ["DEV", "ADMIN"]
+            //roles: ["DEV", "ADMIN"]
         },
         // {
         //     path: "/historical",
@@ -62,8 +62,11 @@ const Sidebar = ({ children }) => {
     ];
 
     return (
-        <div className="flex font-mono ">
-            <div style={{ width: isOpen ? "270px" : "70px" }} className="bg-zinc-900 h-[100vh] w-[270px] transition-all duration-500">
+<div className="flex font-mono  overflow-auto h-[100vh]">
+      <div
+        style={{ maxWidth: isOpen ? '270px' : '70px' }}
+        className="bg-zinc-900 h-[100vh] w-[270px] transition-all duration-500 "
+      >
                 <div className="flex items-center p-6">
                     <h1 style={{ display: isOpen ? "block" : "none" }} className="text-2xl text-white italic font-bold">UTT</h1>
                     <div style={{ marginLeft: isOpen ? "125px" : "0px" }} className="flex text-xl text-white ">

@@ -79,7 +79,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
         if(group) {
             data.group = group.value;
         }
-
+        console.log (group);
         // Llama al servicio UserService para actualizar la información del usuario
         const response = await userService.setFullInfo(data);
 
@@ -98,7 +98,7 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
                 theme: "light",
             });
         }
-
+console.log(data)
         setUserData(temp => ({...temp, password: ''}))
     };
 
@@ -238,9 +238,9 @@ const AssetForm = ({ user, updateUserCallback = () => {} }) => {
 
                 { isEditable &&
                     <>
-                        <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser()}>
-                            Guardar
-                        </button>
+                            <button className="bg-green-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser()}>
+                                Guardar
+                            </button>
                         {userData?.username && 
                             <button className="bg-red-500 text-white rounded-md px-4 py-2 mt-4" onClick={async () => await updateUser(false)}>
                                 Eliminar

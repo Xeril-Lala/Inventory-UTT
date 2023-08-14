@@ -18,7 +18,6 @@ class InventoryService extends HttpBase {
             serial = null,
             name = null,
             model = null,
-            location = null,
             fromDt = null,
             toDt = null,
             isUsed = null
@@ -29,7 +28,7 @@ class InventoryService extends HttpBase {
             token: getAuthToken(),
             options: {
                 params: {
-                    isActive, id, customId, serial, name, model, location, fromDt, toDt, isUsed
+                    isActive, id, customId, serial, name, model, fromDt, toDt, isUsed
                 },
                 headers: {
                     'Content-Type': 'application/json'
