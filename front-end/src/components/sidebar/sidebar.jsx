@@ -31,7 +31,7 @@ const Sidebar = ({ children }) => {
             path: "/Utilidades",
             name: "Utilidades",
             icon: <FaTh />,
-            roles: ["DEV", "ADMIN"]
+            //roles: ["DEV", "ADMIN"]
         },
         // {
         //     path: "/historical",
@@ -42,7 +42,7 @@ const Sidebar = ({ children }) => {
             path: "/form",
             name: "Préstamos",
             icon: <FaFileSignature />,
-            roles: ["DEV", "ADMIN", "LAB_ADMIN"]
+            //roles: ["DEV", "ADMIN", "LAB_ADMIN"]
         },
         {
             path: "/loan-history",
@@ -53,7 +53,7 @@ const Sidebar = ({ children }) => {
             path: "/userSingUp",
             name: "Alta Usuarios",
             icon: <FaUserAlt />,
-            roles: ["DEV", "ADMIN", "LAB_ADMIN"]
+            //roles: ["DEV", "ADMIN", "LAB_ADMIN"]
         },
         {
             path: "/inventory",
