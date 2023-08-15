@@ -20,6 +20,8 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
         name: '',
         id: '',
         conditionUse: '',
+        model: '',
+        location: '',
     });
 
     useEffect(() => {
@@ -88,13 +90,18 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
             ...itemData,
             isActive: active
         }
+        data.model = {
+            code: group.value
+        };
+        
+        data.location = {
+            code: groupLocation.value
+        }
         if(group) {
-            data.group = group.value;
-            console.log(data.group)
+            data.model.code = group.value;
         }
         if(groupLocation) {
-            data.groupLocation = groupLocation.value
-            console.log(groupLocation);
+            data.location.code = groupLocation.value
         }
         const response = await inventoryService.setItem(data);
 
@@ -132,6 +139,8 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
             name: '',
             id: '',
             conditionUse: '',
+            model: '',
+            location: '',
         })
         setGroup(null);
         setGroupLocation(null);
