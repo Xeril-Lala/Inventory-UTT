@@ -240,7 +240,7 @@ const Inventory = () => {
                     isSearchable
                     placeholder="Filtrar Dispoinibilidad"
                 />
-                <Select 
+                {/* <Select 
                     className="col-span-2 w-[100%]" 
                     value={selectedGroup3}
                     options={groups3}
@@ -248,7 +248,7 @@ const Inventory = () => {
                     isClearable
                     isSearchable
                     placeholder="Filtrar Ubicacion"
-                />
+                /> */}
 
                 <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
                 <FaFileDownload onClick={() => downloadFile(C.media.itemTemplate, `Inventory-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
@@ -270,7 +270,7 @@ const Inventory = () => {
                         onHook={async () => await inventoryService.getItems({
                             model: selectedGroup?.value || null, 
                             isUsed: selectedGroup2?.value || null, 
-                            location: selectedGroup3?.value || null
+                            //location: selectedGroup3?.value || null
                         })}
                         convertData={convertData}
                         triggerRefresh={trigger}
