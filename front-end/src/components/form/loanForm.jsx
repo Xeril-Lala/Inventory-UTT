@@ -275,7 +275,7 @@ const LoanForm = ({loan, onTriggerRefresh}) => {
                     </div>
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="responsableID" className="block mb-1 font-bold">Responsable ID</label>
+                    <label htmlFor="responsableID" className="block mb-1 font-bold">Prestatario</label>
                     <TextInput 
                         id="responsableID"
                         Component="input"

@@ -56,7 +56,7 @@ const LoanList = ({ data, onItemClick }) => {
 
                 <div className="m-2 col-span-2 ">
                     <p> <b>ID:</b> { item?.id }</p>
-                    <p> <b>Responsable ID:</b> {item?.responsibleId}</p>
+                    <p> <b>Prestatario:</b> {item?.responsibleId}</p>
                     <p> <b>Responsable:</b> {item?.responsible}</p>
                     {item?.contact && <p> <b>Responsable Contacto:</b> {item?.contact[0]} </p> }
                 </div>
