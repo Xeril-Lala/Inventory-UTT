@@ -1,16 +1,30 @@
+// Importar la clase base para las peticiones HTTP y las constantes desde archivos locales
 import HttpBase from "./HttpBase";
 import { C } from "../constants/C";
 import { getAuthToken } from "../constants/utils";
 
+// Definir la clase para el servicio relacionado con activos
 class AssetService extends HttpBase {
-
   constructor() {
+    // Llamar al constructor de la clase base con la URL base específica
     super({
       baseUrl: `${C.api_url()}asset`,
     });
   }
 
-  async getAssets({ code = null, group = null, subGroup = null, altGroup = null, description = null, auditUser = null, isActive = true }, callback = () => { }) {
+  // Obtener la lista de activos con opciones de filtrado
+  async getAssets(
+    {
+      code = null,
+      group = null,
+      subGroup = null,
+      altGroup = null,
+      description = null,
+      auditUser = null,
+      isActive = true
+    },
+    callback = () => {}
+  ) {
     return await this.request({
       token: getAuthToken(),
       options: {
@@ -31,7 +45,8 @@ class AssetService extends HttpBase {
     });
   }
 
-  async getAsset(id, callback = () => { }) {
+  // Obtener información de un activo específico por ID
+  async getAsset(id, callback = () => {}) {
     return await this.request({
       token: getAuthToken(),
       endpoint: `${id}`,
@@ -44,8 +59,19 @@ class AssetService extends HttpBase {
     });
   }
 
-
-  async getAssetGroup({ childCode = null, parentGroup = null, parentSubGroup = null, parentAltGroup = null, childGroup = null, childAltGroup = null, isActive = null }, callback = () => { }) {
+  // Obtener grupos de activos con opciones de filtrado
+  async getAssetGroup(
+    {
+      childCode = null,
+      parentGroup = null,
+      parentSubGroup = null,
+      parentAltGroup = null,
+      childGroup = null,
+      childAltGroup = null,
+      isActive = null
+    },
+    callback = () => {}
+  ) {
     return await this.request({
       token: getAuthToken(),
       endpoint: 'group',
@@ -67,7 +93,20 @@ class AssetService extends HttpBase {
     });
   }
 
-  async setAsset({ isActive = true, code = null, value = null, group = null, subGroup = null, alternativeGroup = null, auditUser = null, description = [] }, callback = () => { }) {
+  // Crear o actualizar un activo
+  async setAsset(
+    {
+      isActive = true,
+      code = null,
+      value = null,
+      group = null,
+      subGroup = null,
+      alternativeGroup = null,
+      auditUser = null,
+      description = []
+    },
+    callback = () => {}
+  ) {
     const requestData = {
       isActive,
       code,
@@ -77,13 +116,12 @@ class AssetService extends HttpBase {
       alternativeGroup,
       auditUser,
       description,
-
     };
 
     return await this.request({
       token: getAuthToken(),
       options: {
-        method: 'post',
+        method: 'post', // Usar el método POST para crear o actualizar
         data: requestData,
         headers: {
           'Content-Type': 'application/json'
@@ -93,6 +131,7 @@ class AssetService extends HttpBase {
     });
   }
 
+  // Obtener la imagen de un activo por su código
   async getImage(code, callback = () => {}) {
     return await this.request({
       token: getAuthToken(),
@@ -103,6 +142,7 @@ class AssetService extends HttpBase {
     });
   }
 
+  // Configurar o actualizar la imagen de un activo
   async setImage({ code = null, image = null, b64 = null }, callback = () => {}) {
     return await this.request({
       token: getAuthToken(),
@@ -118,7 +158,7 @@ class AssetService extends HttpBase {
       }
     });
   }
-
 }
 
+// Exportar la clase del servicio de activos
 export default AssetService;

@@ -6,14 +6,17 @@ import Select from 'react-select';
 import InventoryService from '../../services/Inventory';
 import AssetService from '../../services/Asset';
 
-const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallback = () => {} }) => {
-
+// Definir el componente de formulario de inventario
+const InventoryForm = ({ item, updateInventoryCallback, asset, updateAssetCallback = () => {} }) => {
+    // Crear instancias de servicios
     const assetService = new AssetService();
     const inventoryService = new InventoryService();
+
+    // Estados para manejar los datos y opciones del formulario
     const [group, setGroup] = useState(null);
-    const [groups, setGroups] = useState([]); 
+    const [groups, setGroups] = useState([]);
     const [groupLocation, setGroupLocation] = useState(null);
-    const [groupsLocation, setGroupsLocation] = useState([]); 
+    const [groupsLocation, setGroupsLocation] = useState([]);
     const [isEditable, setEditable] = useState(false);
     const [itemData, setItemData] = useState({
         customKey: '',
@@ -24,6 +27,7 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
         location: '',
     });
 
+    // Cargar datos iniciales cuando se proporciona un 'item'
     useEffect(() => {
         if (item) {
             setItemData({
@@ -37,74 +41,72 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
                 value: item?.model?.code, 
                 label: `${item?.model?.value}`, 
                 data: item?.model 
-            } : null)
+            } : null);
 
             setGroupLocation(item?.location != null ? {
                 value: item?.location?.code, 
                 label: `${item?.location?.value}`,
                 data: item?.location
-            } : null)
+            } : null);
         }
     }, [item]);
 
+    // Cargar datos de grupos y ubicaciones al montar el componente
     useEffect(() => {
         const fetchData = async () => {
             let res = await inventoryService.getItems({});
             
             if (res?.status == C.status.common.ok) {
-                // Filtrar elementos duplicados
                 const uniqueData = res.data.filter((value, index, self) => {
                     return self.findIndex(item => item?.model?.code === value?.model?.code) === index;
                 });
-                // Mapear los elementos únicos
                 const mappedData = uniqueData.map(x => ({
                     value: x?.model?.code,
                     label: `${x?.model?.value}`,
                     data: x?.model?.code
                 }));
-            
                 setGroups(mappedData);
             }
-
             
             if (res?.status == C.status.common.ok) {
-                // Filtrar elementos duplicados
                 const uniqueData = res.data.filter((value, index, self) => {
                     return self.findIndex(item => item?.model?.code === value?.model?.code) === index;
                 });
-                // Mapear los elementos únicos
                 const mappedData2 = uniqueData.map(x => ({
                     value: x?.location?.code,
                     label: `${x?.location?.value}`,
                     data: x?.location?.code
                 }));
-            
                 setGroupsLocation(mappedData2);
             }
         }
         fetchData();
     }, []);
 
+    // Actualizar un elemento (activo o inactivo) en el inventario
     const updateItem = async (active = true) => {
         var data = {
             ...itemData,
             isActive: active
-        }
+        };
+
         data.model = {
             code: group.value
         };
         
         data.location = {
             code: groupLocation.value
-        }
-        if(group) {
+        };
+
+        if (group) {
             data.model.code = group.value;
         }
-        if(groupLocation) {
+
+        if (groupLocation) {
             data.location.code = groupLocation.value
         }
-        const response = await inventoryService.setItem(data);
 
+        const response = await inventoryService.setItem(data);
 
         if (response?.status == C.status.common.ok) {
             updateInventoryCallback(response.data);
@@ -123,6 +125,7 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
         console.log(data);
     };
 
+    // Manejar cambios en los campos del formulario
     const handleInputChange = (e) => {
         const { name, value } = e?.target;
         setItemData((prevData) => ({
@@ -131,8 +134,10 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
         }));
     };
 
+    // Cambiar el estado de edición
     const toggleEdit = () => setEditable((value) => !value);
 
+    // Limpiar el formulario
     const clearForm = () => {
         setItemData({
             customKey: '',
@@ -141,12 +146,11 @@ const InventoryForm = ({item, updateInventoryCallback, asset, updateAssetCallbac
             conditionUse: '',
             model: '',
             location: '',
-        })
+        });
         setGroup(null);
         setGroupLocation(null);
         item = null;
     }
-
     return (
         <div>
             <div className="flex justify-end">

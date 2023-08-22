@@ -25,14 +25,17 @@ const Inventory = () => {
     const [selectedGroup3, setGroup3] = useState(null);
     const [trigger, setTrigger] = useState(false);
 
+    // Estados para las fechas de inicio y fin
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
 
+    // Obtener datos iniciales al cargar el componente
     useEffect(() => {
         const fetchData = async () => {
             let res = await inventoryService.getItems({});
 
             if (res?.status == C.status.common.ok) {
+                // Filtrar y mapear datos únicos para los selectores
                 const uniqueData = res.data.filter((value, index, self) => {
                     return self.findIndex(item => item?.model?.value === value?.model?.value) === index;
                 });
@@ -64,25 +67,12 @@ const Inventory = () => {
                 data: x
             }));
         setGroups3(mappedData3);
-        
-
-        // const exerciseDate = async () => {
-        //     const {firstDay, lastDay } = getFirstAndLastDayOfWeek();
-
-        //     setFrom(firstDay);
-        //     setTo(lastDay);
-
-        //     let res = await loanService.getLoanModes();
-        //     if (res?.data) {
-        //         let m = res.data.map(x => ({ value: x.code, label: x.code }));
-        //         setModes(m);
-        //     }
-        // }
             }  
         }
         fetchData();
     }, []);
 
+    // Convertir los datos de respuesta en el formato deseado para la tabla
     const convertData = response => {
             if (response?.status == C.status.common.ok) {
                 let res = response?.data;
@@ -97,16 +87,15 @@ const Inventory = () => {
                     customKey: x.customKey,
                     name: x.name,
                     model: x.model.value,
-                    //lastModified: formatDate(x?.model?.lastModified, false),
                     location: x?.location?.value,
                     acquisition: formatDate(x.acquisition, false),
                     condition: x.conditionUse,
                     isUsed: x.isUsed,
-                    //image: 
             }));
             } else return [];
             
     }
+    // Obtener información detallada de un elemento
     const getItemInfo = async (row) => {
 
         var res = await inventoryService.getItem(row.id);
@@ -116,21 +105,25 @@ const Inventory = () => {
         }
     };
 
+    // Manejar la selección de un grupo en el selector
     const selectGroup = (value) => {
         setGroup(value);
         setTrigger(val => !val)
     } 
     
+    // Manejar la selección de un grupo en el selector2
     const selectGroup2 = (value) => {
         setGroup2(value);
         setTrigger(val => !val)
     } 
 
+    // Manejar la selección de un grupo en el selector3
     const selectGroup3 = (value) => {
         setGroup3(value);
         setTrigger(val => !val)
     } 
 
+    // Manejar la selección de un archivo Excel para subir
     const onSelectExcel = async (files) => {
 
         if(files?.length > 0) {
@@ -145,7 +138,8 @@ const Inventory = () => {
             setTrigger(val => !val);
         }
     }
-
+    
+    // Definir las columnas para la tabla de inventario
     const columns = [
         {
             name: 'Serial',
@@ -183,34 +177,6 @@ const Inventory = () => {
             wrap: true,
             ///width: '7%'
         },
-        // {
-        //     name: 'Estado',
-        //     selector: 'isUsed',
-        //     wrap: true,
-        //     width: '7%',
-        //     conditionalCellStyles: [
-        //         {
-        //             when: x => x.isUsed = true,
-        //             style: {
-        //                 backgroundColor: 'rgba(63, 195, 128, 0.9)',
-        //                 color: 'white',
-        //                 '&:hover': {
-        //                     cursor: 'pointer',
-        //                 },
-        //             },
-        //         },
-        //         {
-        //             when: x => x.isUsed = !true,
-        //             style: {
-        //                 backgroundColor: 'rgba(248, 148, 6, 0.9)',
-        //                 color: 'white',
-        //                 '&:hover': {
-        //                     cursor: 'pointer',
-        //                 },
-        //             },
-        //         },
-        //     ],
-        // },
     ];
 
     return (
@@ -240,15 +206,6 @@ const Inventory = () => {
                     isSearchable
                     placeholder="Filtrar Dispoinibilidad"
                 />
-                {/* <Select 
-                    className="col-span-2 w-[100%]" 
-                    value={selectedGroup3}
-                    options={groups3}
-                    onChange={selectGroup3}
-                    isClearable
-                    isSearchable
-                    placeholder="Filtrar Ubicacion"
-                /> */}
 
                 <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
                 <FaFileDownload onClick={() => downloadFile(C.media.itemTemplate, `Inventory-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
@@ -270,7 +227,6 @@ const Inventory = () => {
                         onHook={async () => await inventoryService.getItems({
                             model: selectedGroup?.value || null, 
                             isUsed: selectedGroup2?.value || null, 
-                            //location: selectedGroup3?.value || null
                         })}
                         convertData={convertData}
                         triggerRefresh={trigger}

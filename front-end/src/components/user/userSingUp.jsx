@@ -12,25 +12,27 @@ import InputFiles from 'react-input-files';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../context/Context';
 
+// Componente funcional principal para la página de registro de usuarios
 const UserSignUp = () => {
+    // Obtener el contexto de autenticación
     const { group } = React.useContext(AuthContext);
     const userService = new UserService();
     const assetService = new AssetService();
 
+    // Estados para almacenar datos y activar actualizaciones
     const [grants, setGrants] = useState(null);
-
     const [user, setUser] = useState(null);
     const [selectedGroup, setGroup] = useState(null);
     const [groups, setGroups] = useState([]);
     const [trigger, setTrigger] = useState(false);
-
     const [file, setFile] = useState(null);
 
+    // Efecto de carga inicial para obtener grupos y activos
     useEffect(() => {
         const fetchData = async () => {
             let res = await assetService.getAssets({ group: 'USER_GROUP' });
 
-            if(res?.status == C.status.common.ok){
+            if (res?.status === C.status.common.ok) {
                 setGroups(
                     res.data.map(x => ({ value: x.code, label: `${x.value} - ${x.description}`, data: x })),
                     console.log(res.data),
@@ -43,14 +45,13 @@ const UserSignUp = () => {
         fetchData();
     }, []);
 
-
+    // Función para convertir los datos de la respuesta en el formato deseado
     const convertData = response => {
-
-        if(response?.status == C.status.common.ok) {
-                let res = response?.data;
-                let filteredData = res.filter(x => {
-                let flag1 = x?.group?.group == 'USER_GROUP';
-                let flag2 = !selectedGroup || x?.group?.code == selectedGroup?.value;
+        if (response?.status === C.status.common.ok) {
+            let res = response?.data;
+            let filteredData = res.filter(x => {
+                let flag1 = x?.group?.group === 'USER_GROUP';
+                let flag2 = !selectedGroup || x?.group?.code === selectedGroup?.value;
                 
                 return flag1 && flag2;
             });
@@ -64,26 +65,29 @@ const UserSignUp = () => {
                 modified: formatDate(x?.lastModified, false),
                 audit: x?.auditUser
             }));
-        } else return [];
+        } else {
+            return [];
+        }
     }
 
+    // Obtener información detallada del usuario
     const getUserInfo = async (row) => {
         var res = await userService.getUser(row.username);
 
-        if(res?.status == C.status.common.ok){
+        if (res?.status === C.status.common.ok) {
             setUser(res.data);
         }
-
     };
 
+    // Manejar la selección de un grupo
     const selectGroup = (value) => {
         setGroup(value);
         setTrigger(val => !val);
     } 
 
+    // Manejar la selección de un archivo Excel
     const onSelectExcel = async (files) => {
-
-        if(files?.length > 0) {
+        if (files?.length > 0) {
             let file = files[0];
 
             toast.promise(userService.setUserExcel(file), {
@@ -148,59 +152,63 @@ const UserSignUp = () => {
         },
     ];
 
-    return (
-        <div className="w-full mx-4 sm:mx-auto">
-            {/* <div className="h-auto text-3xl mb-6">Formulario usuario</div> */}
 
-            <div className="grid grid-cols-6 gap-4 rounded-md shadow-md bg-white p-2 my-2">
-                <Select 
-                    className="col-span-3" 
-                    value={selectedGroup}
-                    options={groups}
-                    onChange={selectGroup}
-                    isClearable
-                    isSearchable
-                    placeholder="Filtrar por Rol o Grupo"
-                />
+// Renderizar el componente
+return (
+    <div className="w-full mx-4 sm:mx-auto">
+        {/* Contenedor principal */}
+        <div className="grid grid-cols-6 gap-4 rounded-md shadow-md bg-white p-2 my-2">
+            {/* Selector de grupos */}
+            <Select 
+                className="col-span-3" 
+                value={selectedGroup}
+                options={groups}
+                onChange={selectGroup}
+                isClearable
+                isSearchable
+                placeholder="Filtrar por Rol o Grupo"
+            />
 
-                <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
-                    <FaFileDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
-                    <div className="my-auto mt-2 mr-2 cursor-pointer">
-                        <InputFiles accept=".xlsx" onChange={onSelectExcel} >
-                            <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
-                        </InputFiles>
-                    </div>
+            {/* Botones para descargar y subir archivos Excel */}
+            <div className="flex col-span-2 col-start-5 flex-row-reverse mr-4">
+                <FaFileDownload onClick={() => downloadFile(C.media.userTemplate, `User-Inventory-Template.xlsx`)} className="text-2xl my-auto mr-2 cursor-pointer hover:text-blue-500" title="Descargar Excel" />
+                <div className="my-auto mt-2 mr-2 cursor-pointer">
+                    <InputFiles accept=".xlsx" onChange={onSelectExcel} >
+                        <RiFileExcel2Fill className="text-2xl cursor-pointer hover:text-blue-500" title="Subir Excel" />
+                    </InputFiles>
                 </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
-                <div className="col-span-4 rounded-md shadow-md bg-white p-6">
-                    <CustomTable
-                        title={'Lista Usuarios'}
-                        columns={columns}
-                        styles={C.styles.dataTable}
-                        onSelectRow={getUserInfo}
-                        onHook={async () => await userService.getUsers({ })}
-                        convertData={convertData}
-                        triggerRefresh={trigger}
-                    />
-                </div>
-
-                <div className="col-span-2 rounded-md shadow-md bg-white p-6">
-                    <div className="h-auto text-center text-xl">Usuario</div>
-
-                    <UserForm 
-                        user={user}
-                        updateUserCallback={ user => {
-                            setUser(user);
-                            setTrigger(val => !val)
-                        }}
-                    />
-                </div>
-
             </div>
         </div>
-    );
+
+        {/* Contenedor de la tabla y el formulario de usuario */}
+        <div className="grid grid-cols-6 gap-4 md:auto-cols-min">
+            {/* Tabla de usuarios */}
+            <div className="col-span-4 rounded-md shadow-md bg-white p-6">
+                <CustomTable
+                    title={'Lista Usuarios'}
+                    columns={columns}
+                    styles={C.styles.dataTable}
+                    onSelectRow={getUserInfo}
+                    onHook={async () => await userService.getUsers({ })}
+                    convertData={convertData}
+                    triggerRefresh={trigger}
+                />
+            </div>
+
+            {/* Formulario de usuario */}
+            <div className="col-span-2 rounded-md shadow-md bg-white p-6">
+                <div className="h-auto text-center text-xl">Usuario</div>
+                <UserForm 
+                    user={user}
+                    updateUserCallback={ user => {
+                        setUser(user);
+                        setTrigger(val => !val);
+                    }}
+                />
+            </div>
+        </div>
+    </div>
+);
 };
 
 export default UserSignUp;

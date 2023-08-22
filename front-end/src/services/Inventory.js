@@ -1,15 +1,19 @@
+// Importar la clase base para las peticiones HTTP y las constantes desde archivos locales
 import HttpBase from "./HttpBase";
 import { C } from "../constants/C";
 import { getAuthToken } from "../constants/utils";
 
+// Definir la clase para el servicio de inventario
 class InventoryService extends HttpBase {
 
+    // Constructor del servicio de inventario
     constructor() {
         super({
             baseUrl: `${C.api_url()}item`,
         });
     }
 
+    // Obtener elementos del inventario con opciones de filtrado
     async getItems(
         {
             isActive = true,
@@ -38,6 +42,7 @@ class InventoryService extends HttpBase {
         });
     }
 
+    // Obtener información de un elemento del inventario por ID
     async getItem(id, callback = () => { }) {
         return await this.request({
             endpoint: `${id}`,
@@ -51,6 +56,7 @@ class InventoryService extends HttpBase {
         });
     }
 
+    // Crear o actualizar un elemento en el inventario
     async setItem(
         {
             isActive = null,
@@ -94,10 +100,12 @@ class InventoryService extends HttpBase {
         })
     }
 
+    // Subir un archivo Excel para actualizar elementos en el inventario
     async setItemExcel(
         file,
         callback = () => { }
     ) {
+        // Crear un formulario de datos para el archivo
         const formData = new FormData();
         formData.append('files', file);
 
@@ -117,10 +125,5 @@ class InventoryService extends HttpBase {
 
 }
 
+// Exportar la clase del servicio de inventario
 export default InventoryService;
-
-
-
-
-
-

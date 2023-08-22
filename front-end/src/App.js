@@ -49,12 +49,6 @@ const App = () => {
                   <Assets/>
                 }
               />
-              {/* <Route 
-                path="/historical" 
-                element={
-                  <Historical />
-                } 
-              /> */}
               <Route 
                 path="/form" 
                 element={
